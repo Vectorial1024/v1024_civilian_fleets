@@ -16,8 +16,21 @@ Do:
         <do_elseif value="$assignment == assignment.trade">
             <set_value name="$isRunningAutoTrade" exact="$commander.defaultorder.id == 'TradeRoutine'"/>
             <do_if value="$isRunningAutoTrade">
+                <set_value name="flag_v1024_civfleetformed" comment="Actual value not important." />
                 <!-- Call standardized config script. -->
-                <!-- Execute standardized command configuration script. -->
+                <run_script name="'lib.civfleet.update.syncorders'">
+                    <param name="fromShip" value="$commander" />
+                    <param name="toShip" value="$object" />
+                </run_script>
+            </do_if>
+        </do_elseif>
+        <do_elseif value="$assignment == assignment.mining">
+            <run_script name="'lib.civfleet.check.orderismining'" result="$isRunningAnyMiningRoutines">
+                <param name="order" value="$commander.defaultorder" />
+            </run_script>
+            <do_if value="$isRunningAnyMiningRoutines">
+                <set_value name="flag_v1024_civfleetformed" comment="Actual value not important." />
+                <!-- Call standardized config script. -->
                 <run_script name="'lib.civfleet.update.syncorders'">
                     <param name="fromShip" value="$commander" />
                     <param name="toShip" value="$object" />
@@ -28,8 +41,9 @@ Do:
 
     <!-- Rename wing if wing is civilian fleet -->
     <add sel="/aiscript[@name='lib.request.orders']/attention/actions/do_else/do_else" pos="after">
-        <!-- Detect civilian fleet -->
-        <do_if value="$object.isplayerowned and $commander.isplayerowned and $commander.isclass.ship and $commander.defaultorder != null">
+        <!-- Optimization: only attempt to rename fleet when we have actually formed any civ-fleets. -->
+        <do_if value="$flag_v1024_civfleetformed?">
+            <!-- Only the player can initiate illegal assignment as trader or miner. So we're pretty safe. -->
             <!-- Execute standardized fleet wing rename script. -->
             <run_script name="'lib.civfleet.update.wingname'">
                 <param name="wingCommander" value="$commander"/>

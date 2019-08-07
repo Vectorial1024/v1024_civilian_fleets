@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+Whenever an L or XL ship attempts to recall its subordinates, exclude civilian fleet members to be recalled.
+This should prevent S or M members from being unreasonably recalled by L or XL fleet leaders.
+Does not consider XS members, since they are drones, and drones should follow their commanders' orders at all times.
+-->
+<diff>
+    <add sel="/aiscripts[@name='lib.recall.subordinates']/attention/actions/do_else[1]" pos="before">
+        <!-- Sanity check: subordinate is not a drone (i.e. class is not XS) -->
+        <!-- Verify: subordinate is a member of the civ-fleet -->
+        <set_value name="$currentSubordinate" exact="$subordinates.{$i}" />
+        <do_elseif value="(not $currentSubordinate.isclass.ship_xs) and ($currentSubordinate.assignment == assignment.trade or $currentSubordinate.assignment == assignment.mining)">
+            <remove_from_group group="$subordinates" object="currentSubordinate" />
+        </do_elseif>
+    </add>
+</diff>

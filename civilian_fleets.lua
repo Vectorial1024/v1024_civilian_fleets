@@ -28,7 +28,7 @@ function V1024CF_CivilianAssignment(menu)
         local enableTradingFleet = (((not commanderCanMine) and selectedTradingShips) or enableMiningFleet)
 
         -- Feature not unlocked yet.
-        enableMiningFleet = false
+        --enableMiningFleet = false
 
         --[[
             If Commander can mine, and we have selected some mining ships, then enable "Mining Fleet" *and* "Trading Fleet".

@@ -37,27 +37,50 @@ The type of order to sync depends on the assignment.
                 The UI will explode if we attempt to set it to SL-2, so in such cases, set it at SL-1 (i.e., max capable).
             -->
             <do_if value="$toShip.assignment == assignment.mining">
-                <!-- Nothing for now. -->
+                <!-- Even though there are several different versions of mining scripts, they all have the same list of parameters. -->
+                <run_script name="'lib.civfleet.check.orderismining'" result="$isMiningOrder">
+                    <param name="order" value="$fromShip_DefaultOrder" />
+                <run_script>
+                <do_if value="$isMiningOrder">
+                    <!-- First obtain the MAX parameters, cap them to valid values. -->
+                    <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
+                    <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxsell, $assignmentSkillLevel].min" />
+
+                    <!-- Then obtain and cap the MIN parameters -->
+                    <set_value name="$minBuy" exact="[$fromShip_DefaultOrder.$minbuy, $maxBuy].min" />
+                    <set_value name="$minSell" exact="[$fromShip_DefaultOrder.$minsell, $maxSell].min" />
+                    
+                    <!-- As to the 'effective skill' parameter... -->
+                    <!-- ge: greater than or equal to -->
+                    <set_value name="$combinedSkill" />
+                    <do_if value="$fromShip.combinedskill ge $toShip.combinedskill">
+                        <!-- If commander is better than subordinate, subordinate can do it themselves. -->
+                        <set_value name="$combinedSkill" exact="$toShip.combinedskill"/>
+                    </do_if>
+                    <do_else>
+                        <!-- Take average otherwise. -->
+                        <set_value name="$combinedSkill" exact="($fromShip.combinedskill + $toShip.combinedskill) / 2"/>
+                    </do_else>
+
+                    <create_order object="$toShip" id="'MiningRoutine'" default="true">
+                        <!-- In v2.5, only maxbuy and maxsell can be modified by the user. -->
+                        <!-- Hence, configuring minbuy and minsell becomes meaningless. -->
+                        <param name="warebasket" value="$fromShip_DefaultOrder.$warebasket" />
+                        <param name="range" value="$fromShip_DefaultOrder.range" />
+                        <param name="minbuy" value="$minBuy" />
+                        <param name="minsell" value="$minSell" />
+                        <param name="maxbuy" value="$maxBuy" />
+                        <param name="maxsell" value="$maxSell" />
+                        <param name="effectiveskill" value="$combinedSkill" />
+                    </create_order>
+                    <set_order_syncpoint_reached order="$toShip.order"/>
+                </do_if>
             </do_if>
             <do_elseif value="$toShip.assignment == assignment.trade">
                 <!-- Make sure the fromShip really is trading -->
                 <do_if value="$fromShip_DefaultOrder.id == 'TradeRoutine'">
-                    <!--show_help custom="'Syncing for trading command.'" position="1" duration="1.5s" /-->
-                    <set_value name="$maxBuy" exact="$fromShip_DefaultOrder.$maxbuy" />
-                    <set_value name="$maxSell" exact="$fromShip_DefaultOrder.$maxsell" />
-                    <!-- $assignmentSkillLevel < current $maxBuy of Commander -->
-                    <do_if value="$assignmentSkillLevel lt $maxBuy">
-                        <set_value name="$maxBuy" exact="$assignmentSkillLevel" />
-                    </do_if>
-                    <!-- $assignmentSkillLevel < current $maxSell of Commander -->
-                    <do_if value="$assignmentSkillLevel lt $maxSell">
-                        <set_value name="$maxSell" exact="$assignmentSkillLevel" />
-                    </do_if>
-
-                    <!--
-                    <show_help custom="'Assignment skill level: ' + $assignmentSkillLevel" position="1" duration="2s" />
-                    <show_help custom="$fromShip_DefaultOrder.$maxbuy + ' ' + $fromShip_DefaultOrder.$maxsell + ' -> ' + $maxBuy + ' ' + $maxSell" position="1" duration="3s" />
-                    -->
+                    <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
+                    <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxsell, $assignmentSkillLevel].min" />
 
                     <create_order object="$toShip" id="'TradeRoutine'" default="true">
                         <!-- In v2.5, only maxbuy and maxsell can be modified by the user. -->
