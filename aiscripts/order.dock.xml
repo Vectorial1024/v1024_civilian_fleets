@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<!-- When civilian fleet commander docks, synchronize default orders: -->
+<!-- Commander broadcasts updated orders to all subordinates. -->
+<!-- Apparently, only the original MTF code works, so I am copying them over here. -->
+<!-- If possible, I hope to rewrite the entire logic with my style and stuff, but well. -->
+<!--
+Note to self:
+This script uses $thisship instead of $object, to account for the cases where
+Betty docks for the player via Auto-Pilot.
+-->
+<diff>
+    <add sel="/aiscript/attention[@min='unknown']/actions/set_command[@command='command.dockat']" pos="after">
+        <!-- There are currently two ways of syncing. -->
+        <!-- 1. Commander docks and broadcasts (maybe-updated) orders to subordinates (confirming that the TradeRoutine order is doable (assuming no playr intervention)) -->
+        <!-- 2. Subordinate docks and obtains (maybe-updated) orders from commander (during usual trading, when the commander probably has not docked yet to execute [1].) -->
+        
+        <!-- Of course, if this ain't player-owned, we have nothing to discuss. -->
+        <do_if value="$thisship.isplayerowned">
+            <!-- Stations can't dock at somewhere else, so we do not need to check for stations. -->
+
+            <!-- Obtain value pairs and set up variables. -->
+            <run_script name="'lib.civfleet.get.civfleetvaluepairs'" result="$civFleet_CmdTagPairs">
+                
+            </run_script>
+            <set_value name="$commanderObject" exact="$thisship.commander" />
+
+            <!-- However, ships may have stations as their commanders. -->
+            <!-- Check condition 2 first such that middle-commanders may obtain updated commands first before broadcsating. -->
+            <do_if value="$commanderObject != null and $commanderObject.isclass.ship">
+                <!-- Might be civilian subordinate of a civ-fleet. -->
+                <set_value name="$assignmentObj" exact="$thisship.assignment" />
+                <do_if value="$assignmentObj == assignment.trade or $assignmentObj == assignment.mining">
+                    <!-- It is indeed a subordinate of a certain civilian fleet. -->
+                    <!--
+                    <show_help custom="'Subordinate Docking.'" position="1" duration="3s" />
+                    -->
+                    <!-- Sync from commander. -->
+                    <debug_text text="'Civ Fleet beginning sync: pull initiated by Subordinate ' + $thisship.knownname" />
+                    <run_script name="'lib.civfleet.update.syncorders'">
+                        <param name="fromShip" value="$commanderObject" />
+                        <param name="toShip" value="$thisship" />
+                    </run_script>
+                </do_if>
+            </do_if>
+            <!-- Check condition 1: Commander-ship -->
+            <do_if value="$thisship.subordinates.count">
+                <!-- The original mod specifically mentioned allowing middle-commanders to lead civilian fleets. -->
+                
+                <run_script name="'lib.civfleet.get.civfleetvaluepairs'" result="$civFleet_CmdTagPairs"/>
+
+                <do_all exact="$civFleet_CmdTagPairs.count" counter="$i">
+                    <!-- Determine civilian fleet commander -->
+                    <do_if value="$thisship.defaultorder.id == $civFleet_CmdTagPairs.{$i}.{1}">
+                        <!-- Fleet commander detected. -->
+                        <!--
+                        <show_help custom="'Commander Docking. Name: ' + $thisship.knownname" position="1" duration="3s" />
+                        -->
+                        <debug_text text="'Civ Fleet beginning sync: broadcast from Commander ' + $thisship.knownname" />
+                        <!-- Summon all subordinates, and sync orders. -->
+                        <set_value name="$allSubordinates" exact="$thisship.subordinates" />
+                        <do_all exact="$allSubordinates.count" counter="$i">
+                            <set_value name="$currentSubordinate" exact="$allSubordinates.{$i}" />
+                            <set_value name="$currentSubAssignObj" exact="$currentSubordinate.assignment" />
+                            <!--show_help custom="'Processing subordinate ' + $currentSubordinate.knownname" position="1" duration="3s" /-->
+                            <do_if value="$currentSubAssignObj == assignment.trade or $currentSubAssignObj == assignment.mining">
+                                <run_script name="'lib.civfleet.update.syncorders'">
+                                    <param name="fromShip" value="$thisship" />
+                                    <param name="toShip" value="$allSubordinates.{$i}" />
+                                </run_script>
+                            </do_if>
+                        </do_all>
+
+                        <debug_text text="'Synchronization complete for Commander ' + $thisship.knownname" />
+                    </do_if>
+                </do_all>
+            </do_if>
+        </do_if>
+    </add>
+</diff>

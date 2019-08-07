@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mdscript name="V1024_CivilianFleets" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
+  <cues>
+    <cue name="Register_CivilianFleets_RightClickMenu" version="1">
+      <conditions>
+        <event_cue_completed cue="md.Right_click_api.RegisterRight_click_api"/>
+      </conditions>
+      <delay exact="1s" comment="wait a sec if we have dependencies"/>
+      <actions>
+        <raise_lua_event name="'RegisterAddon'" param="'extensions.v1024_civilian_fleets.civilian_fleets'"/>
+      </actions>
+    </cue>
+    <cue name="RightClickMenu_Feedback_Wanted">
+      <conditions>
+        <event_cue_completed cue="Register_CivilianFleets_RightClickMenu"/>
+      </conditions>
+      <actions>
+        <reset_cue cue="Register_CivilianFleets_RightClickMenu"/>
+        <reset_cue cue="RightClickMenu_Feedback_Wanted"/>
+      </actions>
+    </cue>
+  </cues>
+</mdscript>

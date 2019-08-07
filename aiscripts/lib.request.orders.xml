@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 
+Whenever a ship tries to obtain "first" orders...
+1. Because it has just been freshly constructed (NOT OUR MAIN POINT)
+2. Because it has just received a new assignment
+Do:
+1. Check if it is a ship-to-ship assignment (passively checked as a result of original code structure)
+2. Check if it is being assigned to another ship running a recognized civilian command
+3. If [2] returns true, syncs the civilian command from the commander to itself
+4. If [2] returns true, also updates the wing name appropriately
+-->
+<diff>
+    <add sel="/aiscript[@name='lib.request.orders']/attention/actions/do_else/do_else" pos="before">
+        <!-- At this point, definitely assigning to another ship, no need to double-check. -->
+        <!-- Check: trading fleet -->
+        <do_elseif value="$assignment == assignment.trade">
+            <set_value name="$isRunningAutoTrade" exact="$commander.defaultorder.id == 'TradeRoutine'"/>
+            <do_if value="$isRunningAutoTrade">
+                <!-- Call standardized config script. -->
+                <!-- Execute standardized command configuration script. -->
+                <run_script name="'lib.civfleet.update.syncorders'">
+                    <param name="fromShip" value="$commander" />
+                    <param name="toShip" value="$object" />
+                </run_script>
+            </do_if>
+        </do_elseif>
+    </add>
+
+    <!-- Rename wing if wing is civilian fleet -->
+    <add sel="/aiscript[@name='lib.request.orders']/attention/actions/do_else/do_else" pos="after">
+        <!-- Detect civilian fleet -->
+        <do_if value="$object.isplayerowned and $commander.isplayerowned and $commander.isclass.ship and $commander.defaultorder != null">
+            <!-- Execute standardized fleet wing rename script. -->
+            <run_script name="'lib.civfleet.update.wingname'">
+                <param name="wingCommander" value="$commander"/>
+            </run_script>
+        </do_if>
+    </add>
+</diff>

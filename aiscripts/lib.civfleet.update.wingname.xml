@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Given the commander of a wing,
+1. Removes all recognized wing tags present in the wing's name
+2. Checks if the commander is running a civilian fleet command
+3. If [2] returns true, appends the appropriate wing tag to the wing name
+-->
+<aiscript name="lib.civfleet.update.wingname" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="aiscripts.xsd">
+    <params>
+        <param name="wingCommander" default="this.assignedcontrolled.commander" comment="The commander of the (civilian fleet) wing whose wing's name requires updating according to the civ-fleet role.."/>
+    </params>
+    <attention min="unknown">
+        <actions>
+            <do_if value="$wingCommander == null">
+                <show_help custom="'Wing Commander is null!'" position="1" duration="3s" />
+                <!-- Supplied commander is null. Nothing to do. -->
+                <resume label="return"/>
+            </do_if>
+
+            <!-- Rename Wings. Based on code by kspn at Mod Forum: https://forum.egosoft.com/viewtopic.php?f=181&t=410087&start=15#p4810686 -->
+            <run_script name="'lib.civfleet.get.civfleetvaluepairs'" result="$civFleet_CmdTagPairs"/>
+
+            <!-- Remove existing tags, and determine the correct tag to append -->
+            <substitute_text source="$wingCommander.wing.name" text="$originalWingName">
+                <replace string="' %1'.[$civFleet_CmdTagPairs.{1}.{1}]" with="''" />
+            </substitute_text>
+            <set_value name="$appendingWingName" exact="''" />
+            <do_all exact="$civFleet_CmdTagPairs.count" counter="$i">
+                <!-- Repeatedly extract the original wing name -->
+                <!-- Final result when exiting loop: a string of the original "Wing XX" format. -->
+                <substitute_text text="$originalWingName">
+                    <replace string="' %1'.[$civFleet_CmdTagPairs.{$i}.{1}]" with="''" />
+                </substitute_text>
+
+                <do_if value="($wingCommander.defaultorder.id == $civFleet_CmdTagPairs.{$i}.{1})">
+                    <set_value name="$appendingWingName" exact="' %1'.[$civFleet_CmdTagPairs.{$i}.{2}]" />
+                    <!-- Not breaking, such that commands down the list can also be checked. -->
+                </do_if>
+            </do_all>
+            
+            <!-- Actually setting the new wing name -->
+            <set_object_wing_name object="$wingCommander" name="'%1%2'.[$originalWingName, $appendingWingName]" />
+
+            <label name="return"/>
+        </actions>
+    </attention>
+</aiscript>
