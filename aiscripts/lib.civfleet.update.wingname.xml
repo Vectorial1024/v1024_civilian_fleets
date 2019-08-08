@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
+[Obsolete("", true)]
 Given the commander of a wing,
 1. Removes all recognized wing tags present in the wing's name
 2. Checks if the commander is running a civilian fleet command
@@ -16,9 +17,12 @@ Given the commander of a wing,
                 <!-- Supplied commander is null. Nothing to do. -->
                 <resume label="return"/>
             </do_if>
+            <!--
+            <show_help custom="'Let us rename.'" position="1" duration="3s" />
+            -->
 
             <!-- Rename Wings. Based on code by kspn at Mod Forum: https://forum.egosoft.com/viewtopic.php?f=181&t=410087&start=15#p4810686 -->
-            <run_script name="'lib.civfleet.get.civfleetvaluepairs'" result="$civFleet_CmdTagPairs"/>
+            <set_value name="$civFleet_CmdTagPairs" exact="global.$civFleet_CmdTagPairs" />
 
             <!-- Remove existing tags, and determine the correct tag to append -->
             <substitute_text source="$wingCommander.wing.name" text="$originalWingName">

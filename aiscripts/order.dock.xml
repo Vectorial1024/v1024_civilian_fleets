@@ -19,11 +19,9 @@ Betty docks for the player via Auto-Pilot.
         <do_if value="$thisship.isplayerowned">
             <!-- Stations can't dock at somewhere else, so we do not need to check for stations. -->
 
-            <!-- Obtain value pairs and set up variables. -->
-            <run_script name="'lib.civfleet.get.civfleetvaluepairs'" result="$civFleet_CmdTagPairs">
-                
-            </run_script>
+            <!-- Set up variables. -->
             <set_value name="$commanderObject" exact="$thisship.commander" />
+            <set_value name="$civFleet_CmdTagPairs" exact="global.$civFleet_CmdTagPairs" />
 
             <!-- However, ships may have stations as their commanders. -->
             <!-- Check condition 2 first such that middle-commanders may obtain updated commands first before broadcsating. -->
@@ -32,42 +30,28 @@ Betty docks for the player via Auto-Pilot.
                 <set_value name="$assignmentObj" exact="$thisship.assignment" />
                 <do_if value="$assignmentObj == assignment.trade or $assignmentObj == assignment.mining">
                     <!-- It is indeed a subordinate of a certain civilian fleet. -->
-                    <!--
-                    <show_help custom="'Subordinate Docking.'" position="1" duration="3s" />
-                    -->
                     <!-- Sync from commander. -->
                     <debug_text text="'Civ Fleet beginning sync: pull initiated by Subordinate ' + $thisship.knownname" />
-                    <run_script name="'lib.civfleet.update.syncorders'">
-                        <param name="fromShip" value="$commanderObject" />
-                        <param name="toShip" value="$thisship" />
-                    </run_script>
+                    <!-- Delegate to standardized static config method to ensure save-game compatibility. -->
+                    <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$commanderObject" param3="$thisship" />
                 </do_if>
             </do_if>
             <!-- Check condition 1: Commander-ship -->
             <do_if value="$thisship.subordinates.count">
                 <!-- The original mod specifically mentioned allowing middle-commanders to lead civilian fleets. -->
-                
-                <run_script name="'lib.civfleet.get.civfleetvaluepairs'" result="$civFleet_CmdTagPairs"/>
-
                 <do_all exact="$civFleet_CmdTagPairs.count" counter="$i">
                     <!-- Determine civilian fleet commander -->
                     <do_if value="$thisship.defaultorder.id == $civFleet_CmdTagPairs.{$i}.{1}">
                         <!-- Fleet commander detected. -->
-                        <!--
-                        <show_help custom="'Commander Docking. Name: ' + $thisship.knownname" position="1" duration="3s" />
-                        -->
                         <debug_text text="'Civ Fleet beginning sync: broadcast from Commander ' + $thisship.knownname" />
                         <!-- Summon all subordinates, and sync orders. -->
                         <set_value name="$allSubordinates" exact="$thisship.subordinates" />
                         <do_all exact="$allSubordinates.count" counter="$i">
                             <set_value name="$currentSubordinate" exact="$allSubordinates.{$i}" />
                             <set_value name="$currentSubAssignObj" exact="$currentSubordinate.assignment" />
-                            <!--show_help custom="'Processing subordinate ' + $currentSubordinate.knownname" position="1" duration="3s" /-->
                             <do_if value="$currentSubAssignObj == assignment.trade or $currentSubAssignObj == assignment.mining">
-                                <run_script name="'lib.civfleet.update.syncorders'">
-                                    <param name="fromShip" value="$thisship" />
-                                    <param name="toShip" value="$allSubordinates.{$i}" />
-                                </run_script>
+                                <!-- Delegate to standardized static config method to ensure save-game compatibility. -->
+                                <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$thisship" param3="$allSubordinates.{$i}" />
                             </do_if>
                         </do_all>
 

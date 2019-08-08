@@ -10,13 +10,34 @@
         <raise_lua_event name="'RegisterAddon'" param="'extensions.v1024_civilian_fleets.civilian_fleets'"/>
       </actions>
     </cue>
-    <cue name="RightClickMenu_Feedback_Wanted">
+    <cue name="CivilianFleets_Feedback_Wanted">
       <conditions>
         <event_cue_completed cue="Register_CivilianFleets_RightClickMenu"/>
       </conditions>
       <actions>
         <reset_cue cue="Register_CivilianFleets_RightClickMenu"/>
-        <reset_cue cue="RightClickMenu_Feedback_Wanted"/>
+        <reset_cue cue="CivilianFleets_Feedback_Wanted"/>
+      </actions>
+    </cue>
+    <cue name="CivilianFleets_SettingUp" instantiate="true">
+      <conditions>
+        <event_cue_signalled cue="md.Setup.Start" />
+      </conditions>
+      <actions>
+        <!-- Safety -->
+        <remove_value name="global.$civFleet_CmdTagPairs"/>
+
+        <!-- Setting the value pairs -->
+        <set_value name="global.$civFleet_CmdTagPairs" exact="[]" />
+
+        <!-- Hardcoded inputting -->
+        <append_to_list name="global.$civFleet_CmdTagPairs" exact="['TradeRoutine', 'Trading fleet']" />
+        <append_to_list name="global.$civFleet_CmdTagPairs" exact="['MiningRoutine', 'Mining fleet']" />
+        <append_to_list name="global.$civFleet_CmdTagPairs" exact="['MiningRoutine_Basic', 'Mining fleet']" />
+        <append_to_list name="global.$civFleet_CmdTagPairs" exact="['MiningRoutine_Advanced', 'Mining fleet']" />
+        <append_to_list name="global.$civFleet_CmdTagPairs" exact="['MiningRoutine_Expert', 'Mining fleet']" />
+
+				<!-- To make sub-mods for this mod, simply append to the above list after this cue is complete. -->
       </actions>
     </cue>
   </cues>
