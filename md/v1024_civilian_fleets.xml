@@ -31,11 +31,16 @@
         <set_value name="global.$civFleet_CmdTagPairs" exact="[]" />
 
         <!-- Hardcoded inputting -->
+        <!-- Vanilla value-pairs -->
         <append_to_list name="global.$civFleet_CmdTagPairs" exact="['TradeRoutine', 'Trading fleet']" />
         <append_to_list name="global.$civFleet_CmdTagPairs" exact="['MiningRoutine', 'Mining fleet']" />
         <append_to_list name="global.$civFleet_CmdTagPairs" exact="['MiningRoutine_Basic', 'Mining fleet']" />
         <append_to_list name="global.$civFleet_CmdTagPairs" exact="['MiningRoutine_Advanced', 'Mining fleet']" />
         <append_to_list name="global.$civFleet_CmdTagPairs" exact="['MiningRoutine_Expert', 'Mining fleet']" />
+        <append_to_list name="global.$civFleet_CmdTagPairs" exact="['Middleman', 'Distribution fleet']" />
+
+        <!-- Mod value-pairs -->
+        <append_to_list name="global.$civFleet_CmdTagPairs" exact="['TaterTrade', 'TaterTrade fleet']" />
 
 				<!-- To make sub-mods for this mod, simply append to the above list after this cue is complete. -->
       </actions>

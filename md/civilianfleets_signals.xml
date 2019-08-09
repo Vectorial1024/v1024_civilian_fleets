@@ -28,8 +28,8 @@
                 <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" />
             </conditions>
             <actions>
-                <set_value name="$fromShip" exact="$param2" />
-                <set_value name="$toShip" exact="$param3" />
+                <set_value name="$fromShip" exact="event.param2" />
+                <set_value name="$toShip" exact="event.param3" />
 
                 <do_if value="$fromShip == null or $toShip == null">
                     <show_help custom="'Source and/or target be null! Cannot sync!'" position="1" duration="3s" chance="0" />
@@ -67,6 +67,7 @@
                     <include_actions ref="CheckOrderIsMining" comment="Returns $isMiningOrder" />
 
                     <do_if value="$isMiningOrder">
+                        <!-- Vanilla * AutoMine behavior -->
                         <!-- First obtain the MAX parameters, cap them to valid values. -->
                         <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
                         <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxsell, $assignmentSkillLevel].min" />
@@ -104,18 +105,80 @@
                 <do_elseif value="$toShip.assignment == assignment.trade">
                     <!-- Make sure the fromShip really is trading -->
                     <do_if value="$fromShip_DefaultOrder.id == 'TradeRoutine'">
+                        <!-- Vanilla AutoTrade behavior -->
                         <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
                         <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxsell, $assignmentSkillLevel].min" />
 
                         <create_order object="$toShip" id="'TradeRoutine'" default="true">
                             <!-- In v2.5, only maxbuy and maxsell can be modified by the user. -->
                             <!-- Hence, configuring minbuy and minsell becomes meaningless. -->
-                            <param name="warebasket" value="$fromShip.defaultorder.$warebasket" />
+                            <param name="warebasket" value="$fromShip_DefaultOrder.$warebasket" />
+                            <param name="range" value="$fromShip_DefaultOrder.$range" />
                             <param name="maxbuy" value="$maxBuy" />
                             <param name="maxsell" value="$maxSell" />
                         </create_order>
                         <set_order_syncpoint_reached order="$toShip.order"/>
                     </do_if>
+                    <do_elseif value="$fromShip_DefaultOrder.id == 'Middleman'">
+                        <!-- Vanilla Distribute Wares behavior -->
+                        <create_order object="$toShip" id="'Middleman'" default="true">
+                            <!-- In v2.5, only warebasket can be modified by the player. -->
+                            <param name="warebasket" value="$fromShip_DefaultOrder.$warebasket" />
+                            <param name="anchorspace" value="$fromShip_DefaultOrder.$anchorspace" />
+                        </create_order>
+                        <set_order_syncpoint_reached order="$toShip.order"/>
+                    </do_elseif>
+                    <do_elseif value="$fromShip_DefaultOrder.id == 'TaterTrade'">
+                        <!-- Mod TaterTrade: TaterTrade behavior -->
+                        <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
+                        <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxsell, $assignmentSkillLevel].min" />
+
+                        <!-- Wow, there's a lot of parameters here... -->
+                        <create_order object="$toShip" id="'TaterTrade'" default="true">
+                            <!-- Section break 0: General config -->
+                            <param name="home" value="$fromShip_DefaultOrder.$home" />
+                            <param name="returnhome" value="$fromShip_DefaultOrder.$returnhome" />
+                            <param name="maxbuy" value="$maxBuy" />
+                            <param name="maxsell" value="$maxSell" />
+                            <param name="checkdistance" value="$fromShip_DefaultOrder.$checkdistance" />
+                            <param name="discount" value="$fromShip_DefaultOrder.$discount" />
+                            <param name="discount2" value="$fromShip_DefaultOrder.$discount2" />
+                            <param name="bypass" value="$fromShip_DefaultOrder.$bypass" />
+                            <param name="fasttrade" value="$fromShip_DefaultOrder.$fasttrade" />
+                            <param name="stationmode" value="$fromShip_DefaultOrder.$stationmode" />
+                            <param name="blackmarket" value="$fromShip_DefaultOrder.$blackmarket" />
+                            <!-- Section break 1: Trade ware config -->
+                            <param name="warebasket" value="$fromShip_DefaultOrder.$warebasket" />
+                            <param name="usepresets" value="$fromShip_DefaultOrder.$usepresets" />
+                            <param name="allwares" value="$fromShip_DefaultOrder.$allwares" />
+                            <param name="legalwares" value="$fromShip_DefaultOrder.$legalwares" />
+                            <param name="illegalwares" value="$fromShip_DefaultOrder.$illegalwares" />
+                            <param name="shipbuildingwares" value="$fromShip_DefaultOrder.$shipbuildingwares" />
+                            <param name="stationbuildingwares" value="$fromShip_DefaultOrder.$stationbuildingwares" />
+                            <param name="hightechwares" value="$fromShip_DefaultOrder.$hightechwares" />
+                            <param name="refinedwares" value="$fromShip_DefaultOrder.$refinedwares" />
+                            <param name="biowares" value="$fromShip_DefaultOrder.$biowares" />
+                            <!-- Section break 2: Sector Black/White Lists -->
+                            <param name="excludedsectors" value="$fromShip_DefaultOrder.$excludedsectors" />
+                            <param name="includedsectors" value="$fromShip_DefaultOrder.$includedsectors" />
+                            <!-- Section break 3: Trading partner blacklists -->
+                            <param name="enablebans" value="$fromShip_DefaultOrder.$enablebans" />
+                            <param name="playerban" value="$fromShip_DefaultOrder.$playerban" />
+                            <param name="argonban" value="$fromShip_DefaultOrder.$argonban" />
+                            <param name="antigoneban" value="$fromShip_DefaultOrder.$antigoneban" />
+                            <param name="teladiban" value="$fromShip_DefaultOrder.$teladiban" />
+                            <param name="ministryban" value="$fromShip_DefaultOrder.$ministryban" />
+                            <param name="paranidban" value="$fromShip_DefaultOrder.$paranidban" />
+                            <param name="holyorderban" value="$fromShip_DefaultOrder.$holyorderban" />
+                            <param name="allianceban" value="$fromShip_DefaultOrder.$allianceban" />
+                            <param name="hatikvahban" value="$fromShip_DefaultOrder.$hatikvahban" />
+                            <param name="scaleplateban" value="$fromShip_DefaultOrder.$scaleplateban" />
+                            <!-- Section break 4: Miscellaneous-->
+                            <param name="scanspeed" value="$fromShip_DefaultOrder.$scanspeed" />
+                        </create_order>
+                        <set_order_syncpoint_reached order="$toShip.order"/>
+                         
+                    </do_elseif>
                 </do_elseif>
                 <do_else>
                     <debug_text text="'Assignment unrecognized by CivFleet. Cancelling sync from ' + $fromShip.knownname + ' (' + $fromShip + ') to ' + $toShip.knownname + ' (' + $toShip + ') via assignment ' + $toShip.assignment + '.'" />
