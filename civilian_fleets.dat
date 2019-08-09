@@ -162,6 +162,8 @@ Betty docks for the player via Auto-Pilot.
     </add>
 </diff>
 -- Powered by Right Click API
+local ffi = require("ffi")
+local C = ffi.C
 
 local function initialize()
     DebugError("V1024 Civilian Fleets, UI component starting.")
@@ -178,8 +180,9 @@ function V1024CF_CivilianAssignment(menu)
         (Currently we don't have hybrid-storage ships, but just be prepared.)
         ]]--
 
-        if C.IsComponentClass(menu.componentSlot.component, "ship") then
+        if (not C.IsComponentClass(menu.componentSlot.component, "station")) then
             -- The mod only applies when assigning to ships.
+            
             local convertedComponent = ConvertStringTo64Bit(tostring(menu.componentSlot.component))
             local commanderCanMine = (GetComponentData(convertedComponent, "primarypurpose") == "mine")
             -- Intuitive.
@@ -352,7 +355,7 @@ initialize()<?xml version="1.0" encoding="utf-8" ?>
                             <param name="returnhome" value="$fromShip_DefaultOrder.$returnhome" />
                             <param name="maxbuy" value="$maxBuy" />
                             <param name="maxsell" value="$maxSell" />
-                            <param name="checkdistance" value="$fromShip_DefaultOrder.$checkdistance" />
+                            <param name="distancecheck" value="$fromShip_DefaultOrder.$distancecheck" />
                             <param name="discount" value="$fromShip_DefaultOrder.$discount" />
                             <param name="discount2" value="$fromShip_DefaultOrder.$discount2" />
                             <param name="bypass" value="$fromShip_DefaultOrder.$bypass" />

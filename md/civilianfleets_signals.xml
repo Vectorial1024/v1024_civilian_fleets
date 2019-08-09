@@ -140,7 +140,7 @@
                             <param name="returnhome" value="$fromShip_DefaultOrder.$returnhome" />
                             <param name="maxbuy" value="$maxBuy" />
                             <param name="maxsell" value="$maxSell" />
-                            <param name="checkdistance" value="$fromShip_DefaultOrder.$checkdistance" />
+                            <param name="distancecheck" value="$fromShip_DefaultOrder.$distancecheck" />
                             <param name="discount" value="$fromShip_DefaultOrder.$discount" />
                             <param name="discount2" value="$fromShip_DefaultOrder.$discount2" />
                             <param name="bypass" value="$fromShip_DefaultOrder.$bypass" />

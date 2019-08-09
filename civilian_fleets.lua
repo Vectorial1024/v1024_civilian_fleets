@@ -1,4 +1,6 @@
 -- Powered by Right Click API
+local ffi = require("ffi")
+local C = ffi.C
 
 local function initialize()
     DebugError("V1024 Civilian Fleets, UI component starting.")
@@ -15,8 +17,9 @@ function V1024CF_CivilianAssignment(menu)
         (Currently we don't have hybrid-storage ships, but just be prepared.)
         ]]--
 
-        if C.IsComponentClass(menu.componentSlot.component, "ship") then
+        if (not C.IsComponentClass(menu.componentSlot.component, "station")) then
             -- The mod only applies when assigning to ships.
+            
             local convertedComponent = ConvertStringTo64Bit(tostring(menu.componentSlot.component))
             local commanderCanMine = (GetComponentData(convertedComponent, "primarypurpose") == "mine")
             -- Intuitive.
