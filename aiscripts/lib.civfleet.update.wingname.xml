@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-[Obsolete("", true)]
+Updated for v1.05
 Given the commander of a wing,
-1. Removes all recognized wing tags present in the wing's name
+1. Reset the wing name in the format of "Civilian XX"
+    1.1 The XX part is the custom counter that our mod uses
+    1.2 The custom counter may conflict with existing ones, but that's no problem.
 2. Checks if the commander is running a civilian fleet command
 3. If [2] returns true, appends the appropriate wing tag to the wing name
 -->
@@ -17,33 +19,48 @@ Given the commander of a wing,
                 <!-- Supplied commander is null. Nothing to do. -->
                 <resume label="return"/>
             </do_if>
-            <!--
-            <show_help custom="'Let us rename.'" position="1" duration="3s" />
-            -->
 
-            <!-- Rename Wings. Based on code by kspn at Mod Forum: https://forum.egosoft.com/viewtopic.php?f=181&t=410087&start=15#p4810686 -->
-            <set_value name="$civFleet_CmdTagPairs" exact="global.$civFleet_CmdTagPairs" />
+            <!-- Confirm the Dictionary's existence -->
+            <do_if value="not (global.$civFleets_FleetIdMapping)">
+                <set_value name="global.$civFleets_FleetIdMapping" exact="[]" />
+            </do_if>
+            <!-- Confirm the counter's existence -->
+            <do_if value="not (global.$civFleet_CurrentMaxWingID?)">
+                <set_value name="global.$civFleet_CurrentMaxWingID" exact="0" />
+            </do_if>
+            <!-- Confirm that the wing commander is a known civilian fleet leader -->
+            <set_value name="$selectedID" exact="-1" />
+            <do_all exact="global.$civFleets_FleetIdMapping.count" counter="$i">
+                <set_value name="$currentMapping" exact="global.$civFleets_FleetIdMapping.{$i}" />
+                <do_if value="$wingCommander == $currentMapping.{1}">
+                    <set_value name="$selectedID" exact="$currentMapping.{2}" />
+                    <break />
+                </do_if>
+            </do_all>
+            <do_if value="$selectedID == -1">
+                <!-- Brand-new civilian fleet! Getting a new ID here. -->
+                <set_value name="global.$civFleet_WingID" exact="global.$civFleet_WingID + 1" />
+                <set_value name="$selectedID" exact="global.$civFleet_WingID" />
+                <append_to_list name="global.$civFleets_FleetIdMapping" exact="[$wingCommander, $selectedID]" />
+            </do_if>
 
-            <!-- Remove existing tags, and determine the correct tag to append -->
-            <substitute_text source="$wingCommander.wing.name" text="$originalWingName">
-                <replace string="' %1'.[$civFleet_CmdTagPairs.{1}.{1}]" with="''" />
+            <!-- Set the correct name -->
+            <substitute_text source="{221024, 1}" text="$cleanName">
+                <replace string="'$ID$'" with="$selectedID" />
             </substitute_text>
+
+            <!-- Determine civilian fleet appending tag -->
+            <set_value name="$civFleet_CmdTagPairs" exact="global.$civFleet_CmdTagPairs" />
             <set_value name="$appendingWingName" exact="''" />
             <do_all exact="$civFleet_CmdTagPairs.count" counter="$i">
-                <!-- Repeatedly extract the original wing name -->
-                <!-- Final result when exiting loop: a string of the original "Wing XX" format. -->
-                <substitute_text text="$originalWingName">
-                    <replace string="' %1'.[$civFleet_CmdTagPairs.{$i}.{1}]" with="''" />
-                </substitute_text>
-
                 <do_if value="($wingCommander.defaultorder.id == $civFleet_CmdTagPairs.{$i}.{1})">
                     <set_value name="$appendingWingName" exact="' %1'.[$civFleet_CmdTagPairs.{$i}.{2}]" />
-                    <!-- Not breaking, such that commands down the list can also be checked. -->
+                    <break/>
                 </do_if>
             </do_all>
             
             <!-- Actually setting the new wing name -->
-            <set_object_wing_name object="$wingCommander" name="'%1%2'.[$originalWingName, $appendingWingName]" />
+            <set_object_wing_name object="$wingCommander" name="'%1%2'.[$cleanName, $appendingWingName]" />
 
             <label name="return"/>
         </actions>

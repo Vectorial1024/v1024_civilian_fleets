@@ -43,8 +43,10 @@ function V1024CF_CivilianAssignment(menu)
             ]]--
 
             --menu.insertInteractionContent("selected_assignments", { type = actiontype, text =  "[" .. ReadText(1001, 7814) .. "] " .. ReadText(20208, 40303), text2 = Helper.convertColorToText(menu.holomapcolor.playercolor) .. ((menu.numassignableships == 1) and ReadText(1001, 7851) or string.format(ReadText(1001, 7801), menu.numassignableships)), script = function () menu.buttonAssignCommander("defence") end })
-            menu.insertInteractionContent("selected_assignments", { type = actiontype, text = "Form/join trading fleet", text2 = Helper.convertColorToText(menu.holomapcolor.playercolor) .. ((menu.numassignableships == 1) and ReadText(1001, 7851) or string.format(ReadText(1001, 7801), menu.numassignableships)), script = function () menu.buttonAssignCommander("trade") end, active = enableTradingFleet })
-            menu.insertInteractionContent("selected_assignments", { type = actiontype, text = "Form/join mining fleet", text2 = Helper.convertColorToText(menu.holomapcolor.playercolor) .. ((menu.numassignableships == 1) and ReadText(1001, 7851) or string.format(ReadText(1001, 7801), menu.numassignableships)), script = function () menu.buttonAssignCommander("mining") end, active = enableMiningFleet })
+            -- Form/join trading fleet
+            menu.insertInteractionContent("selected_assignments", { type = actiontype, text = ReadText(221024, 1000), text2 = Helper.convertColorToText(menu.holomapcolor.playercolor) .. ((menu.numassignableships == 1) and ReadText(1001, 7851) or string.format(ReadText(1001, 7801), menu.numassignableships)), script = function () menu.buttonAssignCommander("trade") end, active = enableTradingFleet })
+            -- Form/join mining fleet
+            menu.insertInteractionContent("selected_assignments", { type = actiontype, text = ReadText(221024, 2000), text2 = Helper.convertColorToText(menu.holomapcolor.playercolor) .. ((menu.numassignableships == 1) and ReadText(1001, 7851) or string.format(ReadText(1001, 7801), menu.numassignableships)), script = function () menu.buttonAssignCommander("mining") end, active = enableMiningFleet })
             --menu.insertInteractionContent("selected_assignments", { type = actiontype, text = "Form/join mining fleet", text2 = tostring(commanderCanMine) .. " " .. tostring(selectedMiningShips), script = function () menu.buttonAssignCommander("mining") end, active = enableMiningFleet })
         end
 	end

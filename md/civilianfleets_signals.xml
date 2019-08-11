@@ -88,10 +88,18 @@
                             <set_value name="$combinedSkill" exact="($fromShip.combinedskill + $toShip.combinedskill) / 2"/>
                         </do_else>
 
+                        <!-- Fixing the ware basket for Sector AutoMine: weak typing hides the difference between arrays and objects. -->
+                        <set_value name="$wareBasket" exact="$fromShip_DefaultOrder.$warebasket" />
+                        <do_if value="not @$wareBasket.count">
+                            <!-- .count cannot be accessed, meaning that this is an object. -->
+                            <!-- "Cast" it back to an array with 1 objects. -->
+                            <set_value name="$wareBasket" exact="[$wareBasket]"/>
+                        </do_if>
+
                         <create_order object="$toShip" id="'MiningRoutine'" default="true">
                             <!-- In v2.5, only maxbuy and maxsell can be modified by the user. -->
                             <!-- Hence, configuring minbuy and minsell becomes meaningless. -->
-                            <param name="warebasket" value="$fromShip_DefaultOrder.$warebasket" />
+                            <param name="warebasket" value="$wareBasket" />
                             <param name="range" value="$fromShip_DefaultOrder.range" />
                             <param name="minbuy" value="$minBuy" />
                             <param name="minsell" value="$minSell" />
