@@ -10,7 +10,10 @@ This script uses $thisship instead of $object, to account for the cases where
 Betty docks for the player via Auto-Pilot.
 -->
 <diff>
-    <add sel="/aiscript/attention[@min='unknown']/actions/set_command[@command='command.dockat']" pos="after">
+    <!-- Changing to the init block so it should be more save-compatible. -->
+    <!-- /aiscript/attention[@min='unknown']/actions/set_command[@command='command.dockat'] ; pos=after -->
+    <!-- /aiscript/init  -->
+    <add sel="/aiscript/init">
         <!-- There are currently two ways of syncing. -->
         <!-- 1. Commander docks and broadcasts (maybe-updated) orders to subordinates (confirming that the TradeRoutine order is doable (assuming no playr intervention)) -->
         <!-- 2. Subordinate docks and obtains (maybe-updated) orders from commander (during usual trading, when the commander probably has not docked yet to execute [1].) -->
@@ -37,7 +40,7 @@ Betty docks for the player via Auto-Pilot.
                 </do_if>
             </do_if>
             <!-- Check condition 1: Commander-ship -->
-            <do_if value="$thisship.subordinates.count">
+            <do_if value="$thisship.subordinates.count and $thisship.defaultorder != null">
                 <!-- The original mod specifically mentioned allowing middle-commanders to lead civilian fleets. -->
                 <do_all exact="$civFleet_CmdTagPairs.count" counter="$i">
                     <!-- Determine civilian fleet commander -->
