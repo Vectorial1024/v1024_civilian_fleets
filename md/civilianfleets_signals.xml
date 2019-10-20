@@ -277,6 +277,86 @@ You gotta pick the variables back up after usage!
                         <remove_value name="$maxBuy" />
                         <remove_value name="$maxSell" />
                     </do_elseif>
+                    <do_elseif value="$fromShip_DefaultOrder.id == 'DistriMule'">
+                      <!-- Mod Mules & Warehouses: Distribution Mule behavior -->
+                      <do_if value="$haveSameDefaultOrder">
+                        <edit_order_param order="$toShip_DefaultOrder" param="'sourceStation'" value="$fromShip_DefaultOrder.$sourceStation" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'minStorage'" value="$fromShip_DefaultOrder.$minStorage" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'staticStorage'" value="$fromShip_DefaultOrder.$staticStorage" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'maxStorage'" value="$fromShip_DefaultOrder.$maxStorage" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'specialWareBasket'" value="$fromShip_DefaultOrder.$specialWareBasket" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'destList'" value="$fromShip_DefaultOrder.$destList" />
+                      </do_if>
+                      <do_else>
+                        <create_order object="$toShip" id="'DistriMule'" default="true">
+                          <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />								
+                          <param name="minStorage" value="$fromShip_DefaultOrder.$minStorage" />								
+                          <param name="staticStorage" value="$fromShip_DefaultOrder.$staticStorage" />								
+                          <param name="maxStorage" value="$fromShip_DefaultOrder.$maxStorage" />								
+                          <param name="specialWareBasket" value="$fromShip_DefaultOrder.$specialWareBasket" />								
+                          <param name="destList" value="$fromShip_DefaultOrder.$destList" />								
+                        </create_order>
+                      </do_else>
+                    </do_elseif>
+                    <do_elseif value="$fromShip_DefaultOrder.id == 'StationMule'">
+                      <!-- Mod Mules & Warehouses: Station Mule behavior -->						
+                      <do_if value="$haveSameDefaultOrder">
+                        <edit_order_param order="$toShip_DefaultOrder" param="'sourceStation'" value="$fromShip_DefaultOrder.$sourceStation" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'targetStation'" value="$fromShip_DefaultOrder.$targetStation" />
+                        <!-- Making this false because otherwise the fleet gets disbanded if the commander is assigned to source. -->
+                        <edit_order_param order="$toShip_DefaultOrder" param="'assignSrc'" value="false" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'incEgry'" value="$fromShip_DefaultOrder.$incEgry" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'incFood'" value="$fromShip_DefaultOrder.$incFood" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'supplyFirst'" value="$fromShip_DefaultOrder.$supplyFirst" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'drugFree'" value="$fromShip_DefaultOrder.$drugFree" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'drugMule'" value="$fromShip_DefaultOrder.$drugMule" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'twoWay'" value="$fromShip_DefaultOrder.$twoWay" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'twoWaySupplyFirst'" value="$fromShip_DefaultOrder.$twoWaySupplyFirst" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'forbidTradeAll'" value="$fromShip_DefaultOrder.$forbidTradeAll" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'allowLowVol'" value="$fromShip_DefaultOrder.$allowLowVol" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'allowCreateTrade'" value="$fromShip_DefaultOrder.$allowCreateTrade" />
+                      </do_if>
+                      <do_else>
+                        <create_order object="$toShip" id="'StationMule'" default="true">
+                          <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />
+                          <param name="targetStation" value="$fromShip_DefaultOrder.$targetStation" />
+                          <!-- Making this false because otherwise the fleet gets disbanded if the commander is assigned to source. -->
+                          <param name="assignSrc" value="false" />
+                          <param name="incEgry" value="$fromShip_DefaultOrder.$incEgry" />
+                          <param name="incFood" value="$fromShip_DefaultOrder.$incFood" />
+                          <param name="supplyFirst" value="$fromShip_DefaultOrder.$supplyFirst" />
+                          <param name="drugFree" value="$fromShip_DefaultOrder.$drugFree" />
+                          <param name="drugMule" value="$fromShip_DefaultOrder.$drugMule" />
+                          <param name="twoWay" value="$fromShip_DefaultOrder.$twoWay" />
+                          <param name="twoWaySupplyFirst" value="$fromShip_DefaultOrder.$twoWaySupplyFirst" />
+                          <param name="forbidTradeAll" value="$fromShip_DefaultOrder.$forbidTradeAll" />
+                          <param name="allowLowVol" value="$fromShip_DefaultOrder.$allowLowVol" />
+                          <param name="allowCreateTrade" value="$fromShip_DefaultOrder.$allowCreateTrade" />
+                        </create_order>
+                        <set_order_syncpoint_reached order="$toShip.order"/>
+                      </do_else>
+                    </do_elseif>
+                    <do_elseif value="$fromShip_DefaultOrder.id == 'TravelMule'">
+                      <!-- Mod Mules & Warehouses: Traveling Mule behavior -->
+                      <do_if value="$haveSameDefaultOrder">
+                        <edit_order_param order="$toShip_DefaultOrder" param="'sourceStation'" value="$fromShip_DefaultOrder.$sourceStation" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'tradeWithBig'" value="$fromShip_DefaultOrder.$tradeWithBig" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'tradeWithAll'" value="$fromShip_DefaultOrder.$tradeWithAll" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'maxDist'" value="$fromShip_DefaultOrder.$maxDist" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'specialWareBasket'" value="$fromShip_DefaultOrder.$specialWareBasket" />
+                        <edit_order_param order="$toShip_DefaultOrder" param="'destList'" value="$fromShip_DefaultOrder.$destList" />
+                      </do_if>
+                      <do_else>
+                        <create_order object="$toShip" id="'DistriMule'" default="true">
+                          <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />								
+                          <param name="tradeWithBig" value="$fromShip_DefaultOrder.$tradeWithBig" />								
+                          <param name="tradeWithAll" value="$fromShip_DefaultOrder.$tradeWithAll" />								
+                          <param name="maxDist" value="$fromShip_DefaultOrder.$maxDist" />								
+                          <param name="specialWareBasket" value="$fromShip_DefaultOrder.$specialWareBasket" />								
+                          <param name="destList" value="$fromShip_DefaultOrder.$destList" />								
+                        </create_order>
+                      </do_else>
+                    </do_elseif>
                 </do_elseif>
                 <do_else>
                     <debug_text text="'Assignment unrecognized by CivFleet. Cancelling sync from ' + $fromShip.knownname + ' (' + $fromShip + ') to ' + $toShip.knownname + ' (' + $toShip + ') via assignment ' + $toShip.assignment + '.'" />
