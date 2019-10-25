@@ -3,11 +3,14 @@
 <language id="44">
     <page id="221024" title="CivFleetsUI" descr="Text needed by this mod for GUI" voice="no">
         <!-- DO NOT CHANGE ITEM OF ID 1 -->
-        <t id="1">Cvilian $ID$</t>
+        <t id="1">Civilian $ID$</t>
         <t id="1000">Form/join trading fleet</t>
         <t id="1001">Trading Fleet</t>
         <t id="1002">Distribution Fleet</t>
         <t id="1101">TaterTrade Fleet</t>
+        <t id="1201">Distribution Mule Fleet</t>
+        <t id="1202">Station Mule Fleet</t>
+        <t id="1203">Travel Mule Fleet</t>
         <t id="2000">Form/join mining fleet</t>
         <t id="2001">Mining Fleet</t>
     </page>
