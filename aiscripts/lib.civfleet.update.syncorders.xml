@@ -40,7 +40,7 @@ The type of order to sync depends on the assignment.
                 <!-- Even though there are several different versions of mining scripts, they all have the same list of parameters. -->
                 <run_script name="'lib.civfleet.check.orderismining'" result="$isMiningOrder">
                     <param name="order" value="$fromShip_DefaultOrder" />
-                <run_script>
+                </run_script>
                 <do_if value="$isMiningOrder">
                     <!-- First obtain the MAX parameters, cap them to valid values. -->
                     <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
