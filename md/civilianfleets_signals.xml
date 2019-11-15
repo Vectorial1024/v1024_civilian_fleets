@@ -103,29 +103,18 @@ You gotta pick the variables back up after usage!
                             <set_value name="$wareBasket" exact="[$wareBasket]"/>
                         </do_if>
 
-                        <do_if value="$haveSameDefaultOrder">
-                            <edit_order_param order="$toShip_DefaultOrder" param="'warebasket'" value="$wareBasket" />
-                            <edit_order_param order="$toShip_DefaultOrder" param="'range'" value="$fromShip_DefaultOrder.$range" />
-                            <edit_order_param order="$toShip_DefaultOrder" param="'minbuy'" value="$minBuy" />
-                            <edit_order_param order="$toShip_DefaultOrder" param="'minsell'" value="$minSell" />
-                            <edit_order_param order="$toShip_DefaultOrder" param="'maxbuy'" value="$maxBuy" />
-                            <edit_order_param order="$toShip_DefaultOrder" param="'maxsell'" value="$maxSell" />
-                            <edit_order_param order="$toShip_DefaultOrder" param="'effectiveskill'" value="$combinedSkill" />
-                        </do_if>
-                        <do_else>
-                            <create_order object="$toShip" id="'MiningRoutine'" default="true">
-                                <!-- In v2.5, only maxbuy and maxsell can be modified by the user. -->
-                                <!-- Hence, configuring minbuy and minsell becomes meaningless. -->
-                                <param name="warebasket" value="$wareBasket" />
-                                <param name="range" value="$fromShip_DefaultOrder.$range" />
-                                <param name="minbuy" value="$minBuy" />
-                                <param name="minsell" value="$minSell" />
-                                <param name="maxbuy" value="$maxBuy" />
-                                <param name="maxsell" value="$maxSell" />
-                                <param name="effectiveskill" value="$combinedSkill" />
-                            </create_order>
-                            <set_order_syncpoint_reached order="$toShip.order"/>
-                        </do_else>
+                        <create_order object="$toShip" id="'MiningRoutine'" default="true">
+                            <!-- In v2.5, only maxbuy and maxsell can be modified by the user. -->
+                            <!-- Hence, configuring minbuy and minsell becomes meaningless. -->
+                            <param name="warebasket" value="$wareBasket" />
+                            <param name="range" value="$fromShip_DefaultOrder.$range" />
+                            <param name="minbuy" value="$minBuy" />
+                            <param name="minsell" value="$minSell" />
+                            <param name="maxbuy" value="$maxBuy" />
+                            <param name="maxsell" value="$maxSell" />
+                            <param name="effectiveskill" value="$combinedSkill" />
+                        </create_order>
+                        <set_order_syncpoint_reached order="$toShip.order"/>
 
                         <!-- Out of scope variable removal -->
                         <remove_value name="$minBuy" />
@@ -181,6 +170,8 @@ You gotta pick the variables back up after usage!
                     </do_elseif>
                     <do_elseif value="$fromShip_DefaultOrder.id == 'TaterTrade'">
                         <!-- Mod TaterTrade: TaterTrade behavior -->
+                        <!-- TaterTrade has their own "assignment skill level"; updating the variable to reflect that. -->
+                        <set_value name="$assignmentSkillLevel" exact="[$fromShip.pilot.skill.management, $toShip.pilot.skill.piloting].max * 2" />
                         <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
                         <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxsell, $assignmentSkillLevel].min" />
 
@@ -347,7 +338,7 @@ You gotta pick the variables back up after usage!
                         <edit_order_param order="$toShip_DefaultOrder" param="'destList'" value="$fromShip_DefaultOrder.$destList" />
                       </do_if>
                       <do_else>
-                        <create_order object="$toShip" id="'DistriMule'" default="true">
+                        <create_order object="$toShip" id="'TravelMule'" default="true">
                           <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />								
                           <param name="tradeWithBig" value="$fromShip_DefaultOrder.$tradeWithBig" />								
                           <param name="tradeWithAll" value="$fromShip_DefaultOrder.$tradeWithAll" />								
