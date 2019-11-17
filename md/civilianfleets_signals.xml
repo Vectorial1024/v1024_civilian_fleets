@@ -49,6 +49,12 @@ You gotta pick the variables back up after usage!
                     <remove_value name="$toShip" />
                     <cancel_cue cue="this" />
                 </do_if>
+                <do_if value="not $toShip.isclass.ship">
+                    <show_help custom="'Target is not a ship! Improper action.'" position="1" duration="3s" chance="0" />
+                    <remove_value name="$fromShip" />
+                    <remove_value name="$toShip" />
+                    <cancel_cue cue="this" />
+                </do_if>
 
                 <!--show_help custom="'Syncing orders from ' + $fromShip.knownname + ' to ' + $toShip.knownname" position="1" duration="4s" /-->
 
@@ -97,6 +103,12 @@ You gotta pick the variables back up after usage!
 
                     <do_if value="$isMiningOrder">
                         <!-- Vanilla * AutoMine behavior -->
+
+                        <!-- We first need to check for Expert AutoMine: they are using yet another way of calculating the skill level -->
+                        <do_if value="$fromShip_DefaultOrder.id == 'MiningRoutine_Expert'">
+                            <set_value name="$assignmentSkillLevel" exact="[$fromShip.pilot.skill.management, $toShip.pilot.skill.piloting].max" />
+                        </do_if>
+
                         <!-- First obtain the MAX parameters, cap them to valid values. -->
                         <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
                         <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxsell, $assignmentSkillLevel].min" />
@@ -153,7 +165,7 @@ You gotta pick the variables back up after usage!
                         <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxSell, $assignmentSkillLevel].min" />
                         <set_value name="$maxServe" exact="[$fromShip_DefaultOrder.$maxServe, $assignmentSkillLevel].min" />
 
-                        <create_order object="$toShip" id="'RandomMine'" default="true">
+                        <create_order object="$toShip" id="'RandomMine'" default="true" chance="0">
                             <!-- Section 1: basic parameters -->
                             <param name="supplier" value="$fromShip_DefaultOrder.$supplier" />
                             <param name="freeMiner" value="$fromShip_DefaultOrder.$freeMiner" />
@@ -332,7 +344,7 @@ You gotta pick the variables back up after usage!
                         </create_order>
                         <set_order_syncpoint_reached order="$toShip.order"/>
                     </do_elseif>
-                    <do_elseif value="$fromShip_DefaultOrder.id == 'RandomTrade'">
+                    <do_elseif value="$fromShip_DefaultOrder.id == 'RandomTrade'" chance="0">
                         <!-- RandomTrade fleet -->
                         <!-- RandomTrade also has their own "assignment skill level"; updating the variable to reflect that. -->
                         <set_value name="$assignmentSkillLevel" exact="[$fromShip.pilot.skill.management, $toShip.pilot.skill.piloting].max * 2" />
