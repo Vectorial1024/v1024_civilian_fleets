@@ -104,7 +104,7 @@ You gotta pick the variables back up after usage!
                         <!-- Then obtain and cap the MIN parameters -->
                         <set_value name="$minBuy" exact="[$fromShip_DefaultOrder.$minbuy, $maxBuy].min" />
                         <set_value name="$minSell" exact="[$fromShip_DefaultOrder.$minsell, $maxSell].min" />
-                        
+
                         <!-- As to the 'effective skill' parameter... -->
                         <!-- ge: greater than or equal to -->
                         <set_value name="$combinedSkill" />
@@ -155,29 +155,29 @@ You gotta pick the variables back up after usage!
 
                         <create_order object="$toShip" id="'RandomMine'" default="true">
                             <!-- Section 1: basic parameters -->
-                            <param name="supplier" value="$fromShip_DefaultOrder.$supplier" />								
-                            <param name="freeMiner" value="$fromShip_DefaultOrder.$freeMiner" />								
-                            <param name="home" value="$fromShip_DefaultOrder.$home" />								
-                            <param name="homeBound" value="$fromShip_DefaultOrder.$homeBound" />								
-                            <param name="maxMine" value="$maxBuy" />				
-                            <param name="maxSell" value="$maxSell" />	
-                            <param name="maxServe" value="$maxServe" />	
+                            <param name="supplier" value="$fromShip_DefaultOrder.$supplier" />
+                            <param name="freeMiner" value="$fromShip_DefaultOrder.$freeMiner" />
+                            <param name="home" value="$fromShip_DefaultOrder.$home" />
+                            <param name="homeBound" value="$fromShip_DefaultOrder.$homeBound" />
+                            <param name="maxMine" value="$maxBuy" />
+                            <param name="maxSell" value="$maxSell" />
+                            <param name="maxServe" value="$maxServe" />
                             <!-- Section 2: ware baskets -->
-                            <param name="wareBasket" value="$fromShip_DefaultOrder.$wareBasket" />	
+                            <param name="wareBasket" value="$fromShip_DefaultOrder.$wareBasket" />
                             <param name="allWares" value="$fromShip_DefaultOrder.$allWares" />
                             <!-- Section 3: stock levels and profit levels -->
                             <param name="stockRatioToMine" value="$fromShip_DefaultOrder.$stockRatioToMine" />
                             <!-- Section 4: faction ban-lists -->
-                            <param name="allowAllFactions" value="$fromShip_DefaultOrder.$allowAllFactions" />								
-                            <param name="allowPlayer" value="$fromShip_DefaultOrder.$allowPlayer" />								
-                            <param name="allowArgon" value="$fromShip_DefaultOrder.$allowArgon" />								
-                            <param name="allowAntigone" value="$fromShip_DefaultOrder.$allowAntigone" />								
-                            <param name="allowTeladi" value="$fromShip_DefaultOrder.$allowTeladi" />								
-                            <param name="allowMinistry" value="$fromShip_DefaultOrder.$allowMinistry" />		
-                            <param name="allowParanid" value="$fromShip_DefaultOrder.$allowParanid" />								
-                            <param name="allowHolyOrder" value="$fromShip_DefaultOrder.$allowHolyOrder" />								
-                            <param name="allowAlliance" value="$fromShip_DefaultOrder.$allowAlliance" />								
-                            <param name="allowHatikvah" value="$fromShip_DefaultOrder.$allowHatikvah" />								
+                            <param name="allowAllFactions" value="$fromShip_DefaultOrder.$allowAllFactions" />
+                            <param name="allowPlayer" value="$fromShip_DefaultOrder.$allowPlayer" />
+                            <param name="allowArgon" value="$fromShip_DefaultOrder.$allowArgon" />
+                            <param name="allowAntigone" value="$fromShip_DefaultOrder.$allowAntigone" />
+                            <param name="allowTeladi" value="$fromShip_DefaultOrder.$allowTeladi" />
+                            <param name="allowMinistry" value="$fromShip_DefaultOrder.$allowMinistry" />
+                            <param name="allowParanid" value="$fromShip_DefaultOrder.$allowParanid" />
+                            <param name="allowHolyOrder" value="$fromShip_DefaultOrder.$allowHolyOrder" />
+                            <param name="allowAlliance" value="$fromShip_DefaultOrder.$allowAlliance" />
+                            <param name="allowHatikvah" value="$fromShip_DefaultOrder.$allowHatikvah" />
                             <param name="allowScaleplate" value="$fromShip_DefaultOrder.$allowScaleplate" />
                         </create_order>
                         <set_order_syncpoint_reached order="$toShip.order"/>
@@ -291,9 +291,9 @@ You gotta pick the variables back up after usage!
                     <do_elseif value="$fromShip_DefaultOrder.id == 'DistriMule'">
                         <!-- Mod Mules & Warehouses: Distribution Mule behavior -->
                         <create_order object="$toShip" id="'DistriMule'" default="true">
-                            <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />								
-                            <param name="minStorage" value="$fromShip_DefaultOrder.$minStorage" />				
-                            <param name="staticStorage" value="$fromShip_DefaultOrder.$staticStorage" />			
+                            <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />
+                            <param name="minStorage" value="$fromShip_DefaultOrder.$minStorage" />
+                            <param name="staticStorage" value="$fromShip_DefaultOrder.$staticStorage" />
                             <param name="maxStorage" value="$fromShip_DefaultOrder.$maxStorage" />
                             <param name="specialWareBasket" value="$fromShip_DefaultOrder.$specialWareBasket" />
                             <param name="destList" value="$fromShip_DefaultOrder.$destList" />
@@ -301,7 +301,7 @@ You gotta pick the variables back up after usage!
                         <set_order_syncpoint_reached order="$toShip.order"/>
                     </do_elseif>
                     <do_elseif value="$fromShip_DefaultOrder.id == 'StationMule'">
-                        <!-- Mod Mules & Warehouses: Station Mule behavior -->	
+                        <!-- Mod Mules & Warehouses: Station Mule behavior -->
                         <create_order object="$toShip" id="'StationMule'" default="true">
                             <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />
                             <param name="targetStation" value="$fromShip_DefaultOrder.$targetStation" />
@@ -323,12 +323,12 @@ You gotta pick the variables back up after usage!
                     <do_elseif value="$fromShip_DefaultOrder.id == 'TravelMule'">
                         <!-- Mod Mules & Warehouses: Traveling Mule behavior -->
                         <create_order object="$toShip" id="'TravelMule'" default="true">
-                            <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />								
-                            <param name="tradeWithBig" value="$fromShip_DefaultOrder.$tradeWithBig" />								
-                            <param name="tradeWithAll" value="$fromShip_DefaultOrder.$tradeWithAll" />								
-                            <param name="maxDist" value="$fromShip_DefaultOrder.$maxDist" />								
-                            <param name="specialWareBasket" value="$fromShip_DefaultOrder.$specialWareBasket" />								
-                            <param name="destList" value="$fromShip_DefaultOrder.$destList" />								
+                            <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />
+                            <param name="tradeWithBig" value="$fromShip_DefaultOrder.$tradeWithBig" />
+                            <param name="tradeWithAll" value="$fromShip_DefaultOrder.$tradeWithAll" />
+                            <param name="maxDist" value="$fromShip_DefaultOrder.$maxDist" />
+                            <param name="specialWareBasket" value="$fromShip_DefaultOrder.$specialWareBasket" />
+                            <param name="destList" value="$fromShip_DefaultOrder.$destList" />
                         </create_order>
                         <set_order_syncpoint_reached order="$toShip.order"/>
                     </do_elseif>
@@ -341,39 +341,39 @@ You gotta pick the variables back up after usage!
 
                         <create_order object="$toShip" id="'RandomTrade'" default="true">
                             <!-- Section 1: basic parameters -->
-                            <param name="home" value="$fromShip_DefaultOrder.$home" />								
-                            <param name="homeBound" value="$fromShip_DefaultOrder.$homeBound" />								
-                            <param name="maxBuy" value="$maxBuy" />				
-                            <param name="maxSell" value="$maxSell" />								
-                            <param name="bypass" value="$fromShip_DefaultOrder.$bypass" />								
-                            <param name="stationMode" value="$fromShip_DefaultOrder.$stationMode" />		
-                            <param name="forceOwn" value="$fromShip_DefaultOrder.$forceOwn" />		
+                            <param name="home" value="$fromShip_DefaultOrder.$home" />
+                            <param name="homeBound" value="$fromShip_DefaultOrder.$homeBound" />
+                            <param name="maxBuy" value="$maxBuy" />
+                            <param name="maxSell" value="$maxSell" />
+                            <param name="bypass" value="$fromShip_DefaultOrder.$bypass" />
+                            <param name="stationMode" value="$fromShip_DefaultOrder.$stationMode" />
+                            <param name="forceOwn" value="$fromShip_DefaultOrder.$forceOwn" />
                             <!-- Section 2: ware baskets -->
-                            <param name="wareBasket" value="$fromShip_DefaultOrder.$wareBasket" />								
-                            <param name="usePresets" value="$fromShip_DefaultOrder.$usePresets" />								
-                            <param name="allWares" value="$fromShip_DefaultOrder.$allWares" />								
-                            <param name="legalWares" value="$fromShip_DefaultOrder.$legalWares" />								
-                            <param name="illegalWares" value="$fromShip_DefaultOrder.$illegalWares" />								
-                            <param name="shipBuildingWares" value="$fromShip_DefaultOrder.$shipBuildingWares" />		
-                            <param name="stationBuildingWares" value="$fromShip_DefaultOrder.$stationBuildingWares" />								
-                            <param name="hightechWares" value="$fromShip_DefaultOrder.$hightechWares" />								
-                            <param name="refinedWares" value="$fromShip_DefaultOrder.$refinedWares" />								
+                            <param name="wareBasket" value="$fromShip_DefaultOrder.$wareBasket" />
+                            <param name="usePresets" value="$fromShip_DefaultOrder.$usePresets" />
+                            <param name="allWares" value="$fromShip_DefaultOrder.$allWares" />
+                            <param name="legalWares" value="$fromShip_DefaultOrder.$legalWares" />
+                            <param name="illegalWares" value="$fromShip_DefaultOrder.$illegalWares" />
+                            <param name="shipBuildingWares" value="$fromShip_DefaultOrder.$shipBuildingWares" />
+                            <param name="stationBuildingWares" value="$fromShip_DefaultOrder.$stationBuildingWares" />
+                            <param name="hightechWares" value="$fromShip_DefaultOrder.$hightechWares" />
+                            <param name="refinedWares" value="$fromShip_DefaultOrder.$refinedWares" />
                             <param name="bioWares" value="$fromShip_DefaultOrder.$bioWares" />
                             <!-- Section 3: stock levels and profit levels -->
-                            <param name="profitScale" value="$fromShip_DefaultOrder.$profitScale" />								
-                            <param name="stockRatioToBuy" value="$fromShip_DefaultOrder.$stockRatioToBuy" />								
+                            <param name="profitScale" value="$fromShip_DefaultOrder.$profitScale" />
+                            <param name="stockRatioToBuy" value="$fromShip_DefaultOrder.$stockRatioToBuy" />
                             <param name="stockRatioToSell" value="$fromShip_DefaultOrder.$stockRatioToSell" />
                             <!-- Section 4: faction ban-lists -->
-                            <param name="allowAllFactions" value="$fromShip_DefaultOrder.$allowAllFactions" />								
-                            <param name="allowPlayer" value="$fromShip_DefaultOrder.$allowPlayer" />								
-                            <param name="allowArgon" value="$fromShip_DefaultOrder.$allowArgon" />								
-                            <param name="allowAntigone" value="$fromShip_DefaultOrder.$allowAntigone" />								
-                            <param name="allowTeladi" value="$fromShip_DefaultOrder.$allowTeladi" />								
-                            <param name="allowMinistry" value="$fromShip_DefaultOrder.$allowMinistry" />		
-                            <param name="allowParanid" value="$fromShip_DefaultOrder.$allowParanid" />								
-                            <param name="allowHolyOrder" value="$fromShip_DefaultOrder.$allowHolyOrder" />								
-                            <param name="allowAlliance" value="$fromShip_DefaultOrder.$allowAlliance" />								
-                            <param name="allowHatikvah" value="$fromShip_DefaultOrder.$allowHatikvah" />								
+                            <param name="allowAllFactions" value="$fromShip_DefaultOrder.$allowAllFactions" />
+                            <param name="allowPlayer" value="$fromShip_DefaultOrder.$allowPlayer" />
+                            <param name="allowArgon" value="$fromShip_DefaultOrder.$allowArgon" />
+                            <param name="allowAntigone" value="$fromShip_DefaultOrder.$allowAntigone" />
+                            <param name="allowTeladi" value="$fromShip_DefaultOrder.$allowTeladi" />
+                            <param name="allowMinistry" value="$fromShip_DefaultOrder.$allowMinistry" />
+                            <param name="allowParanid" value="$fromShip_DefaultOrder.$allowParanid" />
+                            <param name="allowHolyOrder" value="$fromShip_DefaultOrder.$allowHolyOrder" />
+                            <param name="allowAlliance" value="$fromShip_DefaultOrder.$allowAlliance" />
+                            <param name="allowHatikvah" value="$fromShip_DefaultOrder.$allowHatikvah" />
                             <param name="allowScaleplate" value="$fromShip_DefaultOrder.$allowScaleplate" />
                         </create_order>
                         <set_order_syncpoint_reached order="$toShip.order"/>
