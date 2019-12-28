@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <mdscript name="V1024_CivilianFleets" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
   <cues>
+    <cue name="VeryEarlyInit" version="2">
+      <conditions>
+        <check_any>
+          <event_game_loaded/>
+          <event_game_started/>
+        </check_any>
+      </conditions>
+      <actions>
+        <set_value name="global.$v1024_flags_hasRightClickAPI" exact="false" />
+      </actions>
+    </cue>
     <cue name="Register_CivilianFleets_RightClickMenu" version="2">
       <conditions>
         <event_cue_completed cue="md.Right_click_api.RegisterRight_click_api"/>
@@ -32,17 +43,20 @@
         <show_help position="1" duration="6s" custom="global.$v1024_flags_hasRightClickAPI?"/>
         <show_help position="1" duration="6s" custom="global.$v1024_flags_hasRightClickAPI"/>
         -->
-        <do_if value="(global.$v1024_flags_hasRightClickAPI)?">
+        <do_if value="not global.$v1024_flags_hasRightClickAPI">
           <!-- If the game is starting, but still no Right Click API detected: assume no such mod is loaded, and activate fallback mode.-->
-          <set_value name="global.$v1024_flags_hasRightClickAPI" value="false" />
           
           <show_help position="1" duration="6s" custom="'V1024-CF: Civilian Fleets failed to detect Right Click API. Fallback Mode engaged.'"/>
           <show_help position="1" duration="6s" custom="'V1024-CF: Use [(Default Role) Defend] to form/join civilian fleets instead.'"/>
-          <show_help position="1" duration="6s" custom="'V1024-CF: Pre-existing civilian fleets will still function normally.'"/>
-          <show_help position="1" duration="6s" custom="'V1024-CF: Mining ships will no longer be able to form/join trading fleets.'"/>
-          <show_help position="1" duration="6s" custom="'V1024-CF: That concludes the Fallback Mode announcement.'"/>
+          <show_help position="1" duration="6s" custom="'V1024-CF: Existing civilian fleets will still function normally.'"/>
+          <show_help position="1" duration="6s" custom="'V1024-CF: Fallback Mode changes some rules about civilian fleet forming/joining:'"/>
+          <show_help position="1" duration="6s" custom="'V1024-CF: Changed rule (1): Mining fleets can only accept ships with primary purpose = mine.'"/>
+          <show_help position="1" duration="6s" custom="'V1024-CF: Changed rule (2): Trading fleets can only accept ships with primary purpose = trade.'"/>
+          <show_help position="1" duration="6s" custom="'V1024-CF: This means, fight ships can no longer work for any civilian fleets.'"/>
+          <show_help position="1" duration="6s" custom="'V1024-CF: Of course, fight ships already working for existing civilian fleets are not affeected.'"/>
+          <show_help position="1" duration="6s" custom="'V1024-CF: This is the end of the Fallback Mode announcement.'"/>
         </do_if>
-        <show_help position="1" duration="3s" custom="'Right click API flag set to: ' + global.$v1024_flags_hasRightClickAPI"/>
+        <show_help position="1" duration="10s" custom="'Right click API flag set to: ' + global.$v1024_flags_hasRightClickAPI" chance="0"/>
 
         <!-- Safety -->
         <remove_value name="global.$civFleet_CmdTagPairs"/>

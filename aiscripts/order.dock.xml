@@ -54,7 +54,7 @@ Betty docks for the player via Auto-Pilot.
                             <set_value name="$currentSubAssignObj" exact="$currentSubordinate.assignment" />
                             <do_if value="$currentSubAssignObj == assignment.trade or $currentSubAssignObj == assignment.mining">
                                 <!-- Delegate to standardized static config method to ensure save-game compatibility. -->
-                                <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$thisship" param3="$allSubordinates.{$i}" />
+                                <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$thisship" param3="$currentSubordinate" />
                             </do_if>
                         </do_all>
 

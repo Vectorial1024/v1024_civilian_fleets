@@ -13,38 +13,17 @@ Do:
     <add sel="/aiscript[@name='lib.request.orders']/attention/actions/do_else/do_else" pos="before">
         <!-- At this point, definitely assigning to another ship, no need to double-check. -->
 
+        <!--
         <show_help position="1" duration="2s" custom="'Right click API status: ' + global.$v1024_flags_hasRightClickAPI"/>
+        <show_help position="1" duration="2s" custom="'Test 1 ' + (global.$v1024_flags_hasRightClickAPI == 0)"/>
+        <show_help position="1" duration="2s" custom="'Test 2 ' + (global.$v1024_flags_hasRightClickAPI == false)"/>
+        -->
         <!-- Case: Right Click API successfully loaded and assigning ships to civilian fleets -->
         <do_elseif value="$assignment == assignment.trade or $assignment == assignment.mining or (not global.$v1024_flags_hasRightClickAPI)">
-            <show_help position="1" duration="6s" custom="'Signalling the previous-made handler.'"/>
+            <show_help position="1" duration="6s" custom="'Signalling the previous-made handler.'" chance="0"/>
             <set_value name="$flag_v1024_civfleetformed" exact="true" comment="Actual value not important." />
             <!-- Delegate to standardized static config method to ensure save-game compatibility. -->
             <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$commander" param3="$object" />
-        </do_elseif>
-        <!-- Case: Right Click API failed to load but civilian fleets still wanted -->
-        <do_elseif value="not global.$v1024_flags_hasRightClickAPI" comment="See if the global flag is set">
-            <show_help position="1" duration="6s" custom="'Custom handler'"/>
-            <!-- Analyze: is it legitimate potential civ-fleet assignment? -->
-            <do_if value="$object.primarypurpose == purpose.mine and $commander.primarypurpose == purpose.mine">
-                <!-- Surrogate mining fleet assignment. -->
-                <set_object_commander object="$object" commander="$commander" assignment="assignment.mining"/>
-                <run_script name="'lib.request.orders'">
-                    <param name="object" value="$object"/>
-                </run_script>
-            </do_if>
-            <do_elseif value="$object.primarypurpose == purpose.trade and $commander.primarypurpose == purpose.trade">
-                <!-- Surrogate trading fleet assignment. -->
-                <set_object_commander object="$object" commander="$commander" assignment="assignment.trade"/>
-                <run_script name="'lib.request.orders'">
-                    <param name="object" value="$object"/>
-                </run_script>
-            </do_elseif>
-            <do_else>
-                <!-- Assignment failed. Use dumb-default order. -->
-                <create_order object="$object" id="'Follow'" default="true">
-                    <param name="target" value="$commander" />
-                </create_order>
-            </do_else>
         </do_elseif>
     </add>
 
