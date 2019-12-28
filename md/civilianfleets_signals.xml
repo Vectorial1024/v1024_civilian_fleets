@@ -96,7 +96,8 @@ You gotta pick the variables back up after usage!
                 <edit_order_param order="$toShip_DefaultOrder" param="'maxbuy'" value="$maxBuy" />
                 <edit_order_param order="$toShip_DefaultOrder" param="'maxsell'" value="$maxSell" />
                 -->
-                <do_if value="$toShip.assignment == assignment.mining">
+                <do_if value="$toShip.assignment == assignment.mining or (not global.$v1024_flags_hasRightClickAPI and $fromShip.primarypurpose == purpose.mining)">
+                    <show_help position="1" duration="1s" custom="'Mining! ' + $fromShip.name + ' -> ' + $toShip.name"/>
                     <!-- Even though there are several different versions of mining scripts, they all have the same list of parameters. -->
                     <set_value name="$inputOrder" exact="$fromShip_DefaultOrder" />
                     <include_actions ref="CheckOrderIsMining" comment="Returns $isMiningOrder, consumes $inputOrder; determines whether the given order is one of the several vanilla mining orders." />
@@ -157,7 +158,7 @@ You gotta pick the variables back up after usage!
                         <remove_value name="$maxSell" />
                         <remove_value name="$combinedSkill" />
                     </do_if>
-                    <do_elseif value="$fromShip_DefaultOrder.id == 'RandomMine'">
+                    <do_elseif value="$fromShip_DefaultOrder.id == 'RandomMine'" chance="0">
                         <!-- RandomMine fleet -->
                         <!-- RandomMine has their own "assignment skill level"; updating the variable to reflect that. -->
                         <set_value name="$assignmentSkillLevel" exact="$toShip.pilot.skill.piloting * 2" />
@@ -199,8 +200,16 @@ You gotta pick the variables back up after usage!
                         <remove_value name="$maxSell" />
                         <remove_value name="$maxServe" />
                     </do_elseif>
+                    <do_else>
+                        <!-- Fallback case: probably an incorrect assignment. -->
+                        <!-- The player is responsible for checking the correctness of assignments and make corrections. -->
+                        <create_order object="$object" id="'Follow'" default="true">
+                            <param name="target" value="$commander" />
+                        </create_order>
+                    </do_else>
                 </do_if>
-                <do_elseif value="$toShip.assignment == assignment.trade">
+                <do_elseif value="$toShip.assignment == assignment.trade or (not global.$v1024_flags_hasRightClickAPI)">
+                    <show_help position="1" duration="1s" custom="'Trading! ' + $fromShip.name + ' -> ' + $toShip.name"/>
                     <!-- Make sure the fromShip really is trading -->
                     <do_if value="$fromShip_DefaultOrder.id == 'TradeRoutine'">
                         <!-- Vanilla AutoTrade behavior -->
@@ -394,6 +403,13 @@ You gotta pick the variables back up after usage!
                         <remove_value name="$maxBuy" />
                         <remove_value name="$maxSell" />
                     </do_elseif>
+                    <do_else>
+                        <!-- Fallback case: probably an incorrect assignment. -->
+                        <!-- The player is responsible for checking the correctness of assignments and make corrections. -->
+                        <create_order object="$object" id="'Follow'" default="true">
+                            <param name="target" value="$commander" />
+                        </create_order>
+                    </do_else>
                 </do_elseif>
                 <do_else>
                     <debug_text text="'Assignment unrecognized by CivFleet. Cancelling sync from ' + $fromShip.knownname + ' (' + $fromShip + ') to ' + $toShip.knownname + ' (' + $toShip + ') via assignment ' + $toShip.assignment + '.'" />

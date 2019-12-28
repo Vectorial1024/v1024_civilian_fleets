@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <mdscript name="V1024_CivilianFleets" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
   <cues>
-    <cue name="Register_CivilianFleets_RightClickMenu" version="1">
+    <cue name="Register_CivilianFleets_RightClickMenu" version="2">
       <conditions>
         <event_cue_completed cue="md.Right_click_api.RegisterRight_click_api"/>
       </conditions>
@@ -10,20 +10,40 @@
         <raise_lua_event name="'RegisterAddon'" param="'extensions.v1024_civilian_fleets.civilian_fleets'"/>
       </actions>
     </cue>
-    <cue name="CivilianFleets_Feedback_Wanted">
+    <cue name="CivilianFleets_Feedback_Wanted" version="2">
       <conditions>
         <event_cue_completed cue="Register_CivilianFleets_RightClickMenu"/>
       </conditions>
       <actions>
         <reset_cue cue="Register_CivilianFleets_RightClickMenu"/>
         <reset_cue cue="CivilianFleets_Feedback_Wanted"/>
+
+        <!-- Fallback system detection flag -->
+        <set_value name="global.$v1024_flags_hasRightClickAPI" value="true" />
       </actions>
     </cue>
-    <cue name="CivilianFleets_SettingUp" instantiate="true">
+    <cue name="CivilianFleets_SettingUp" instantiate="true" version="2">
       <conditions>
         <event_cue_signalled cue="md.Setup.Start" />
       </conditions>
       <actions>
+        <!-- Civilian Fleets fallback mode notifications -->
+        <!--
+        <show_help position="1" duration="6s" custom="global.$v1024_flags_hasRightClickAPI?"/>
+        <show_help position="1" duration="6s" custom="global.$v1024_flags_hasRightClickAPI"/>
+        -->
+        <do_if value="(global.$v1024_flags_hasRightClickAPI)?">
+          <!-- If the game is starting, but still no Right Click API detected: assume no such mod is loaded, and activate fallback mode.-->
+          <set_value name="global.$v1024_flags_hasRightClickAPI" value="false" />
+          
+          <show_help position="1" duration="6s" custom="'V1024-CF: Civilian Fleets failed to detect Right Click API. Fallback Mode engaged.'"/>
+          <show_help position="1" duration="6s" custom="'V1024-CF: Use [(Default Role) Defend] to form/join civilian fleets instead.'"/>
+          <show_help position="1" duration="6s" custom="'V1024-CF: Pre-existing civilian fleets will still function normally.'"/>
+          <show_help position="1" duration="6s" custom="'V1024-CF: Mining ships will no longer be able to form/join trading fleets.'"/>
+          <show_help position="1" duration="6s" custom="'V1024-CF: That concludes the Fallback Mode announcement.'"/>
+        </do_if>
+        <show_help position="1" duration="3s" custom="'Right click API flag set to: ' + global.$v1024_flags_hasRightClickAPI"/>
+
         <!-- Safety -->
         <remove_value name="global.$civFleet_CmdTagPairs"/>
 
