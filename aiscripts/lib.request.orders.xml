@@ -12,8 +12,15 @@ Do:
 <diff>
     <add sel="/aiscript[@name='lib.request.orders']/attention/actions/do_else/do_else" pos="before">
         <!-- At this point, definitely assigning to another ship, no need to double-check. -->
-        <!-- Check: civilian fleet -->
-        <do_elseif value="$assignment == assignment.trade or $assignment == assignment.mining">
+
+        <!--
+        <show_help position="1" duration="2s" custom="'Right click API status: ' + global.$v1024_flags_hasRightClickAPI"/>
+        <show_help position="1" duration="2s" custom="'Test 1 ' + (global.$v1024_flags_hasRightClickAPI == 0)"/>
+        <show_help position="1" duration="2s" custom="'Test 2 ' + (global.$v1024_flags_hasRightClickAPI == false)"/>
+        -->
+        <!-- Case: Right Click API successfully loaded and assigning ships to civilian fleets -->
+        <do_elseif value="$assignment == assignment.trade or $assignment == assignment.mining or (not global.$v1024_flags_hasRightClickAPI)">
+            <show_help position="1" duration="6s" custom="'Signalling the previous-made handler.'" chance="0"/>
             <set_value name="$flag_v1024_civfleetformed" exact="true" comment="Actual value not important." />
             <!-- Delegate to standardized static config method to ensure save-game compatibility. -->
             <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$commander" param3="$object" />
