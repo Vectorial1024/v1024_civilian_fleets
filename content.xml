@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<content name="V1024 - Civilian Fleets" id="v1024_civilian_fleets" author="Vectorial1024" version="110" date="2019-08-06" save="0" description="Create civilian fleets to help manage traders and miners.">
+<content name="V1024 - Civilian Fleets" id="v1024_civilian_fleets" author="Vectorial1024" version="111" date="2019-08-06" save="0" description="Create civilian fleets to help manage traders and miners.">
     <!--
         Dependency removed for now.
     <dependency id="RightClickAPI" version="033" />

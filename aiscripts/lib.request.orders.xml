@@ -19,7 +19,7 @@ Do:
         <show_help position="1" duration="2s" custom="'Test 2 ' + (global.$v1024_flags_hasRightClickAPI == false)"/>
         -->
         <!-- Case: Right Click API successfully loaded and assigning ships to civilian fleets -->
-        <do_elseif value="$assignment == assignment.trade or $assignment == assignment.mining or (not global.$v1024_flags_hasRightClickAPI)">
+        <do_elseif value="$assignment == assignment.trade or $assignment == assignment.mining or (not global.$v1024_flags_hasRightClickAPI and ($object.primarypurpose == purpose.trade or $object.primarypurpose == purpose.mine))">
             <show_help position="1" duration="6s" custom="'Signalling the previous-made handler.'" chance="0"/>
             <set_value name="$flag_v1024_civfleetformed" exact="true" comment="Actual value not important." />
             <!-- Delegate to standardized static config method to ensure save-game compatibility. -->
