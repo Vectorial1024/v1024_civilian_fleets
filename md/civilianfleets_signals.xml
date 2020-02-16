@@ -6,8 +6,9 @@ You gotta pick the variables back up after usage!
 -->
 <mdscript name="CivilianFleets_Signals" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
     <cues>
-        <cue name="SignalConfigurationControl" instantiate="true">
+        <cue name="SignalConfigurationControl" instantiate="true" version="2">
             <conditions>
+                <!-- Whatever happens, when the player enters the game state, set up the variables. -->
                 <event_cue_signalled cue="md.Setup.Start" />
             </conditions>
             <actions>
