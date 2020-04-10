@@ -66,6 +66,8 @@ You gotta pick the variables back up after usage!
                 <set_value name="$toShip_DefaultOrder" exact="$toShip.defaultorder" />
                 <set_value name="$haveSameDefaultOrder" exact="$fromShip_DefaultOrder.id == $toShip_DefaultOrder.id" comment="Actually set default orders when orders are different, otherwise just update the values." />
 
+                <set_value name="$syncSuccessful" exact="false" />
+
                 <!--
                 Note to self:
                 Suppose the Commander is operating at Skill Level 2. (Denoted as SL-2)
@@ -155,6 +157,7 @@ You gotta pick the variables back up after usage!
                             <param name="effectiveskill" value="$combinedSkill" />
                         </create_order>
                         <set_order_syncpoint_reached order="$toShip.order"/>
+                        <set_value name="$syncSuccessful" exact="true" />
 
                         <!-- Out of scope variable removal -->
                         <remove_value name="$minBuy" />
@@ -241,6 +244,7 @@ You gotta pick the variables back up after usage!
                             </create_order>
                             <set_order_syncpoint_reached order="$toShip.order"/>
                         </do_else>
+                        <set_value name="$syncSuccessful" exact="true" />
 
                         <!-- Out of scope variable removal -->
                         <remove_value name="$maxBuy" />
@@ -260,6 +264,7 @@ You gotta pick the variables back up after usage!
                             </create_order>
                             <set_order_syncpoint_reached order="$toShip.order"/>
                         </do_else>
+                        <set_value name="$syncSuccessful" exact="true" />
                     </do_elseif>
                     <do_elseif value="$fromShip_DefaultOrder.id == 'TaterTrade'">
                         <!-- Mod TaterTrade: TaterTrade behavior -->
@@ -312,6 +317,7 @@ You gotta pick the variables back up after usage!
                             <param name="scanspeed" value="$fromShip_DefaultOrder.$scanspeed" />
                         </create_order>
                         <set_order_syncpoint_reached order="$toShip.order"/>
+                        <set_value name="$syncSuccessful" exact="true" />
 
                         <!-- Out of scope variable removal -->
                         <remove_value name="$maxBuy" />
@@ -328,6 +334,7 @@ You gotta pick the variables back up after usage!
                             <param name="destList" value="$fromShip_DefaultOrder.$destList" />
                         </create_order>
                         <set_order_syncpoint_reached order="$toShip.order"/>
+                        <set_value name="$syncSuccessful" exact="true" />
                     </do_elseif>
                     <do_elseif value="$fromShip_DefaultOrder.id == 'StationMule'">
                         <!-- Mod Mules & Warehouses: Station Mule behavior -->
@@ -348,6 +355,7 @@ You gotta pick the variables back up after usage!
                             <param name="allowCreateTrade" value="$fromShip_DefaultOrder.$allowCreateTrade" />
                         </create_order>
                         <set_order_syncpoint_reached order="$toShip.order"/>
+                        <set_value name="$syncSuccessful" exact="true" />
                     </do_elseif>
                     <do_elseif value="$fromShip_DefaultOrder.id == 'TravelMule'">
                         <!-- Mod Mules & Warehouses: Traveling Mule behavior -->
@@ -360,6 +368,7 @@ You gotta pick the variables back up after usage!
                             <param name="destList" value="$fromShip_DefaultOrder.$destList" />
                         </create_order>
                         <set_order_syncpoint_reached order="$toShip.order"/>
+                        <set_value name="$syncSuccessful" exact="true" />
                     </do_elseif>
                     <do_elseif value="$fromShip_DefaultOrder.id == 'RandomTrade'" chance="0">
                         <!-- RandomTrade fleet -->
@@ -423,6 +432,50 @@ You gotta pick the variables back up after usage!
                     <debug_text text="'Assignment unrecognized by CivFleet. Cancelling sync from ' + $fromShip.knownname + ' (' + $fromShip + ') to ' + $toShip.knownname + ' (' + $toShip + ') via assignment ' + $toShip.assignment + '.'" />
                 </do_else>
 
+                <do_if value="$syncSuccessful" comment="Also update wing name when civ fleet is identified.">
+                    <!-- Confirm the Dictionary's existence -->
+                    <do_if value="not (global.$civFleets_FleetIdMapping)">
+                        <set_value name="global.$civFleets_FleetIdMapping" exact="[]" />
+                    </do_if>
+                    <!-- Confirm the counter's existence -->
+                    <do_if value="not (global.$civFleet_CurrentMaxWingID?)">
+                        <set_value name="global.$civFleet_CurrentMaxWingID" exact="0" />
+                    </do_if>
+                    <!-- Confirm that the wing commander is a known civilian fleet leader -->
+                    <set_value name="$selectedID" exact="-1" />
+                    <do_all exact="global.$civFleets_FleetIdMapping.count" counter="$i">
+                        <set_value name="$currentMapping" exact="global.$civFleets_FleetIdMapping.{$i}" />
+                        <do_if value="$fromShip == $currentMapping.{1}">
+                            <set_value name="$selectedID" exact="$currentMapping.{2}" />
+                            <break />
+                        </do_if>
+                    </do_all>
+                    <do_if value="$selectedID == -1">
+                        <!-- Brand-new civilian fleet! Getting a new ID here. -->
+                        <set_value name="global.$civFleet_WingID" exact="global.$civFleet_WingID + 1" />
+                        <set_value name="$selectedID" exact="global.$civFleet_WingID" />
+                        <append_to_list name="global.$civFleets_FleetIdMapping" exact="[$fromShip, $selectedID]" />
+                    </do_if>
+
+                    <!-- Set the correct name -->
+                    <substitute_text source="{221024, 1}" text="$cleanName">
+                        <replace string="'$ID$'" with="$selectedID" />
+                    </substitute_text>
+
+                    <!-- Determine civilian fleet appending tag -->
+                    <set_value name="$civFleet_CmdTagPairs" exact="global.$civFleet_CmdTagPairs" />
+                    <set_value name="$appendingWingName" exact="''" />
+                    <do_all exact="$civFleet_CmdTagPairs.count" counter="$i">
+                        <do_if value="($fromShip.defaultorder.id == $civFleet_CmdTagPairs.{$i}.{1})">
+                            <set_value name="$appendingWingName" exact="' %1'.[$civFleet_CmdTagPairs.{$i}.{2}]" />
+                            <break/>
+                        </do_if>
+                    </do_all>
+                    
+                    <!-- Actually setting the new fleet name -->
+                    <set_object_fleet_name object="$fromShip" name="'%1%2'.[$cleanName, $appendingWingName]" />
+                </do_if>
+
                 <!-- Out of scope variable removal -->
                 <remove_value name="$fromShip" />
                 <remove_value name="$toShip" />
@@ -430,6 +483,7 @@ You gotta pick the variables back up after usage!
                 <remove_value name="$fromShip_DefaultOrder" />
                 <remove_value name="$toShip_DefaultOrder" />
                 <remove_value name="$haveSameDefaultOrder" />
+                <remove_value name="$syncSuccessful" />
             </actions>
         </cue>
 
