@@ -10,7 +10,7 @@ Do:
 4. If [2] returns true, also updates the wing name appropriately
 -->
 <diff>
-    <add sel="/aiscript[@name='lib.request.orders']/attention/actions/do_else/do_else" pos="before">
+    <add sel="/aiscript[@name='lib.request.orders']/attention/actions/do_else/do_else/do_else" pos="before">
         <!-- At this point, definitely assigning to another ship, no need to double-check. -->
 
         <!--
@@ -20,17 +20,19 @@ Do:
         -->
         <!-- Case: Right Click API successfully loaded and assigning ships to civilian fleets -->
         <do_elseif value="$assignment == assignment.trade or $assignment == assignment.mining or (not global.$v1024_flags_hasRightClickAPI and ($object.primarypurpose == purpose.trade or $object.primarypurpose == purpose.mine))">
-            <show_help position="1" duration="6s" custom="'Signalling the previous-made handler.'" chance="0"/>
-            <set_value name="$flag_v1024_civfleetformed" exact="true" comment="Actual value not important." />
-            <!-- Delegate to standardized static config method to ensure save-game compatibility. -->
-            <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$commander" param3="$object" />
+            <do_if value="$object.isplayerowned" comment="Ignore non-player ships to boost performance">
+                <show_help position="1" duration="6s" custom="'Signalling the previous-made handler.'" chance="0"/>
+                <set_value name="$flag_v1024_civfleetformed" exact="true" comment="Actual value not important." />
+                <!-- Delegate to standardized static config method to ensure save-game compatibility. -->
+                <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$commander" param3="$object" />
+            </do_if>
         </do_elseif>
     </add>
 
     <!-- Rename wing if wing is civilian fleet -->
-    <add sel="/aiscript[@name='lib.request.orders']/attention/actions/do_else/do_else" pos="after">
+    <add sel="/aiscript[@name='lib.request.orders']/attention/actions/do_else" pos="after">
         <!-- Optimization: only attempt to rename fleet when we have actually formed any civ-fleets. -->
-        <do_if value="$flag_v1024_civfleetformed?">
+        <do_if value="$flag_v1024_civfleetformed?" comment="The value should actually mean whether the current 'assignment combo' is a valid civ-fleet config, rather than whether a civ-fleet is newly formed.">
             <!-- Only the player can initiate illegal assignment as trader or miner. So we're pretty safe. -->
             <!-- Delegate to standardized static fleet wing rename method. -->
 			<!-- Using run_script because this operation should take an instant, and no player would be quick enough to save the game while the assignment is in progress. -->

@@ -59,8 +59,8 @@ Given the commander of a wing,
                 </do_if>
             </do_all>
             
-            <!-- Actually setting the new wing name -->
-            <set_object_wing_name object="$wingCommander" name="'%1%2'.[$cleanName, $appendingWingName]" />
+            <!-- Actually setting the new fleet name -->
+            <set_object_fleet_name object="$wingCommander" name="'%1%2'.[$cleanName, $appendingWingName]" />
 
             <label name="return"/>
         </actions>
