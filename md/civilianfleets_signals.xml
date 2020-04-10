@@ -29,6 +29,7 @@ You gotta pick the variables back up after usage!
             <conditions>
                 <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" />
             </conditions>
+            <delay min="100ms" max="5000ms" comment="Delay randomly to spread out the performance spike." />
             <actions>
                 <set_value name="$fromShip" exact="event.param2" />
                 <set_value name="$toShip" exact="event.param3" />
