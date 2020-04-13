@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- Specific language file: applies to French only -->
+<language id="33">
+    <page id="221024" title="CivFleetsUI" descr="Text needed by this mod for GUI" voice="no">
+        <!-- DO NOT CHANGE ITEM OF ID 1 -->
+        <t id="1">Civil $ID$</t>
+		<t id="1000">Former/rejoindre flotte de commerce</t>
+        <t id="1001">Flotte de commerce</t>
+        <t id="1002">Flotte de distribution</t>
+        <t id="1101">TaterTrade Flotte</t>
+        <t id="1201">Distribution Mule Flotte</t>
+        <t id="1202">Station Mule Flotte</t>
+        <t id="1203">Travel Mule Flotte</t>
+        <t id="2000">Former/rejoindre flotte minière</t>
+        <t id="2001">Flotte minière</t>
+    </page>
+</language>
