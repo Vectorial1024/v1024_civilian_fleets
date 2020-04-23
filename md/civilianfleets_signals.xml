@@ -268,6 +268,7 @@ You gotta pick the variables back up after usage!
                     </do_elseif>
                     <do_elseif value="$fromShip_DefaultOrder.id == 'TaterTrade'">
                         <!-- Mod TaterTrade: TaterTrade behavior -->
+                        <!-- Note: this is DeadAirRT's fork of TaterTrade. -->
                         <!-- TaterTrade has their own "assignment skill level"; updating the variable to reflect that. -->
                         <set_value name="$assignmentSkillLevel" exact="[$fromShip.pilot.skill.management, $toShip.pilot.skill.piloting].max * 2" />
                         <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
@@ -281,6 +282,7 @@ You gotta pick the variables back up after usage!
                             <param name="maxbuy" value="$maxBuy" />
                             <param name="maxsell" value="$maxSell" />
                             <param name="distancecheck" value="$fromShip_DefaultOrder.$distancecheck" />
+                            <param name="distancecheckpercent" value="$fromShip_DefaultOrder.$distancecheckpercent" />
                             <param name="discount" value="$fromShip_DefaultOrder.$discount" />
                             <param name="discount2" value="$fromShip_DefaultOrder.$discount2" />
                             <param name="bypass" value="$fromShip_DefaultOrder.$bypass" />
@@ -311,6 +313,12 @@ You gotta pick the variables back up after usage!
                             <param name="paranidban" value="$fromShip_DefaultOrder.$paranidban" />
                             <param name="holyorderban" value="$fromShip_DefaultOrder.$holyorderban" />
                             <param name="allianceban" value="$fromShip_DefaultOrder.$allianceban" />
+                            <param name="trinityban" value="$fromShip_DefaultOrder.$trinityban" />
+                            <param name="splitban" value="$fromShip_DefaultOrder.$splitban" />
+                            <param name="freesplitban" value="$fromShip_DefaultOrder.$freesplitban" />
+                            <param name="courtban" value="$fromShip_DefaultOrder.$courtban" />
+                            <param name="buccaneersban" value="$fromShip_DefaultOrder.$buccaneersban" />
+                            <param name="fallensplitban" value="$fromShip_DefaultOrder.$fallensplitban" />
                             <param name="hatikvahban" value="$fromShip_DefaultOrder.$hatikvahban" />
                             <param name="scaleplateban" value="$fromShip_DefaultOrder.$scaleplateban" />
                             <!-- Section break 4: Miscellaneous-->
