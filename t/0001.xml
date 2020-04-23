@@ -2,7 +2,7 @@
 <!-- General language file: applies to all which does not have their own language files -->
 <language>
     <page id="221024" title="CivFleetsUI" descr="Text needed by this mod for GUI" voice="no">
-        <!-- DO NOT CHANGE ITEM OF ID 1 -->
+        <!-- DO NOT CHANGE THE $ID$ PART, that part is used to fill the fleet number. -->
         <t id="1">Civilian $ID$</t>
         <t id="1000">Form/join trading fleet</t>
         <t id="1001">Trading Fleet</t>
