@@ -332,7 +332,7 @@ You gotta pick the variables back up after usage!
                         <remove_value name="$maxSell" />
                     </do_elseif>
                     <do_elseif value="$fromShip_DefaultOrder.id == 'DistriMule'">
-                        <!-- Mod Mules & Warehouses: Distribution Mule behavior -->
+                        <!-- Misunderstood-Wookies' Mules and Warehouses Extended: Distribution Mule behavior -->
                         <create_order object="$toShip" id="'DistriMule'" default="true">
                             <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />
                             <param name="minStorage" value="$fromShip_DefaultOrder.$minStorage" />
@@ -345,7 +345,7 @@ You gotta pick the variables back up after usage!
                         <set_value name="$syncSuccessful" exact="true" />
                     </do_elseif>
                     <do_elseif value="$fromShip_DefaultOrder.id == 'StationMule'">
-                        <!-- Mod Mules & Warehouses: Station Mule behavior -->
+                        <!-- Misunderstood-Wookies' Mules and Warehouses Extended: Station Mule behavior -->
                         <create_order object="$toShip" id="'StationMule'" default="true">
                             <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />
                             <param name="targetStation" value="$fromShip_DefaultOrder.$targetStation" />
@@ -355,7 +355,7 @@ You gotta pick the variables back up after usage!
                             <param name="incFood" value="$fromShip_DefaultOrder.$incFood" />
                             <param name="supplyFirst" value="$fromShip_DefaultOrder.$supplyFirst" />
                             <param name="drugFree" value="$fromShip_DefaultOrder.$drugFree" />
-                            <param name="drugMule" value="$fromShip_DefaultOrder.$drugMule" />
+                            <param name="drugsOnly" value="$fromShip_DefaultOrder.$drugsOnly" />
                             <param name="twoWay" value="$fromShip_DefaultOrder.$twoWay" />
                             <param name="twoWaySupplyFirst" value="$fromShip_DefaultOrder.$twoWaySupplyFirst" />
                             <param name="forbidTradeAll" value="$fromShip_DefaultOrder.$forbidTradeAll" />
@@ -365,14 +365,36 @@ You gotta pick the variables back up after usage!
                         <set_order_syncpoint_reached order="$toShip.order"/>
                         <set_value name="$syncSuccessful" exact="true" />
                     </do_elseif>
+                    <do_elseif value="$fromShip_DefaultOrder.id == 'SupplyMule'">
+                        <!-- Misunderstood-Wookies' Mules and Warehouses Extended: Supply Mule behavior -->
+                        <set_value name="$maxDist_FromCommander" exact="$fromShip_DefaultOrder.maxDist_FromCommander" />
+                        <create_order object="$toShip" id="'SupplyMule'" default="true">
+                            <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />
+                            <!-- Making this false because otherwise the fleet gets disbanded if the commander is assigned to source. -->
+                            <param name="assignSrc" value="false" />
+                            <param name="dedicatedServe" value="$fromShip_DefaultOrder.$dedicatedServe" />
+                            <param name="tradeWithOwn" value="$fromShip_DefaultOrder.$tradeWithOwn" />
+                            <param name="maxtrades" value="$fromShip_DefaultOrder.$maxtrades" />
+                            <param name="maxDist" value="[$toShip.pilot.skill.piloting * 2, $maxDist_FromCommander].min" />
+                            <param name="builder" value="$fromShip_DefaultOrder.$builder" />
+                            <param name="producer" value="$fromShip_DefaultOrder.$producer" />
+                            <param name="lockWares" value="$fromShip_DefaultOrder.$lockWares" />
+                            <param name="specialWareBasket" value="$fromShip_DefaultOrder.$specialWareBasket" />
+                            <param name="playerBuyMod" value="$fromShip_DefaultOrder.$playerBuyMod" />
+                        </create_order>
+                        <set_order_syncpoint_reached order="$toShip.order"/>
+                        <set_value name="$syncSuccessful" exact="true" />
+                    </do_elseif>
                     <do_elseif value="$fromShip_DefaultOrder.id == 'TravelMule'">
-                        <!-- Mod Mules & Warehouses: Traveling Mule behavior -->
+                        <!-- Misunderstood-Wookies' Mules and Warehouses Extended: Traveling Mule behavior -->
                         <create_order object="$toShip" id="'TravelMule'" default="true">
                             <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />
+                            <param name="maxDist" value="$fromShip_DefaultOrder.$maxDist" />
+                            <param name="profitMargin" value="$fromShip_DefaultOrder.$maxDist" />
+                            <param name="specialWareBasket" value="$fromShip_DefaultOrder.$specialWareBasket" />
+                            <param name="minCargoUsed" value="$fromShip_DefaultOrder.$specialWareBasket" />
                             <param name="tradeWithBig" value="$fromShip_DefaultOrder.$tradeWithBig" />
                             <param name="tradeWithAll" value="$fromShip_DefaultOrder.$tradeWithAll" />
-                            <param name="maxDist" value="$fromShip_DefaultOrder.$maxDist" />
-                            <param name="specialWareBasket" value="$fromShip_DefaultOrder.$specialWareBasket" />
                             <param name="destList" value="$fromShip_DefaultOrder.$destList" />
                         </create_order>
                         <set_order_syncpoint_reached order="$toShip.order"/>

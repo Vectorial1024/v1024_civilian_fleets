@@ -66,6 +66,7 @@
         <append_to_list name="global.$civFleet_CmdTagPairs" exact="['DistriMule', {221024, 1201}]" />
         <append_to_list name="global.$civFleet_CmdTagPairs" exact="['StationMule', {221024, 1202}]" />
         <append_to_list name="global.$civFleet_CmdTagPairs" exact="['TravelMule', {221024, 1203}]" />
+        <append_to_list name="global.$civFleet_CmdTagPairs" exact="['SupplyMule', {221024, 1204}]" />
 
         <!-- To make sub-mods for this mod, simply append to the above list after this cue is complete. -->
       </actions>
