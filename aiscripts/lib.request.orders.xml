@@ -11,7 +11,7 @@ Do:
 -->
 <diff>
     <add sel="/aiscript[@name='lib.request.orders']/attention/actions/do_else/do_else" pos="before">
-        <do_elseif value="not global.$v1024_flags_hasRightClickAPI and (($object == assignment.trade and $commander.type != shiptype.resupplier) or $object.primarypurpose == purpose.mine)">
+        <do_elseif value="(not global.$v1024_flags_hasRightClickAPI) and (($object.primarypurpose == purpose.trade and $commander.type != shiptype.resupplier) or $object.primarypurpose == purpose.mine)">
             <!-- If we are in fallback mode, -->
             <!-- We must seize the means of production before the military does the same. -->
             <do_if value="$object.isplayerowned" comment="Ignore non-player ships to boost performance">
