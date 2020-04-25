@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<content name="V1024 - Civilian Fleets" id="v1024_civilian_fleets" author="Vectorial1024" version="114" date="2019-08-06" save="0" description="Create civilian fleets to help manage traders and miners.">
+<content name="V1024 - Civilian Fleets" id="v1024_civilian_fleets" author="Vectorial1024" version="200" date="2019-08-06" save="0" description="Create civilian fleets to help manage traders and miners.">
     <!-- Force the dependency again since v3.0 has now stabilized. -->
     <!-- Eventually we should somehow shift away from RightClickAPI and adopt SirNukes API completely -->
-    <dependency id="RightClickAPI" version="036" />
+    <dependency id="RightClickAPI" />
     <!-- Dependent on SirNukes API; any version should do. -->
     <dependency id="ws_2042901274" />
 </content>
