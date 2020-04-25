@@ -14,5 +14,7 @@
         <t id="1204">Supply Mule Fleet</t>
         <t id="2000">Former/rejoindre flotte minière</t>
         <t id="2001">Flotte minière</t>
+        <t id="100000">Toggle civilian fleet auto-rename</t>
+        <t id="100001">Determines if civilian fleets should automatically update its fleet name \(will only affect future rename attempts\).\n\nEnabled by default, effective immediately.</t>
     </page>
 </language>

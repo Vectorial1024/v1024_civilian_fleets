@@ -15,6 +15,10 @@ You gotta pick the variables back up after usage!
                 <set_value name="global.$v1024_symbols_shipDocked" value="'ship docked'" />
                 <set_value name="global.$v1024_symbols_requestOrderSync" value="'requesting order sync'" />
                 <set_value name="global.$v1024_symbols_requestUpdateWingName" value="'requesting update wing name'" />
+
+                <do_if value="not (global.$v1024cf_should_rename_fleets?)">
+                    <set_value name="global.$v1024cf_should_rename_fleets" exact ="true" />
+                </do_if>
             </actions>
         </cue>
 
@@ -462,7 +466,7 @@ You gotta pick the variables back up after usage!
                     <debug_text text="'Assignment unrecognized by CivFleet. Cancelling sync from ' + $fromShip.knownname + ' (' + $fromShip + ') to ' + $toShip.knownname + ' (' + $toShip + ') via assignment ' + $toShip.assignment + '.'" />
                 </do_else>
 
-                <do_if value="$syncSuccessful" comment="Also update wing name when civ fleet is identified.">
+                <do_if value="global.$v1024cf_should_rename_fleets and $syncSuccessful" comment="Also update wing name when civ fleet is identified.">
                     <!-- Confirm the Dictionary's existence -->
                     <do_if value="not (global.$civFleets_FleetIdMapping)">
                         <set_value name="global.$civFleets_FleetIdMapping" exact="[]" />
