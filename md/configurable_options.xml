@@ -9,9 +9,10 @@
         <signal_cue_instantly
           cue="md.Simple_Menu_Options.Register_Option"
           param = "table[
+            $category   = {221024, 100000},
             $id         = 'v1024cf_rename_fleets',
-            $name       = {221024, 100000},
-            $mouseover  = {221024, 100001},
+            $name       = {221024, 100001},
+            $mouseover  = {221024, 100002},
             $default    = 1,
             $type       = 'button',
             $callback   = RenameFleets_OnChange,

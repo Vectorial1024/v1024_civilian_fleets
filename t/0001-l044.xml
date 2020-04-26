@@ -14,7 +14,8 @@
         <t id="1204">Supply Mule Fleet</t>
         <t id="2000">Form/join mining fleet</t>
         <t id="2001">Mining Fleet</t>
-        <t id="100000">Toggle civilian fleet auto-rename</t>
-        <t id="100001">Determines if civilian fleets should automatically update its fleet name \(will only affect future rename attempts\).\n\nEnabled by default, effective immediately.</t>
+        <t id="100000">(SirNukes Modding API menu category)Civilian Fleets</t>
+        <t id="100001">Toggle civilian fleet auto-rename</t>
+        <t id="100002">Determines if civilian fleets should automatically update its fleet name \(will only affect future rename attempts\).\n\nEnabled by default, effective immediately.</t>
     </page>
 </language>
