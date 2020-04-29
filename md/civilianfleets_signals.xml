@@ -117,8 +117,10 @@ You gotta pick the variables back up after usage!
                         <!-- Vanilla * AutoMine behavior -->
 
                         <!-- We first need to check for Expert AutoMine: they are using yet another way of calculating the skill level -->
+                        <!-- Also indicate that we are using Expert AutoMine -->
                         <do_if value="$fromShip_DefaultOrder.id == 'MiningRoutine_Expert'">
                             <set_value name="$assignmentSkillLevel" exact="[$fromShip.pilot.skill.management, $toShip.pilot.skill.piloting].max" />
+                            <set_value name="$isUsingExpertAutoMine" exact="false" comment="Actual value not important." />
                         </do_if>
 
                         <!-- First obtain the MAX parameters, cap them to valid values. -->
@@ -149,17 +151,32 @@ You gotta pick the variables back up after usage!
                             <set_value name="$wareBasket" exact="[$wareBasket]"/>
                         </do_if>
 
-                        <create_order object="$toShip" id="'MiningRoutine'" default="true">
-                            <!-- In v2.5, only maxbuy and maxsell can be modified by the user. -->
-                            <!-- Hence, configuring minbuy and minsell becomes meaningless. -->
-                            <param name="warebasket" value="$wareBasket" />
-                            <param name="range" value="$fromShip_DefaultOrder.$range" />
-                            <param name="minbuy" value="$minBuy" />
-                            <param name="minsell" value="$minSell" />
-                            <param name="maxbuy" value="$maxBuy" />
-                            <param name="maxsell" value="$maxSell" />
-                            <param name="effectiveskill" value="$combinedSkill" />
-                        </create_order>
+                        <do_if value="$isUsingExpertAutoMine? and ($minBuy gt 5 or $maxBuy gt 5 or $minSell gt 5 or $maxSell gt 5)">
+                            <!-- Expert AutoMine range detected. We must use Expert AutoMine. -->
+                            <create_order object="$toShip" id="'MiningRoutine_Expert'" default="true">
+                                <param name="warebasket" value="$wareBasket" />
+                                <param name="range" value="$fromShip_DefaultOrder.$range" />
+                                <param name="minbuy" value="$minBuy" />
+                                <param name="minsell" value="$minSell" />
+                                <param name="maxbuy" value="$maxBuy" />
+                                <param name="maxsell" value="$maxSell" />
+                            </create_order>
+                        </do_if>
+                        <do_else>
+                            <!-- We stick to Pure AutoMine in all other cases. -->
+                            <create_order object="$toShip" id="'MiningRoutine'" default="true">
+                                <!-- In v2.5, only maxbuy and maxsell can be modified by the user. -->
+                                <!-- Hence, configuring minbuy and minsell becomes meaningless. -->
+                                <!-- Correction: Expert AutoMine manipulates minbuy and minsell so they are still meaningful to some extent. -->
+                                <param name="warebasket" value="$wareBasket" />
+                                <param name="range" value="$fromShip_DefaultOrder.$range" />
+                                <param name="minbuy" value="$minBuy" />
+                                <param name="minsell" value="$minSell" />
+                                <param name="maxbuy" value="$maxBuy" />
+                                <param name="maxsell" value="$maxSell" />
+                                <param name="effectiveskill" value="$combinedSkill" />
+                            </create_order>
+                        </do_else>
                         <set_order_syncpoint_reached order="$toShip.order"/>
                         <set_value name="$syncSuccessful" exact="true" />
 
@@ -169,6 +186,9 @@ You gotta pick the variables back up after usage!
                         <remove_value name="$maxBuy" />
                         <remove_value name="$maxSell" />
                         <remove_value name="$combinedSkill" />
+                        <do_if value="$isUsingExpertAutoMine?">
+                            <remove_value name="$isUsingExpertAutoMine" />
+                        </do_if>
                     </do_if>
                     <do_elseif value="$fromShip_DefaultOrder.id == 'RandomMine'" chance="0">
                         <!-- RandomMine fleet -->
