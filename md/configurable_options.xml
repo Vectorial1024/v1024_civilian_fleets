@@ -17,6 +17,7 @@
             $type       = 'button',
             $callback   = RenameFleets_OnChange,
             ]"/>
+        <set_value name="global.$v1024_flags_hasSirNukesAPI" exact="true" />
       </actions>
     </cue>
     <cue name="RenameFleets_OnChange" instantiate="true">
