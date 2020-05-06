@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- 
+Basically the Fallback Mode.
+
+Whenever a ship is assigned to another commander...
+1. When Right Click API cannot be loaded
+Do:
+1. Check if the commander-to-be is a ship.
+2. Check if both the commander-to-be and the subordinate-to-be have the same primary purpose
+3. If [2] returns true, set the assignment to a value recognized by our other scripts (assignment.trade or assignment.mining)
+-->
+<diff>
+    <add sel="/aiscript[@name='order.assign.commander']/attention/actions/do_if[1]" pos="prepend">
+        <!-- Super early checking. -->
+        <!-- Also ignore non-player ships for performance. -->
+        <do_if value="not global.$v1024_flags_hasRightClickAPI and $commander.isplayerowned">
+            <!-- Right click API not loaded. Prerequisite 1 satisfied. -->
+            <!-- Check 1. -->
+            <do_if value="$commander.isclass.[class.ship]">
+                <!-- Is 1. Now check 2. -->
+                <set_value name="$thisship" exact="this.object" />
+                <do_if value="$commander.primarypurpose == $thisship.primarypurpose">
+                    <!-- Is 2. Now do 3. -->
+                    <do_if value="$commander.primarypurpose == purpose.trade">
+                        <set_value name="$assignment" exact="assignment.trade" />
+                    </do_if>
+                    <do_elseif value="$commander.primarypurpose == purpose.mine">
+                        <set_value name="$assignment" exact="assignment.mining" />
+                    </do_elseif>
+                    <do_else>
+                        <!-- Not relevant to us. -->
+                    </do_else>
+                </do_if>
+            </do_if>
+        </do_if>
+        <!-- We have done all we want to do. Pass back to vanilla handling. -->
+    </add>
+</diff>

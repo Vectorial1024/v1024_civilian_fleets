@@ -104,7 +104,7 @@ You gotta pick the variables back up after usage!
                 <edit_order_param order="$toShip_DefaultOrder" param="'maxbuy'" value="$maxBuy" />
                 <edit_order_param order="$toShip_DefaultOrder" param="'maxsell'" value="$maxSell" />
                 -->
-                <do_if value="$toShip.assignment == assignment.mining or ((not global.$v1024_flags_hasRightClickAPI) and $fromShip.primarypurpose == purpose.mine and $toShip.primarypurpose == purpose.mine)">
+                <do_if value="$toShip.assignment == assignment.mining">
                     <show_help position="1" duration="1s" custom="'Mining! ' + $fromShip.name + ' -> ' + $toShip.name" chance="0"/>
                     <do_if value="not global.$v1024_flags_hasRightClickAPI" comment="Fallback mode code">
                         <set_object_commander object="$toShip" commander="$fromShip" assignment="assignment.mining"/>
@@ -240,7 +240,7 @@ You gotta pick the variables back up after usage!
                         </create_order>
                     </do_else>
                 </do_if>
-                <do_elseif value="$toShip.assignment == assignment.trade or ((not global.$v1024_flags_hasRightClickAPI) and $fromShip.primarypurpose == purpose.trade and $toShip.primarypurpose == purpose.trade)">
+                <do_elseif value="$toShip.assignment == assignment.trade">
                     <show_help position="1" duration="1s" custom="'Trading! ' + $fromShip.name + ' -> ' + $toShip.name" chance="0"/>
                     <do_if value="not global.$v1024_flags_hasRightClickAPI" comment="Fallback mode code">
                         <set_object_commander object="$toShip" commander="$fromShip" assignment="assignment.trade"/>
