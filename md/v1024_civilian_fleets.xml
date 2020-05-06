@@ -106,7 +106,7 @@
       <conditions>
         <event_cue_signalled cue="md.Setup.Start" />
       </conditions>
-      <delay exact="10s" comment="Similar situation compared to the Right Click API situation." />
+      <delay exact="15s" comment="Similar situation compared to the Right Click API situation." />
       <actions>
         <!-- SirNukes announcement. -->
 
