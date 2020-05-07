@@ -8,9 +8,10 @@ Create civilian fleets to help manage your traders and miners.
 - The successor of Mining Trading Fleets
   - Their Nexus page: https://www.nexusmods.com/x4foundations/mods/191
   - Their EgoSoft page: https://forum.egosoft.com/viewtopic.php?f=181&t=410087
-- GitHub repository: https://github.com/Vectorial1024/v1024_civilian_fleets
-- Nexus page: https://www.nexusmods.com/x4foundations/mods/335
-- EgoSoft Forums page: https://forum.egosoft.com/viewtopic.php?f=181&t=418144
+- Our GitHub repository: https://github.com/Vectorial1024/v1024_civilian_fleets
+- Our Nexus page: https://www.nexusmods.com/x4foundations/mods/335
+- Our EgoSoft Forums page: https://forum.egosoft.com/viewtopic.php?f=181&t=418144
+- Our Steam Workshop page: coming soon!
 
 ## Quick Start Guide
 You should check the Nexus page for more details, but, if you want to form/join a civilian fleet:
@@ -24,7 +25,20 @@ You should check the Nexus page for more details, but, if you want to form/join 
 7. ???
 8. Profit.
 
+## Requirements
+- Right Click API
+  - Previously a pre-requisite, now a very strong recommendation
+  - Their Nexus page: https://www.nexusmods.com/x4foundations/mods/322
+- SirNukes Mod Support APIs
+  - Required: allows you to configure some parts of this mod
+  - Their Steam Workshop page: https://steamcommunity.com/sharedfiles/filedetails/?id=2042901274
+
 ## Cross-Mod Compatibility
 This mod also supports the following civilian default behaviors from other mods:
 
-- TaterTrade v4
+- TaterTrade (maintained by DeadAirRT)
+  - Their GitHub repository: https://github.com/DeadAirRT/TaterTrader
+  - Their Steam Workshop page: https://steamcommunity.com/workshop/filedetails/?id=2082610969
+- Mules and Warehouses Extended
+  - Their GitHub repository: https://github.com/Misunderstood-Wookiee/Mules-and-Warehouses-Extended
+  - Further instructions available at their GitHub readme
