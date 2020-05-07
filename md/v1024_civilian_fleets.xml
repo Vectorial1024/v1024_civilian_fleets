@@ -90,15 +90,14 @@
         <do_if value="not global.$v1024_flags_hasRightClickAPI">
           <!-- If the game is starting, but still no Right Click API detected: assume no such mod is loaded, and activate fallback mode.-->
           
-          <show_help position="1" duration="6s" custom="'V1024-CF: Civilian Fleets failed to detect Right Click API. Fallback Mode engaged.'"/>
-          <show_help position="1" duration="6s" custom="'V1024-CF: Use [(Default Role) Defend] to form/join civilian fleets instead.'"/>
-          <show_help position="1" duration="6s" custom="'V1024-CF: Existing civilian fleets will still function normally.'"/>
-          <show_help position="1" duration="6s" custom="'V1024-CF: Fallback Mode changes some rules about civilian fleet forming/joining:'"/>
-          <show_help position="1" duration="6s" custom="'V1024-CF: Changed rule (1): Mining fleets can only accept ships with primary purpose = mine.'"/>
-          <show_help position="1" duration="6s" custom="'V1024-CF: Changed rule (2): Trading fleets can only accept ships with primary purpose = trade.'"/>
-          <show_help position="1" duration="6s" custom="'V1024-CF: This means, fight ships can no longer work for any civilian fleets.'"/>
-          <show_help position="1" duration="6s" custom="'V1024-CF: Of course, fight ships already working for existing civilian fleets are not affeected.'"/>
+          <show_help position="1" duration="6s" custom="'V1024-CF: Civilian Fleets did not detect Right Click API. Fallback Mode engaged.'"/>
+          <show_help position="1" duration="6s" custom="'V1024-CF: Use [Defend >], [Attack >], or [Intercept >] to form/join civilian fleets instead.'"/>
+          <show_help position="1" duration="6s" custom="'V1024-CF: Refer to Logbook -> Tips for more info.'"/>
           <show_help position="1" duration="6s" custom="'V1024-CF: This is the end of the Fallback Mode announcement.'"/>
+
+          <!-- Delegate to Logbook for less cluttering. -->
+          <set_value name="$logtext" exact="'Civilian Fleets did not detect Right Click API. Fallback Mode engaged. Use [Defend >], [Attack >], or [Intercept >] to form/join civilian fleets instead.\n\nThere are some changes in how this mod works under the Fallback Mode:\n0. Existing civilian fleets are not affected.\n1. Mining fleets can only accept ships with primary purpose = mine.\n2. Trading fleets can only accept ships with primary purpose = trade.\n3. Fighting ships are not eligible of joining civilian fleets.\n\nOf course, this mod works best with Right Click API, but if the situation demands that Right Click API be removed, then we shall comply as much as we can.'" />
+          <write_to_logbook category="tips" title="'V1024 Civilian Fleets: Fallback Mode'" text="$logtext" />
         </do_if>
         <show_help position="1" duration="10s" custom="'Right click API flag set to: ' + global.$v1024_flags_hasRightClickAPI" chance="0"/>
       </actions>
@@ -107,7 +106,7 @@
       <conditions>
         <event_cue_signalled cue="md.Setup.Start" />
       </conditions>
-      <delay exact="10s" comment="Similar situation compared to the Right Click API situation." />
+      <delay exact="15s" comment="Similar situation compared to the Right Click API situation." />
       <actions>
         <!-- SirNukes announcement. -->
 
