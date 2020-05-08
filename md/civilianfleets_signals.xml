@@ -394,7 +394,6 @@ You gotta pick the variables back up after usage!
                     </do_elseif>
                     <do_elseif value="$fromShip_DefaultOrder.id == 'SupplyMule'">
                         <!-- Misunderstood-Wookies' Mules and Warehouses Extended: Supply Mule behavior -->
-                        <set_value name="$maxDist_FromCommander" exact="$fromShip_DefaultOrder.maxDist_FromCommander" />
                         <create_order object="$toShip" id="'SupplyMule'" default="true">
                             <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />
                             <!-- Making this false because otherwise the fleet gets disbanded if the commander is assigned to source. -->
@@ -402,7 +401,7 @@ You gotta pick the variables back up after usage!
                             <param name="dedicatedServe" value="$fromShip_DefaultOrder.$dedicatedServe" />
                             <param name="tradeWithOwn" value="$fromShip_DefaultOrder.$tradeWithOwn" />
                             <param name="maxtrades" value="$fromShip_DefaultOrder.$maxtrades" />
-                            <param name="maxDist" value="[$toShip.pilot.skill.piloting * 2, $maxDist_FromCommander].min" />
+                            <param name="maxDist" value="[$toShip.pilot.skill.piloting * 2, $fromShip_DefaultOrder.$maxDist].min" />
                             <param name="builder" value="$fromShip_DefaultOrder.$builder" />
                             <param name="producer" value="$fromShip_DefaultOrder.$producer" />
                             <param name="lockWares" value="$fromShip_DefaultOrder.$lockWares" />
