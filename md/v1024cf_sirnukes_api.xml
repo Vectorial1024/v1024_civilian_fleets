@@ -21,7 +21,7 @@ Centralizes everything related to SirNukes Mod Support API for better management
         </cue>
         <cue name="CF_ConfirmUIRegistration">
             <conditions>
-                <event_cue_completed cue="RegisterUIActions"/>
+                <event_cue_completed cue="CF_RegisterUIActions"/>
             </conditions>
             <actions>
                 <reset_cue cue="CF_RegisterUIActions"/>
