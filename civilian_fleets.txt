@@ -1,20 +1,46 @@
--- Powered by Right Click API
-local ffi = require("ffi")
-local C = ffi.C
+-- Powered by SirNukes Mod Support API
 
 --[[
 As a quick deployment note, the relevant assignment Lua script is located at /ui/addons/ego_interactmenu/*.lua
 ]]--
 
-local function initialize()
-    DebugError("V1024 Civilian Fleets, UI component starting.")
+-- Initial setup
+local ffi = require("ffi")
+local C = ffi.C
 
-    capi.RegisterAssignAction(V1024CF_CivilianAssignment)
+-- SirNukes setup
+-- Set L to store our own versions of the functions
+local L = {}
+local Interface = require("extensions.sn_mod_support_apis.lua_interface")
+local Lib = require("extensions.sn_mod_support_apis.lua_library")
+local menu = nil
+
+local function initializeBySirNukes()
+    DebugError("V1024 Civilian Fleets, UI component starting per the instructions of SirNukes.");
+
+    menu = Lib.Get_Egosoft_Menu("InteractMenu")
+
+    -- Append our own function at the end of the original function to achieve max compatibility
+    -- Code is adapted from https://stackoverflow.com/questions/24337958/append-to-function-lua
+    originalFunc = menu.insertLuaAction
+
+    menu.insertLuaAction = function(actiontype, istobedisplayed)
+        originalFunc(actiontype, istobedisplayed)
+        if actiontype == "assign" then
+            L.V1024CF_AdditionalAssignmentActions(actiontype, istobedisplayed)
+        end
+    end
 end
 
-function V1024CF_CivilianAssignment(menu)
+function L.V1024CF_AdditionalAssignmentActions(actiontype, istobedisplayed)
+    if menu == nil then
+        -- This shouldn't happen! We should have obtained a copy of the interact menu!
+        return
+    end
+
+    -- Let's insert our assignment actions below.
+
     -- We need to verify whether the assignment is valid, before allowing the game to add in interaction contents.
-    --DebugError("L1")
     if menu.numassignableships > 0 then
         --[[
         Mining ships can be assigned to other mining ships as Mining/Trading ship
@@ -22,13 +48,11 @@ function V1024CF_CivilianAssignment(menu)
         (Currently we don't have hybrid-storage ships, but just be prepared.)
         ]]--
 
-        --DebugError("L2")
         local isstation = C.IsComponentClass(menu.componentSlot.component, "station")
         local isship = C.IsComponentClass(menu.componentSlot.component, "ship")
 
         if (isship) then
             -- The mod only applies when assigning to ships.
-            --DebugError("L3")
             
             local convertedComponent = ConvertStringTo64Bit(tostring(menu.componentSlot.component))
 
@@ -80,4 +104,4 @@ function V1024CF_CivilianAssignment(menu)
 	end
 end
 
-initialize()
+initializeBySirNukes()
