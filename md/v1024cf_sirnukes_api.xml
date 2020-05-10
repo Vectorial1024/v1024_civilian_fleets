@@ -7,7 +7,7 @@ Centralizes everything related to SirNukes Mod Support API for better management
         <!--
             This is the ex-RightClickAPI part.
         -->
-        <cue name="CF_RegisterUIActions">
+        <cue name="CF_RegisterUIActions" instantiate="true" version="2">
             <conditions>
                 <event_ui_triggered screen="'Lua_Loader'" control="'Ready'"/>
             </conditions>
@@ -19,7 +19,7 @@ Centralizes everything related to SirNukes Mod Support API for better management
                 />
             </actions>
         </cue>
-        <cue name="CF_ConfirmUIRegistration">
+        <cue name="CF_ConfirmUIRegistration" version="2">
             <conditions>
                 <event_cue_completed cue="CF_RegisterUIActions"/>
             </conditions>
@@ -37,7 +37,6 @@ Centralizes everything related to SirNukes Mod Support API for better management
             <delay exact="15s" />
             <actions>
                 <!-- SirNukes announcement. -->
-
                 <do_if value="true and global.$v1024_flags_hasSirNukesAPI?">
                     <!-- The flag is set. We have loaded SirNukes API. -->
                     <show_help position="1" duration="6s" custom="'V1024-CF: Civilian Fleets has successfully detected SirNukes Mod Support API.'"/>
