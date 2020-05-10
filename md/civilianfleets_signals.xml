@@ -298,7 +298,9 @@ You gotta pick the variables back up after usage!
                         <!-- Note: this is DeadAirRT's fork of TaterTrade. -->
                         <!-- TaterTrade has their own "assignment skill level"; updating the variable to reflect that. -->
                         <set_value name="$assignmentSkillLevel" exact="[$fromShip.pilot.skill.management, $toShip.pilot.skill.piloting].max * 2" />
+                        <set_value name="$minBuy" exact="[$fromShip_DefaultOrder.$minbuy, $assignmentSkillLevel].min" />
                         <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
+                        <set_value name="$minSell" exact="[$fromShip_DefaultOrder.$minsell, $assignmentSkillLevel].min" />
                         <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxsell, $assignmentSkillLevel].min" />
 
                         <!-- Wow, there's a lot of parameters here... -->
@@ -306,7 +308,9 @@ You gotta pick the variables back up after usage!
                             <!-- Section break 0: General config -->
                             <param name="home" value="$fromShip_DefaultOrder.$home" />
                             <param name="returnhome" value="$fromShip_DefaultOrder.$returnhome" />
+                            <param name="minbuy" value="$minBuy" />
                             <param name="maxbuy" value="$maxBuy" />
+                            <param name="minsell" value="$minSell" />
                             <param name="maxsell" value="$maxSell" />
                             <param name="distancecheck" value="$fromShip_DefaultOrder.$distancecheck" />
                             <param name="distancecheckpercent" value="$fromShip_DefaultOrder.$distancecheckpercent" />
