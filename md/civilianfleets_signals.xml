@@ -331,6 +331,9 @@ You gotta pick the variables back up after usage!
                             <param name="hightechwares" value="$fromShip_DefaultOrder.$hightechwares" />
                             <param name="refinedwares" value="$fromShip_DefaultOrder.$refinedwares" />
                             <param name="biowares" value="$fromShip_DefaultOrder.$biowares" />
+                            <param name="largelegalwares" value="$fromShip_DefaultOrder.$largelegalwares" />
+                            <param name="mediumlegalwares" value="$fromShip_DefaultOrder.$mediumlegalwares" />
+                            <param name="smalllegalwares" value="$fromShip_DefaultOrder.$smalllegalwares" />
                             <!-- Section break 2: Sector Black/White Lists -->
                             <param name="excludedsectors" value="$fromShip_DefaultOrder.$excludedsectors" />
                             <param name="includedsectors" value="$fromShip_DefaultOrder.$includedsectors" />
