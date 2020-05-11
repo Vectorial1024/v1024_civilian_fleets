@@ -1,40 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <mdscript name="V1024_CivilianFleets" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
   <cues>
-    <!--
-    <cue name="VeryEarlyInit" version="2">
-      <conditions>
-        <check_any>
-          <event_game_loaded/>
-          <event_game_started/>
-        </check_any>
-      </conditions>
-      <actions>
-        <set_value name="global.$v1024_flags_hasRightClickAPI" exact="false" />
-      </actions>
-    </cue>
-    -->
-    <cue name="Register_CivilianFleets_RightClickMenu" version="2">
-      <conditions>
-        <event_cue_completed cue="md.Right_click_api.RegisterRight_click_api"/>
-      </conditions>
-      <delay exact="1s" comment="wait a sec if we have dependencies"/>
-      <actions>
-        <raise_lua_event name="'RegisterAddon'" param="'extensions.v1024_civilian_fleets.civilian_fleets'"/>
-      </actions>
-    </cue>
-    <cue name="CivilianFleets_Feedback_Wanted" version="2">
-      <conditions>
-        <event_cue_completed cue="Register_CivilianFleets_RightClickMenu"/>
-      </conditions>
-      <actions>
-        <reset_cue cue="Register_CivilianFleets_RightClickMenu"/>
-        <reset_cue cue="CivilianFleets_Feedback_Wanted"/>
-
-        <!-- Fallback system detection flag -->
-        <set_value name="global.$v1024_flags_hasRightClickAPI" value="true" />
-      </actions>
-    </cue>
+    <!-- Sets up the key-value pairs used to generate the fleet names. -->
     <cue name="CivilianFleets_SettingUp" instantiate="true" version="2">
       <conditions>
         <event_cue_signalled cue="md.Setup.Start" />
@@ -70,53 +37,6 @@
 
         <!-- To make sub-mods for this mod, simply append to the above list after this cue is complete. -->
       </actions>
-    </cue>
-    <cue name="CivilianFleets_NoApiHypothesis" instantiate="true">
-      <conditions>
-        <event_cue_signalled cue="md.Setup.Start" />
-      </conditions>
-      <actions>
-        <set_value name="global.$v1024_flags_hasRightClickAPI" exact="false" />
-      </actions>
-    </cue>
-    <cue name="CivilianFleets_NoApiConfirmation" instantiate="true">
-      <conditions>
-        <event_cue_signalled cue="md.Setup.Start" />
-      </conditions>
-      <delay exact="10s" comment="The RightClickAPI suggested waiting for 1 second to register to them, so I wait 10 seconds for their response." />
-      <actions>
-        <!-- Civilian Fleets fallback mode notifications -->
-
-        <do_if value="not global.$v1024_flags_hasRightClickAPI">
-          <!-- If the game is starting, but still no Right Click API detected: assume no such mod is loaded, and activate fallback mode.-->
-          
-          <show_help position="1" duration="6s" custom="'V1024-CF: Civilian Fleets did not detect Right Click API. Fallback Mode engaged.'"/>
-          <show_help position="1" duration="6s" custom="'V1024-CF: Use [Defend >], [Attack >], or [Intercept >] to form/join civilian fleets instead.'"/>
-          <show_help position="1" duration="6s" custom="'V1024-CF: Refer to Logbook -> Tips for more info.'"/>
-          <show_help position="1" duration="6s" custom="'V1024-CF: This is the end of the Fallback Mode announcement.'"/>
-
-          <!-- Delegate to Logbook for less cluttering. -->
-          <set_value name="$logtext" exact="'Civilian Fleets did not detect Right Click API. Fallback Mode engaged. Use [Defend >], [Attack >], or [Intercept >] to form/join civilian fleets instead.\n\nThere are some changes in how this mod works under the Fallback Mode:\n0. Existing civilian fleets are not affected.\n1. Mining fleets can only accept ships with primary purpose = mine.\n2. Trading fleets can only accept ships with primary purpose = trade.\n3. Fighting ships are not eligible of joining civilian fleets.\n\nOf course, this mod works best with Right Click API, but if the situation demands that Right Click API be removed, then we shall comply as much as we can.'" />
-          <write_to_logbook category="tips" title="'V1024 Civilian Fleets: Fallback Mode'" text="$logtext" />
-        </do_if>
-        <show_help position="1" duration="10s" custom="'Right click API flag set to: ' + global.$v1024_flags_hasRightClickAPI" chance="0"/>
-      </actions>
-    </cue>
-    <cue name="CivilianFleets_SirNukesExtOptionsAnnouncement" instantiate="true">
-      <conditions>
-        <event_cue_signalled cue="md.Setup.Start" />
-      </conditions>
-      <delay exact="15s" comment="Similar situation compared to the Right Click API situation." />
-      <actions>
-        <!-- SirNukes announcement. -->
-
-        <do_if value="global.$v1024_flags_hasSirNukesAPI?">
-          <!-- The flag is set. We have loaded SirNukes API. -->
-          <show_help position="1" duration="6s" custom="'V1024-CF: Civilian Fleets has successfully detected SirNukes Mod Support API.'"/>
-          <show_help position="1" duration="6s" custom="'V1024-CF: Some configurable options are available at Game Menu -> Extension Options.'"/>
-        </do_if>
-        <show_help position="1" duration="10s" custom="'SirNukes API flag set to: ' + @global.$v1024_flags_hasSirNukesAPI" chance="0"/>
-      </actions>
-    </cue>
+    </cue>    
   </cues>
 </mdscript>

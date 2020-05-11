@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+Centralizes everything related to SirNukes Mod Support API for better management.
+-->
+<mdscript name="V1024CF_SirNukes_API" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
+    <cues>
+        <!--
+            This is the ex-RightClickAPI part.
+        -->
+        <cue name="CF_RegisterUIActions" instantiate="true" version="2">
+            <conditions>
+                <event_ui_triggered screen="'Lua_Loader'" control="'Ready'"/>
+            </conditions>
+            <actions>
+                <!-- Will print something like "Civ-Fleet starting up" inside Lua script -->
+                <raise_lua_event 
+                    name="'Lua_Loader.Load'" 
+                    param="'extensions.v1024_civilian_fleets.civilian_fleets'"
+                />
+            </actions>
+        </cue>
+        <cue name="CF_ConfirmUIRegistration" version="2">
+            <conditions>
+                <event_cue_completed cue="CF_RegisterUIActions"/>
+            </conditions>
+            <actions>
+                <reset_cue cue="CF_RegisterUIActions"/>
+                <reset_cue cue="CF_ConfirmUIRegistration"/>
+
+                <set_value name="global.$v1024_flags_hasSirNukesAPI" value="true" />
+            </actions>
+        </cue>
+        <cue name="CF_ExtensionOptionsAnnouncement" instantiate="true">
+            <conditions>
+                <event_cue_signalled cue="md.Setup.Start" />
+            </conditions>
+            <delay exact="15s" />
+            <actions>
+                <!-- SirNukes announcement. -->
+                <do_if value="true and global.$v1024_flags_hasSirNukesAPI?">
+                    <!-- The flag is set. We have loaded SirNukes API. -->
+                    <show_help position="1" duration="6s" custom="'V1024-CF: Civilian Fleets has successfully detected SirNukes Mod Support API.'"/>
+                    <show_help position="1" duration="6s" custom="'V1024-CF: Some configurable options are available at Game Menu -> Extension Options.'"/>
+                    <show_help position="1" duration="6s" custom="'V1024-CF: As an added bonus, this mod will never require Right Click API again in the future.'"/>
+                </do_if>
+                <show_help position="1" duration="10s" custom="'SirNukes API flag set to: ' + @global.$v1024_flags_hasSirNukesAPI" chance="0"/>
+            </actions>
+        </cue>
+
+        <!--
+            This is the Extension Options part.
+        -->
+        <cue name="Reset_On_Reload" instantiate="true">
+            <conditions>
+                <event_cue_signalled cue="md.Simple_Menu_Options.Reloaded"/>
+            </conditions>
+            <actions>
+                <signal_cue_instantly
+                    cue="md.Simple_Menu_Options.Register_Option"
+                    param = "table[
+                        $category   = {221024, 100000},
+                        $id         = 'v1024cf_rename_fleets',
+                        $name       = {221024, 100001},
+                        $mouseover  = {221024, 100002},
+                        $default    = 1,
+                        $type       = 'button',
+                        $callback   = RenameFleets_OnChange,
+                        ]"/>
+                <set_value name="global.$v1024_flags_hasSirNukesAPI" exact="true" />
+            </actions>
+        </cue>
+        <cue name="RenameFleets_OnChange" instantiate="true">
+            <conditions>
+                <event_cue_signalled />
+            </conditions>
+            <actions>
+                <set_value name="global.$v1024cf_should_rename_fleets" exact ="if (event.param.$value) then true else false" />
+                <show_help custom="'Settings updated; fleet rename is now ' + global.$v1024cf_should_rename_fleets" position="1" duration="3s" chance="0" />
+            </actions>
+        </cue>
+    </cues>
+</mdscript>
