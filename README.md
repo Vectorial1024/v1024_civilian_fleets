@@ -11,7 +11,7 @@ Create civilian fleets to help manage your traders and miners.
 - Our GitHub repository: https://github.com/Vectorial1024/v1024_civilian_fleets
 - Our Nexus page: https://www.nexusmods.com/x4foundations/mods/335
 - Our EgoSoft Forums page: https://forum.egosoft.com/viewtopic.php?f=181&t=418144
-- Our Steam Workshop page: coming soon!
+- Our Steam Workshop page: https://steamcommunity.com/sharedfiles/filedetails/?id=2092839403
 
 ## Quick Start Guide
 You should check the Nexus page for more details, but, if you want to form/join a civilian fleet:
@@ -26,11 +26,11 @@ You should check the Nexus page for more details, but, if you want to form/join 
 8. Profit.
 
 ## Requirements
-- Right Click API
-  - Previously a pre-requisite, now a very strong recommendation
-  - Their Nexus page: https://www.nexusmods.com/x4foundations/mods/322
+- ~~Right Click API~~
+  - No longer required! All things now rely on SirNukes Mod Supprot APIs, which is described below:
 - SirNukes Mod Support APIs
   - Required: allows you to configure some parts of this mod
+  - Required: also allows adding the right-click menus
   - Their Steam Workshop page: https://steamcommunity.com/sharedfiles/filedetails/?id=2042901274
 
 ## Cross-Mod Compatibility
