@@ -41,6 +41,7 @@ Centralizes everything related to SirNukes Mod Support API for better management
                     <!-- The flag is set. We have loaded SirNukes API. -->
                     <show_help position="1" duration="6s" custom="'V1024-CF: Civilian Fleets has successfully detected SirNukes Mod Support API.'"/>
                     <show_help position="1" duration="6s" custom="'V1024-CF: Some configurable options are available at Game Menu -> Extension Options.'"/>
+                    <show_help position="1" duration="6s" custom="'V1024-CF: As an added bonus, this mod will never require Right Click API again in the future.'"/>
                 </do_if>
                 <show_help position="1" duration="10s" custom="'SirNukes API flag set to: ' + @global.$v1024_flags_hasSirNukesAPI" chance="0"/>
             </actions>
