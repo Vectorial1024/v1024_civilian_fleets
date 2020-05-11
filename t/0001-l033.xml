@@ -11,11 +11,11 @@
         <t id="1201">Distribution Mule Flotte</t>
         <t id="1202">Station Mule Flotte</t>
         <t id="1203">Travel Mule Flotte</t>
-        <t id="1204">Supply Mule Fleet</t>
+        <t id="1204">Supply Mule Flotte</t>
         <t id="2000">Former/rejoindre flotte minière</t>
         <t id="2001">Flotte minière</t>
-        <t id="100000">(SirNukes Modding API menu category)Civilian Fleets</t>
-        <t id="100001">Toggle civilian fleet auto-rename</t>
-        <t id="100002">Determines if civilian fleets should automatically update its fleet name \(will only affect future rename attempts\).\n\nEnabled by default, effective immediately.</t>
+        <t id="100000">(SirNukes Modding API menu category)Flotte civile</t>
+        <t id="100001">Basculer l'auto-renomination de la flotte civile</t>
+        <t id="100002">Détermine si les flottes civiles doivent automatiquement mettre à jour le nom de leur flotte \(n'affectera que les futures tentatives de renommage\).\n\nActivé par défaut, avec effet immédiat.</t>
     </page>
 </language>
