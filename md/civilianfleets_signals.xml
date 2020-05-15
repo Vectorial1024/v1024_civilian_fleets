@@ -496,47 +496,8 @@ You gotta pick the variables back up after usage!
                 </do_else>
 
                 <do_if value="global.$v1024cf_should_rename_fleets and $syncSuccessful" comment="Also update wing name when civ fleet is identified.">
-                    <!-- Confirm the Dictionary's existence -->
-                    <do_if value="not (global.$civFleets_FleetIdMapping)">
-                        <set_value name="global.$civFleets_FleetIdMapping" exact="[]" />
-                    </do_if>
-                    <!-- Confirm the counter's existence -->
-                    <do_if value="not (global.$civFleet_CurrentMaxWingID?)">
-                        <set_value name="global.$civFleet_CurrentMaxWingID" exact="0" />
-                    </do_if>
-                    <!-- Confirm that the wing commander is a known civilian fleet leader -->
-                    <set_value name="$selectedID" exact="-1" />
-                    <do_all exact="global.$civFleets_FleetIdMapping.count" counter="$i">
-                        <set_value name="$currentMapping" exact="global.$civFleets_FleetIdMapping.{$i}" />
-                        <do_if value="$fromShip == $currentMapping.{1}">
-                            <set_value name="$selectedID" exact="$currentMapping.{2}" />
-                            <break />
-                        </do_if>
-                    </do_all>
-                    <do_if value="$selectedID == -1">
-                        <!-- Brand-new civilian fleet! Getting a new ID here. -->
-                        <set_value name="global.$civFleet_WingID" exact="global.$civFleet_WingID + 1" />
-                        <set_value name="$selectedID" exact="global.$civFleet_WingID" />
-                        <append_to_list name="global.$civFleets_FleetIdMapping" exact="[$fromShip, $selectedID]" />
-                    </do_if>
-
-                    <!-- Set the correct name -->
-                    <substitute_text source="{221024, 1}" text="$cleanName">
-                        <replace string="'$ID$'" with="$selectedID" />
-                    </substitute_text>
-
-                    <!-- Determine civilian fleet appending tag -->
-                    <set_value name="$civFleet_CmdTagPairs" exact="global.$civFleet_CmdTagPairs" />
-                    <set_value name="$appendingWingName" exact="''" />
-                    <do_all exact="$civFleet_CmdTagPairs.count" counter="$i">
-                        <do_if value="($fromShip.defaultorder.id == $civFleet_CmdTagPairs.{$i}.{1})">
-                            <set_value name="$appendingWingName" exact="' %1'.[$civFleet_CmdTagPairs.{$i}.{2}]" />
-                            <break/>
-                        </do_if>
-                    </do_all>
-                    
-                    <!-- Actually setting the new fleet name -->
-                    <set_object_fleet_name object="$fromShip" name="'%1%2'.[$cleanName, $appendingWingName]" />
+                    <set_value name="$fleetLeader" exact="$fromShip" />
+                    <include_actions ref="UpdateCivilianFleetName" comment="Returns nothing, consumes $fleetLeader; updates the fleet name of the civilian fleet led by this ship." />
                 </do_if>
 
                 <!-- Out of scope variable removal -->
@@ -565,5 +526,69 @@ You gotta pick the variables back up after usage!
                 <remove_value name="$inputOrder" />
             </actions>
         </library>
+
+        <!-- Given a civilian fleet leader, updates the name of the civilian fleet it is in. -->
+        <!-- input: $fleetLeader, output: none -->
+        <library name="UpdateCivilianFleetName">
+            <actions>
+                <set_value name="$leader" exact="$fleetLeader" />
+
+                <do_if value="not (global.$civFleets_FleetIdMapping)">
+                    <set_value name="global.$civFleets_FleetIdMapping" exact="[]" />
+                </do_if>
+                <!-- Confirm the counter's existence -->
+                <do_if value="not (global.$civFleet_CurrentMaxWingID?)">
+                    <set_value name="global.$civFleet_CurrentMaxWingID" exact="0" />
+                </do_if>
+                <!-- Confirm that the wing commander is a known civilian fleet leader -->
+                <set_value name="$selectedID" exact="-1" />
+                <do_all exact="global.$civFleets_FleetIdMapping.count" counter="$i">
+                    <set_value name="$currentMapping" exact="global.$civFleets_FleetIdMapping.{$i}" />
+                    <do_if value="$leader == $currentMapping.{1}">
+                        <set_value name="$selectedID" exact="$currentMapping.{2}" />
+                        <break />
+                    </do_if>
+                </do_all>
+                <do_if value="$selectedID == -1">
+                    <!-- Brand-new civilian fleet! Getting a new ID here. -->
+                    <set_value name="global.$civFleet_WingID" exact="global.$civFleet_WingID + 1" />
+                    <set_value name="$selectedID" exact="global.$civFleet_WingID" />
+                    <append_to_list name="global.$civFleets_FleetIdMapping" exact="[$leader, $selectedID]" />
+                </do_if>
+
+                <!-- Set the correct name -->
+                <substitute_text source="{221024, 1}" text="$cleanName">
+                    <replace string="'$ID$'" with="$selectedID" />
+                </substitute_text>
+
+                <!-- Determine civilian fleet appending tag -->
+                <set_value name="$civFleet_CmdTagPairs" exact="global.$civFleet_CmdTagPairs" />
+                <set_value name="$appendingWingName" exact="''" />
+                <do_all exact="$civFleet_CmdTagPairs.count" counter="$i">
+                    <do_if value="($leader.defaultorder.id == $civFleet_CmdTagPairs.{$i}.{1})">
+                        <set_value name="$appendingWingName" exact="' %1'.[$civFleet_CmdTagPairs.{$i}.{2}]" />
+                        <break/>
+                    </do_if>
+                </do_all>
+
+                <!-- Actually setting the new fleet name -->
+                <set_object_fleet_name object="$leader" name="'%1%2'.[$cleanName, $appendingWingName]" />
+
+                <!-- Out-of-scope variable removal. -->
+                <remove_value name="$leader" />
+                <remove_value name="$fleetLeader" />
+            </actions>
+        </library>
+
+        <cue name="Signal_UpdateFleetName" instantiate="true">
+            <conditions>
+                <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" />
+            </conditions>
+            <delay exact="1000s" comment="Let the game generate a fleet name for our new fleet first, and then we make changes to it. This ensures that our fleet name stick around for our new fleet."/>
+            <actions>
+                <set_value name="$fleetLeader" exact="param2" />
+                <include_actions ref="UpdateCivilianFleetName" comment="Returns nothing, consumes $fleetLeader; updates the fleet name of the civilian fleet led by this ship." />
+            </actions>
+        </cue>
     </cues>
 </mdscript>

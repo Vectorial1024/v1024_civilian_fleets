@@ -33,6 +33,19 @@ Do:
                 </do_if>
             </do_if>
         </do_if>
+        <!-- Extra thing to do when initlaizing an empty civilian fleet. -->
+        <do_if value="$commander.isplayerowned and $commander.isclass.[class.ship]">
+            <!-- Assigning to ship. -->
+            <do_if value="($assignmentObj == assignment.trade and $commanderObject.type != shiptype.resupplier) or $assignmentObj == assignment.mining">
+                <!-- Is civilian fleet. -->
+                <do_if value="not $commander.commander? and $commander.subordinates.count == 0">
+                    <!-- 1st condition: not recursive assignment: we only want to handle top-level fleet formations. -->
+                    <!-- 2nd condition: fleet is a fresh fleet. -->
+                    <!-- Signal our MD script to rename the fleet. -->
+                    <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestUpdateWingName" param2="$commander" />
+                </do_if>
+            </do_if>
+        </do_if>
         <!-- We have done all we want to do. Pass back to vanilla handling. -->
     </add>
 </diff>
