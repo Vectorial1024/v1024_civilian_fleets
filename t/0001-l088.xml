@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- Specific language file: applies to Chinese (Traditional) only -->
-<!-- Our Chinese language policy: The Hong Kong-Style shall be used to translate texts to Traditional Chinese. -->
-<!-- Such translation will be strongly incompatible with the Simplified users, but should be somewhat compatible with users in Taiwan. -->
+<!-- Our Chinese language policy: the Hong Kong/Taiwan Style shall be used to translate texts to Traditional Chinese. -->
+<!-- Such translation will be strongly incompatible with the Simplified users, but should be readable for Hong Kongers and Taiwanese. -->
 <language id="88">
     <page id="221024" title="CivFleetsUI" descr="Text needed by this mod for GUI" voice="no">
         <!-- DO NOT CHANGE THE $ID$ PART, that part is used to fill the fleet number. -->
@@ -18,6 +18,6 @@
         <t id="2001">開採艦隊</t>
         <t id="100000">(SirNukes Modding API menu category)Civilian Fleets</t>
         <t id="100001">自動更新民用艦隊名稱</t>
-        <t id="100002">民用艦隊應否自動更新其所屬艦隊的名稱？\(只適用於未來自動改名的時候\)\n\n預設為開啟；此設定的更改將即時生效。</t>
+        <t id="100002">民用艦隊應否自動更新其所屬艦隊的名稱？\(只適用於以後自動改名的時候\)\n\n預設為開啟；當此設定被更改時，新設定將即時生效。</t>
     </page>
 </language>
