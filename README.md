@@ -13,6 +13,14 @@ Create civilian fleets to help manage your traders and miners.
 - Our EgoSoft Forums page: https://forum.egosoft.com/viewtopic.php?f=181&t=418144
 - Our Steam Workshop page: https://steamcommunity.com/sharedfiles/filedetails/?id=2092839403
 
+## Credits to the Community
+Without the help from the community, this mod will not be available in other languages.
+- French translation
+  - GitHub user abouquet
+  - EgoSoft Forums user o-papaya-o
+- German translation
+  - GitHub user LeLeon
+
 ## Quick Start Guide
 You should check the Nexus page for more details, but, if you want to form/join a civilian fleet:
 
