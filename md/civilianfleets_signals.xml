@@ -576,7 +576,7 @@ You gotta pick the variables back up after usage!
                 <!-- Given target must be a ship. -->
                 <check_value value="event.param2.isclass.ship" />
             </conditions>
-            <delay exact="1000s" comment="Let the game generate a fleet name for our new fleet first, and then we make changes to it. This ensures that our fleet name stick around for our new fleet."/>
+            <delay exact="1000ms" comment="Let the game generate a fleet name for our new fleet first, and then we make changes to it. This ensures that our fleet name stick around for our new fleet."/>
             <actions>
                 <show_help custom="'Check ' + event.param + ' || ' + global.$v1024_symbols_requestUpdateWingName" position="1" duration="2s" chance="100" chance="0" />
                 <show_help custom="'Syncing fleet name from Galactic Signal with leader = ' + event.param2.knownname + '; player age = ' + player.age" position="1" duration="2s" chance="0" />
