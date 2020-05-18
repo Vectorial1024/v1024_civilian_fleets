@@ -32,40 +32,22 @@ You gotta pick the variables back up after usage!
             param2 = fromShip
             param3 = toShip
         -->
-        <cue name="Signal_SyncOrders" instantiate="true">
+        <cue name="Signal_SyncOrders" instantiate="true" version="2">
             <conditions>
                 <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" />
+                <!-- Characteristic symbol must match. -->
+                <check_value value="event.param == global.$v1024_symbols_requestOrderSync" />
+                <!-- Both targets must be non-null. -->
+                <check_value value="event.param2 != null and event.param3 != null" />
+                <!-- Both must be ships. -->
+                <check_value value="event.param2.isclass.ship and event.param3.isclass.ship" />
             </conditions>
             <delay min="100ms" max="5000ms" comment="Delay randomly to spread out the performance spike." />
             <actions>
                 <set_value name="$fromShip" exact="event.param2" />
                 <set_value name="$toShip" exact="event.param3" />
 
-                <do_if value="$fromShip == null or $toShip == null">
-                    <show_help custom="'Source and/or target be null! Cannot sync!'" position="1" duration="3s" chance="0" />
-                    <remove_value name="$fromShip" />
-                    <remove_value name="$toShip" />
-                    <cancel_cue cue="this" />
-                </do_if>
-
-                <!--
-                <show_help custom="'Tryna sync from ' + $fromShip.knownname + ' to ' + $toShip.knownname" position="1" duration="3s" />
-                -->
-
-                <do_if value="not $fromShip.isclass.ship">
-                    <show_help custom="'Source is not a ship! Improper action.'" position="1" duration="3s" chance="0" />
-                    <remove_value name="$fromShip" />
-                    <remove_value name="$toShip" />
-                    <cancel_cue cue="this" />
-                </do_if>
-                <do_if value="not $toShip.isclass.ship">
-                    <show_help custom="'Target is not a ship! Improper action.'" position="1" duration="3s" chance="0" />
-                    <remove_value name="$fromShip" />
-                    <remove_value name="$toShip" />
-                    <cancel_cue cue="this" />
-                </do_if>
-
-                <!--show_help custom="'Syncing orders from ' + $fromShip.knownname + ' to ' + $toShip.knownname" position="1" duration="4s" /-->
+                <show_help custom="'Syncing orders from ' + $fromShip.knownname + ' to ' + $toShip.knownname" position="1" duration="0.5s" chance="0" />
 
                 <!-- Caching to allow faster script execution. -->
                 <set_value name="$assignmentSkillLevel" exact="[$fromShip.pilot.skill.management, $toShip.pilot.skill.piloting].max / 3" comment="The 'skill level' designated by vanilla game, if it were to assign a ship to a station." />
@@ -580,13 +562,24 @@ You gotta pick the variables back up after usage!
             </actions>
         </library>
 
-        <cue name="Signal_UpdateFleetName" instantiate="true">
+        <!-- 
+        Given the leader of the civilian fleet, updates the fleet name.
+        The fleet name depends on the fleet type.
+            param1 = That Characteristic Symbol
+            param2 = civilian fleet leader
+        -->
+        <cue name="Signal_UpdateFleetName" instantiate="true" version="2">
             <conditions>
                 <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_requestUpdateWingName" />
+                <!-- Characteristic symbol must match. -->
+                <check_value value="event.param == global.$v1024_symbols_requestUpdateWingName" />
+                <!-- Given target must be a ship. -->
+                <check_value value="event.param2.isclass.ship" />
             </conditions>
             <delay exact="1000s" comment="Let the game generate a fleet name for our new fleet first, and then we make changes to it. This ensures that our fleet name stick around for our new fleet."/>
             <actions>
-                <show_help custom="'Syncing fleet name from Galactic Signal with leader = ' + event.param2.knownname" position="1" duration="4s" chance="100" />
+                <show_help custom="'Check ' + event.param + ' || ' + global.$v1024_symbols_requestUpdateWingName" position="1" duration="2s" chance="100" chance="0" />
+                <show_help custom="'Syncing fleet name from Galactic Signal with leader = ' + event.param2.knownname + '; player age = ' + player.age" position="1" duration="2s" chance="0" />
                 <set_value name="$fleetLeader" exact="event.param2" />
                 <include_actions ref="UpdateCivilianFleetName" comment="Returns nothing, consumes $fleetLeader; updates the fleet name of the civilian fleet led by this ship." />
             </actions>
