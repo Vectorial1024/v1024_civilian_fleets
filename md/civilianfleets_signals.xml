@@ -582,11 +582,12 @@ You gotta pick the variables back up after usage!
 
         <cue name="Signal_UpdateFleetName" instantiate="true">
             <conditions>
-                <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" />
+                <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_requestUpdateWingName" />
             </conditions>
             <delay exact="1000s" comment="Let the game generate a fleet name for our new fleet first, and then we make changes to it. This ensures that our fleet name stick around for our new fleet."/>
             <actions>
-                <set_value name="$fleetLeader" exact="param2" />
+                <show_help custom="'Syncing fleet name from Galactic Signal with leader = ' + event.param2.knownname" position="1" duration="4s" chance="100" />
+                <set_value name="$fleetLeader" exact="event.param2" />
                 <include_actions ref="UpdateCivilianFleetName" comment="Returns nothing, consumes $fleetLeader; updates the fleet name of the civilian fleet led by this ship." />
             </actions>
         </cue>
