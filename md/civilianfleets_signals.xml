@@ -17,11 +17,11 @@ You gotta pick the variables back up after usage!
                 <set_value name="global.$v1024_symbols_requestUpdateWingName" value="'requesting update wing name'" />
 
                 <do_if value="not (global.$v1024cf_should_rename_fleets?)">
-                    <set_value name="global.$v1024cf_should_rename_fleets" exact ="true" />
+                    <set_value name="global.$v1024cf_should_rename_fleets" exact="true" />
                 </do_if>
 
                 <!-- indicate that we have loaded our mod successfully. -->
-                <set_value name="global.$v1024cf_mod_loaded" exact ="true" />
+                <set_value name="global.$v1024cf_mod_loaded" exact="true" />
             </actions>
         </cue>
 
