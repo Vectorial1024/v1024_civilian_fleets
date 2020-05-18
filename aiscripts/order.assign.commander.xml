@@ -16,7 +16,7 @@ Do:
         <do_if value="@global.$v1024_flags_fallbackModeActive and $commander.isplayerowned">
             <!-- Right click API not loaded. Prerequisite 1 satisfied. -->
             <!-- Check 1. -->
-            <do_if value="$commander.isclass.[class.ship]">
+            <do_if value="$commander.isclass.ship">
                 <!-- Is 1. Now check 2. -->
                 <set_value name="$thisship" exact="this.object" />
                 <do_if value="$commander.primarypurpose == $thisship.primarypurpose">
@@ -34,7 +34,7 @@ Do:
             </do_if>
         </do_if>
         <!-- Extra thing to do when initlaizing an empty civilian fleet. -->
-        <do_if value="$commander.isplayerowned and $commander.isclass.[class.ship]">
+        <do_if value="$commander.isplayerowned and $commander.isclass.ship">
             <!-- Assigning to ship. -->
             <do_if value="($assignmentObj == assignment.trade and $commanderObject.type != shiptype.resupplier) or $assignmentObj == assignment.mining">
                 <!-- Is civilian fleet. -->
