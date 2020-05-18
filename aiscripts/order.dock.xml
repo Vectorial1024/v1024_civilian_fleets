@@ -28,7 +28,10 @@ Betty docks for the player via Auto-Pilot.
 
             <!-- However, ships may have stations as their commanders. -->
             <!-- Check condition 2 first such that middle-commanders may obtain updated commands first before broadcsating. -->
-            <do_if value="$commanderObject != null and $commanderObject.isclass.ship">
+            <do_if value="$commanderObject == null">
+                <!-- No commander, nothing to do. -->
+            </do_if>
+            <do_elseif value="$commanderObject.isclass.ship">
                 <!-- Might be civilian subordinate of a civ-fleet. -->
                 <set_value name="$assignmentObj" exact="$thisship.assignment" />
                 <!-- v3.0 allows resupplier ships to receive trade subordinates; this is not what we are interested in. -->
@@ -39,7 +42,18 @@ Betty docks for the player via Auto-Pilot.
                     <!-- Delegate to standardized static config method to ensure save-game compatibility. -->
                     <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$commanderObject" param3="$thisship" />
                 </do_if>
-            </do_if>
+            </do_elseif>
+            <do_elseif value="$commanderObject.isclass.station">
+                <!-- Also allow station traders/miners to update their warebsakets irregularly. -->
+                <set_value name="$assignmentObj" exact="$thisship.assignment" />
+                <do_if value="($assignmentObj == assignment.trade) or ($assignmentObj == assignment.mining) or ($assignmentObj == assignment.tradeforbuildstorage)">
+                    <!-- Trigger vanilla script to let them help us update the orders. -->
+                    <!-- This is much more safer than straight up copying everything over. -->
+                    <run_script name="'lib.request.orders'">
+                        <param name="object" value="$thisship"/>
+                    </run_script>
+                </do_if>
+            </do_elseif>
             <!-- Check condition 1: Commander-ship -->
             <do_if value="$thisship.subordinates.count and $thisship.defaultorder != null">
                 <!-- The original mod specifically mentioned allowing middle-commanders to lead civilian fleets. -->
