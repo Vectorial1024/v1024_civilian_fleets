@@ -423,9 +423,10 @@ You gotta pick the variables back up after usage!
                         <create_order object="$toShip" id="'TravelMule'" default="true">
                             <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />
                             <param name="maxDist" value="$fromShip_DefaultOrder.$maxDist" />
-                            <param name="profitMargin" value="$fromShip_DefaultOrder.$maxDist" />
+                            <param name="profitMargin" value="$fromShip_DefaultOrder.$profitMargin" />
+                            <param name="lockWares" value="$fromShip_DefaultOrder.$lockWares" />
                             <param name="specialWareBasket" value="$fromShip_DefaultOrder.$specialWareBasket" />
-                            <param name="minCargoUsed" value="$fromShip_DefaultOrder.$specialWareBasket" />
+                            <param name="minCargoUsed" value="$fromShip_DefaultOrder.$minCargoUsed" />
                             <param name="tradeWithBig" value="$fromShip_DefaultOrder.$tradeWithBig" />
                             <param name="tradeWithAll" value="$fromShip_DefaultOrder.$tradeWithAll" />
                             <param name="destList" value="$fromShip_DefaultOrder.$destList" />
