@@ -32,38 +32,20 @@ You gotta pick the variables back up after usage!
             param2 = fromShip
             param3 = toShip
         -->
-        <cue name="Signal_SyncOrders" instantiate="true">
+        <cue name="Signal_SyncOrders" instantiate="true" version="2">
             <conditions>
                 <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" />
+                <!-- Characteristic symbol must match. -->
+                <check_value value="event.param == global.$v1024_symbols_requestOrderSync" />
+                <!-- Both targets must be non-null. -->
+                <check_value value="event.param2 != null and event.param3 != null" />
+                <!-- Both must be ships. -->
+                <check_value value="event.param2.isclass.ship and event.param3.isclass.ship" />
             </conditions>
             <delay min="100ms" max="5000ms" comment="Delay randomly to spread out the performance spike." />
             <actions>
                 <set_value name="$fromShip" exact="event.param2" />
                 <set_value name="$toShip" exact="event.param3" />
-
-                <do_if value="$fromShip == null or $toShip == null">
-                    <show_help custom="'Source and/or target be null! Cannot sync!'" position="1" duration="3s" chance="0" />
-                    <remove_value name="$fromShip" />
-                    <remove_value name="$toShip" />
-                    <cancel_cue cue="this" />
-                </do_if>
-
-                <!--
-                <show_help custom="'Tryna sync from ' + $fromShip.knownname + ' to ' + $toShip.knownname" position="1" duration="3s" />
-                -->
-
-                <do_if value="not $fromShip.isclass.ship">
-                    <show_help custom="'Source is not a ship! Improper action.'" position="1" duration="3s" chance="0" />
-                    <remove_value name="$fromShip" />
-                    <remove_value name="$toShip" />
-                    <cancel_cue cue="this" />
-                </do_if>
-                <do_if value="not $toShip.isclass.ship">
-                    <show_help custom="'Target is not a ship! Improper action.'" position="1" duration="3s" chance="0" />
-                    <remove_value name="$fromShip" />
-                    <remove_value name="$toShip" />
-                    <cancel_cue cue="this" />
-                </do_if>
 
                 <!--show_help custom="'Syncing orders from ' + $fromShip.knownname + ' to ' + $toShip.knownname" position="1" duration="4s" /-->
 
