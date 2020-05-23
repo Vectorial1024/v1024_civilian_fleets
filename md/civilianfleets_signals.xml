@@ -16,6 +16,10 @@ You gotta pick the variables back up after usage!
                 <set_value name="global.$v1024_symbols_requestOrderSync" exact="'requesting order sync'" />
                 <set_value name="global.$v1024_symbols_requestUpdateWingName" exact="'requesting update wing name'" />
 
+                <write_to_logbook category="tips" title="'V1024 CF DEBUG'" text="'I am trying to set a new value to an old value: before %1'.[global.$v1024_symbols_requestUpdateWingName]" />
+                <set_value name="global.$v1024_symbols_requestUpdateWingName" exact="'requesting update wing name'" />
+                <write_to_logbook category="tips" title="'V1024 CF DEBUG'" text="'I am trying to set a new value to an old value: after %1'.[global.$v1024_symbols_requestUpdateWingName]" />
+
                 <do_if value="not (global.$v1024cf_should_rename_fleets?)">
                     <set_value name="global.$v1024cf_should_rename_fleets" exact="true" />
                 </do_if>
@@ -23,6 +27,9 @@ You gotta pick the variables back up after usage!
                 <!-- indicate that we have loaded our mod successfully. -->
                 <set_value name="global.$v1024cf_mod_loaded" exact="true" />
             </actions>
+            <patch sinceversion="">
+
+            </patch>
         </cue>
 
         <!--
@@ -344,6 +351,8 @@ You gotta pick the variables back up after usage!
                         <set_value name="$syncSuccessful" exact="true" />
 
                         <!-- Out of scope variable removal -->
+                        <remove_value name="$minBuy" />
+                        <remove_value name="$minSell" />
                         <remove_value name="$maxBuy" />
                         <remove_value name="$maxSell" />
                     </do_elseif>
