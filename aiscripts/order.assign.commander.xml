@@ -16,7 +16,7 @@ Do:
         <do_if value="@global.$v1024_flags_fallbackModeActive and $commander.isplayerowned">
             <!-- Right click API not loaded. Prerequisite 1 satisfied. -->
             <!-- Check 1. -->
-            <do_if value="$commander.isclass.[class.ship]">
+            <do_if value="$commander.isclass.ship">
                 <!-- Is 1. Now check 2. -->
                 <set_value name="$thisship" exact="this.object" />
                 <do_if value="$commander.primarypurpose == $thisship.primarypurpose">
