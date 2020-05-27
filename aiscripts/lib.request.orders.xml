@@ -13,11 +13,6 @@ Do:
     <add sel="/aiscript[@name='lib.request.orders']/attention/actions/do_else/do_else/do_else" pos="before">
         <!-- At this point, definitely assigning to another ship, no need to double-check. -->
 
-        <!--
-        <show_help position="1" duration="2s" custom="'Right click API status: ' + global.$v1024_flags_hasRightClickAPI"/>
-        <show_help position="1" duration="2s" custom="'Test 1 ' + (global.$v1024_flags_hasRightClickAPI == 0)"/>
-        <show_help position="1" duration="2s" custom="'Test 2 ' + (global.$v1024_flags_hasRightClickAPI == false)"/>
-        -->
         <!-- Case: Assigning ships to civilian fleets; Right Click API-related mess is already handled in order.assign.commander. -->
         <do_elseif value="($assignment == assignment.trade and $commander.type != shiptype.resupplier) or $assignment == assignment.mining">
             <do_if value="$object.isplayerowned" comment="Ignore non-player ships to boost performance">

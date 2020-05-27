@@ -98,9 +98,6 @@ You gotta pick the variables back up after usage!
                 -->
                 <do_if value="$toShip.assignment == assignment.mining">
                     <show_help position="1" duration="1s" custom="'Mining! ' + $fromShip.name + ' -> ' + $toShip.name" chance="0"/>
-                    <do_if value="not global.$v1024_flags_hasRightClickAPI" comment="Fallback mode code">
-                        <set_object_commander object="$toShip" commander="$fromShip" assignment="assignment.mining"/>
-                    </do_if>
                     <!-- Even though there are several different versions of mining scripts, they all have the same list of parameters. -->
                     <set_value name="$inputOrder" exact="$fromShip_DefaultOrder" />
                     <include_actions ref="CheckOrderIsMining" comment="Returns $isMiningOrder, consumes $inputOrder; determines whether the given order is one of the several vanilla mining orders." />
@@ -234,9 +231,6 @@ You gotta pick the variables back up after usage!
                 </do_if>
                 <do_elseif value="$toShip.assignment == assignment.trade">
                     <show_help position="1" duration="1s" custom="'Trading! ' + $fromShip.name + ' -> ' + $toShip.name" chance="0"/>
-                    <do_if value="not global.$v1024_flags_hasRightClickAPI" comment="Fallback mode code">
-                        <set_object_commander object="$toShip" commander="$fromShip" assignment="assignment.trade"/>
-                    </do_if>
                     <!-- Make sure the fromShip really is trading -->
                     <do_if value="$fromShip_DefaultOrder.id == 'TradeRoutine'">
                         <!-- Vanilla AutoTrade behavior -->
