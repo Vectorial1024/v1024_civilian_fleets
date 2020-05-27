@@ -13,7 +13,7 @@ Do:
     <add sel="/aiscript[@name='order.assign.commander']/attention/actions/do_if[1]" pos="prepend">
         <!-- Super early checking. -->
         <!-- Also ignore non-player ships for performance. -->
-        <do_if value="@global.$v1024_flags_fallbackModeActive and $commander.isplayerowned">
+        <do_if value="$commander.isplayerowned and @global.$v1024_flags_fallbackModeActive">
             <!-- Right click API not loaded. Prerequisite 1 satisfied. -->
             <!-- Check 1. -->
             <do_if value="$commander.isclass.ship">
