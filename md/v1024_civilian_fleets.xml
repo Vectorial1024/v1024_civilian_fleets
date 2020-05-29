@@ -37,6 +37,15 @@
 
         <!-- To make sub-mods for this mod, simply append to the above list after this cue is complete. -->
       </actions>
-    </cue>    
+    </cue>
+    <cue name="CivilianFleets_SanityMinersCompat" instantiate="true" version="2">
+      <conditions>
+        <event_cue_completed cue="CivilianFleets_SettingUp" />
+      </conditions>
+      <actions>
+        <!-- Compatibility with Sanity Miners -->
+        <append_to_list name="global.$civFleet_CmdTagPairs" exact="['Sanity_SectorAutoMine', {221024, 2001}]" />
+      </actions>
+    </cue>
   </cues>
 </mdscript>
