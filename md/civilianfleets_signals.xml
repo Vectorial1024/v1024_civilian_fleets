@@ -387,17 +387,20 @@ You gotta pick the variables back up after usage!
                     <do_elseif value="$fromShip_DefaultOrder.id == 'SupplyMule'">
                         <!-- Misunderstood-Wookies' Mules and Warehouses Extended: Supply Mule behavior -->
                         <create_order object="$toShip" id="'SupplyMule'" default="true">
-                            <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />
+                            <param name="home" value="$fromShip_DefaultOrder.$home" />
                             <!-- Making this false because otherwise the fleet gets disbanded if the commander is assigned to source. -->
-                            <param name="assignSrc" value="false" />
-                            <param name="dedicatedServe" value="$fromShip_DefaultOrder.$dedicatedServe" />
-                            <param name="tradeWithOwn" value="$fromShip_DefaultOrder.$tradeWithOwn" />
-                            <param name="maxtrades" value="$fromShip_DefaultOrder.$maxtrades" />
                             <param name="maxDist" value="[$toShip.pilot.skill.piloting * 2, $fromShip_DefaultOrder.$maxDist].min" />
-                            <param name="builder" value="$fromShip_DefaultOrder.$builder" />
-                            <param name="producer" value="$fromShip_DefaultOrder.$producer" />
+                            <param name="assignHome" value="false" /> 
+                            <param name="dedicatedServe" value="$fromShip_DefaultOrder.$dedicatedServe" />
+                            <param name="allowPlayerSuppliers" value="$fromShip_DefaultOrder.$allowPlayerSuppliers" />
+                            <param name="allowAiSuppliers" value="$fromShip_DefaultOrder.$allowAiSuppliers" />
+                            <param name="allowBuildstorage" value="$fromShip_DefaultOrder.$allowBuildstorage" />
+                            <param name="allowResources" value="$fromShip_DefaultOrder.$allowResources" />
+                            <param name="allowIntermediates" value="$fromShip_DefaultOrder.$allowIntermediates" />
+                            <param name="allowTradewares" value="$fromShip_DefaultOrder.$allowTradewares" />
                             <param name="lockWares" value="$fromShip_DefaultOrder.$lockWares" />
                             <param name="specialWareBasket" value="$fromShip_DefaultOrder.$specialWareBasket" />
+                            <param name="maxTrades" value="$fromShip_DefaultOrder.$maxTrades" />
                             <param name="playerBuyMod" value="$fromShip_DefaultOrder.$playerBuyMod" />
                         </create_order>
                         <set_order_syncpoint_reached order="$toShip.order"/>
