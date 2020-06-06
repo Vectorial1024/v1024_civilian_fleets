@@ -60,7 +60,6 @@ You gotta pick the variables back up after usage!
                 <set_value name="$assignmentSkillLevel" exact="[$fromShip.pilot.skill.management, $toShip.pilot.skill.piloting].max / 3" comment="The 'skill level' designated by vanilla game, if it were to assign a ship to a station." />
                 <set_value name="$fromShip_DefaultOrder" exact="$fromShip.defaultorder" />
                 <set_value name="$toShip_DefaultOrder" exact="$toShip.defaultorder" />
-                <set_value name="$haveSameDefaultOrder" exact="$fromShip_DefaultOrder.id == $toShip_DefaultOrder.id" comment="Actually set default orders when orders are different, otherwise just update the values." />
 
                 <set_value name="$syncSuccessful" exact="false" />
 
@@ -237,23 +236,15 @@ You gotta pick the variables back up after usage!
                         <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
                         <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxsell, $assignmentSkillLevel].min" />
 
-                        <do_if value="$haveSameDefaultOrder">
-                            <edit_order_param order="$toShip_DefaultOrder" param="'warebasket'" value="$fromShip_DefaultOrder.$warebasket" />
-                            <edit_order_param order="$toShip_DefaultOrder" param="'range'" value="$fromShip_DefaultOrder.$range" />
-                            <edit_order_param order="$toShip_DefaultOrder" param="'maxbuy'" value="$maxBuy" />
-                            <edit_order_param order="$toShip_DefaultOrder" param="'maxsell'" value="$maxSell" />
-                        </do_if>
-                        <do_else>
-                             <create_order object="$toShip" id="'TradeRoutine'" default="true">
-                                <!-- In v2.5, only maxbuy and maxsell can be modified by the user. -->
-                                <!-- Hence, configuring minbuy and minsell becomes meaningless. -->
-                                <param name="warebasket" value="$fromShip_DefaultOrder.$warebasket" />
-                                <param name="range" value="$fromShip_DefaultOrder.$range" />
-                                <param name="maxbuy" value="$maxBuy" />
-                                <param name="maxsell" value="$maxSell" />
-                            </create_order>
-                            <set_order_syncpoint_reached order="$toShip.order"/>
-                        </do_else>
+                        <create_order object="$toShip" id="'TradeRoutine'" default="true">
+                            <!-- In v2.5, only maxbuy and maxsell can be modified by the user. -->
+                            <!-- Hence, configuring minbuy and minsell becomes meaningless. -->
+                            <param name="warebasket" value="$fromShip_DefaultOrder.$warebasket" />
+                            <param name="range" value="$fromShip_DefaultOrder.$range" />
+                            <param name="maxbuy" value="$maxBuy" />
+                            <param name="maxsell" value="$maxSell" />
+                        </create_order>
+                        <set_order_syncpoint_reached order="$toShip.order"/>
                         <set_value name="$syncSuccessful" exact="true" />
 
                         <!-- Out of scope variable removal -->
