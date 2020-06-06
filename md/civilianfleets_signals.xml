@@ -48,6 +48,8 @@ You gotta pick the variables back up after usage!
                 <check_value value="event.param2 != null and event.param3 != null" />
                 <!-- Both must be ships. -->
                 <check_value value="event.param2.isclass.ship and event.param3.isclass.ship" />
+                <!-- Source ship must have a valid default command. -->
+                <check_value value="event.param2.defaultorder" />
             </conditions>
             <delay min="100ms" max="5000ms" comment="Delay randomly to spread out the performance spike." />
             <actions>
