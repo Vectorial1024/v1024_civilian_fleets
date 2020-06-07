@@ -27,9 +27,6 @@ You gotta pick the variables back up after usage!
                 <!-- indicate that we have loaded our mod successfully. -->
                 <set_value name="global.$v1024cf_mod_loaded" exact="true" />
             </actions>
-            <patch sinceversion="">
-
-            </patch>
         </cue>
 
         <!--
