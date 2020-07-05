@@ -17,5 +17,7 @@
         <t id="100000">(SirNukes Modding API menu category)Civilian Fleets</t>
         <t id="100001">Toggle civilian fleet auto-rename</t>
         <t id="100002">Determines if civilian fleets should automatically update its fleet name \(will only affect future rename attempts\).\n\nEnabled by default, effective immediately.</t>
+        <t id="100011">Toggle auto-rename includes anchor name</t>
+        <t id="100012">Determines if civilian fleets, if auto-rename is enabled, should also include the name of the anchor \(usually a space station or a location\) of the fleet leader when renaming \(will only affect future rename attempts\).\n\nEnabled by default, effective immediately.</t>
     </page>
 </language>

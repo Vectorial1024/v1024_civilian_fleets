@@ -17,5 +17,7 @@
         <t id="100000">(SirNukes Modding API menu category)Flotte civile</t>
         <t id="100001">Basculer l'auto-renomination de la flotte civile</t>
         <t id="100002">Détermine si les flottes civiles doivent automatiquement mettre à jour le nom de leur flotte \(n'affectera que les futures tentatives de renommage\).\n\nActivé par défaut, avec effet immédiat.</t>
+        <t id="100011">Toggle auto-rename includes anchor name</t>
+        <t id="100012">Determines if civilian fleets, if auto-rename is enabled, should also include the name of the anchor \(usually a space station or a location\) of the fleet leader when renaming \(will only affect future rename attempts\).\n\nEnabled by default, effective immediately.</t>
     </page>
 </language>
