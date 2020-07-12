@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Specific language file: applies to Japanese only -->
+<language id="81">
+    <page id="221024" title="CivFleetsUI" descr="Text needed by this mod for GUI" voice="no">
+        <!-- DO NOT CHANGE THE $ID$ PART, that part is used to fill the fleet number. -->
+        <t id="1">民間 $ID$</t>
+        <t id="1000">結成/参加 交易艦隊</t>
+        <t id="1001">交易艦隊</t>
+        <t id="1002">流通艦隊</t>
+        <t id="1101">TaterTrade 艦隊</t>
+        <t id="1201">Distribution Mule 艦隊</t>
+        <t id="1202">Station Mule 艦隊</t>
+        <t id="1203">Travel Mule 艦隊</t>
+        <t id="1204">Supply Mule 艦隊</t>
+        <t id="2000">結成/参加 採掘艦隊</t>
+        <t id="2001">採掘艦隊</t>
+        <t id="100000">(SirNukes Modding API menu category)Civilian Fleets</t>
+        <t id="100001">民間艦隊の艦隊名自動変更</t>
+        <t id="100002">民間艦隊の艦隊名を自動的に変更します。 \(次回以降の名前変更時にのみ影響します\)\n\nデフォルトは有効です。設定の変更後、直ちに反映されます。</t>
+    </page>
+</language>
