@@ -66,6 +66,17 @@ Centralizes everything related to SirNukes Mod Support API for better management
                         $type       = 'button',
                         $callback   = RenameFleets_OnChange,
                         ]"/>
+                    <signal_cue_instantly
+                    cue="md.Simple_Menu_Options.Register_Option"
+                    param = "table[
+                        $category   = {221024, 100000},
+                        $id         = 'v1024cf_anchor_info',
+                        $name       = {221024, 100011},
+                        $mouseover  = {221024, 100012},
+                        $default    = 1,
+                        $type       = 'button',
+                        $callback   = AppendAnchorSpace_OnChange,
+                        ]"/>
                 <set_value name="global.$v1024_flags_hasSirNukesAPI" exact="true" />
             </actions>
         </cue>
@@ -76,6 +87,15 @@ Centralizes everything related to SirNukes Mod Support API for better management
             <actions>
                 <set_value name="global.$v1024cf_should_rename_fleets" exact ="if (event.param.$value) then true else false" />
                 <show_help custom="'Settings updated; fleet rename is now ' + global.$v1024cf_should_rename_fleets" position="1" duration="3s" chance="0" />
+            </actions>
+        </cue>
+        <cue name="AppendAnchorSpace_OnChange" instantiate="true">
+            <conditions>
+                <event_cue_signalled />
+            </conditions>
+            <actions>
+                <set_value name="global.$v1024cf_append_anchor_space" exact ="if (event.param.$value) then true else false" />
+                <show_help custom="'Settings updated; anchor info is now ' + global.$v1024cf_append_anchor_space" position="1" duration="3s" chance="0" />
             </actions>
         </cue>
     </cues>

@@ -17,5 +17,7 @@
         <t id="100000">(SirNukes Modding API menu category)Civilian Fleets</t>
         <t id="100001">民間艦隊の艦隊名自動変更</t>
         <t id="100002">民間艦隊の艦隊名を自動的に変更します。 \(次回以降の名前変更時にのみ影響します\)\n\nデフォルトは有効です。設定の変更後、直ちに反映されます。</t>
+        <t id="100011">Toggle auto-rename includes anchor name</t>
+        <t id="100012">Determines if civilian fleets, if auto-rename is enabled, should also include the name of the anchor \(usually a space station or a location\) of the fleet leader when renaming \(will only affect future rename attempts\).\n\nEnabled by default, effective immediately.</t>
     </page>
 </language>
