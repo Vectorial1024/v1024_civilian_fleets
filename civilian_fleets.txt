@@ -95,10 +95,10 @@ function L.V1024CF_AdditionalAssignmentActions(actiontype, istobedisplayed)
             --Luckily, this results in me having to do less work.
             --menu.insertAssignSubActions("selected_assignments_attack", "attack", menu.buttonAssignCommander, groups, isstation)
             if (enableMiningFleet) then
-                menu.insertAssignSubActions("selected_assignments_mining", "mining", menu.buttonAssignCommander, groups, isstation)
+                menu.insertAssignSubActions("selected_assignments_mining", "mining", menu.buttonAssignCommander, groups, isstation, true)
             end
             if (enableTradingFleet) then
-                menu.insertAssignSubActions("selected_assignments_trade", "trade", menu.buttonAssignCommander, groups, isstation)
+                menu.insertAssignSubActions("selected_assignments_trade", "trade", menu.buttonAssignCommander, groups, isstation, true)
             end
         end
 	end
