@@ -28,6 +28,8 @@ local function initializeBySirNukes()
         originalFunc(actiontype, istobedisplayed)
         if actiontype == "assign" then
             L.V1024CF_AdditionalAssignmentActions(actiontype, istobedisplayed)
+        elseif actiontype == "manageassignments" then
+            L.V1024CF_AdditionalManageAssignmentActions(actiontype, istobedisplayed)
         end
     end
 end
@@ -102,6 +104,10 @@ function L.V1024CF_AdditionalAssignmentActions(actiontype, istobedisplayed)
             end
         end
 	end
+end
+
+function L.V1024CF_AdditionalManageAssignmentActions(actiontype, istobedisplayed)
+    
 end
 
 initializeBySirNukes()
