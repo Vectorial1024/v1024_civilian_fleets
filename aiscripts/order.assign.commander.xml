@@ -35,4 +35,6 @@ Do:
         </do_if>
         <!-- We have done all we want to do. Pass back to vanilla handling. -->
     </add>
+
+    <remove sel="/aiscript[@name='order.assign.commander']/attention/actions/do_if[1]/do_if[@value='$assignment']/do_if[2]/set_value" />
 </diff>
