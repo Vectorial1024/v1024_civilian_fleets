@@ -10,6 +10,11 @@ Do:
 3. If [2] returns true, set the assignment to a value recognized by our other scripts (assignment.trade or assignment.mining)
 -->
 <diff>
+    <!-- It seems that if we update a diff file, you gotta (so to speak) reapply the mod to the savegame. -->
+    <replace sel="/aiscript[@name='order.assign.commander']/attention/actions/do_if[1]/do_if[@value='$assignment']/do_if[2]">
+        <show_help position="1" duration="2s" custom="'Disabling EgoSoft\'s safety checks.'" chance="100"/>
+    </replace>
+
     <add sel="/aiscript[@name='order.assign.commander']/attention/actions/do_if[1]" pos="prepend">
         <!-- Super early checking. -->
         <!-- Also ignore non-player ships for performance. -->
@@ -35,6 +40,4 @@ Do:
         </do_if>
         <!-- We have done all we want to do. Pass back to vanilla handling. -->
     </add>
-
-    <remove sel="/aiscript[@name='order.assign.commander']/attention/actions/do_if[1]/do_if[@value='$assignment']/do_if[2]/set_value" />
 </diff>
