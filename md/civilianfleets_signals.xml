@@ -105,7 +105,7 @@ You gotta pick the variables back up after usage!
                     </do_if>
                     <set_value name="global.$v1024_list_ship_is_mining.{$toShip}" exact="true" />
                 </do_if>
-                <do_if value="$toShip.assignment == assignment.mining or global.$v1024_list_ship_is_mining.{this.ship} == true">
+                <do_if value="$toShip.assignment == assignment.mining or global.$v1024_list_ship_is_mining.{$toShip} == true">
                     <show_help position="1" duration="1s" custom="'Mining! ' + $fromShip.name + ' -> ' + $toShip.name" chance="0"/>
                     <!-- Even though there are several different versions of mining scripts, they all have the same list of parameters. -->
                     <set_value name="$inputOrder" exact="$fromShip_DefaultOrder" />
