@@ -107,7 +107,8 @@ function L.V1024CF_AdditionalAssignmentActions(actiontype, istobedisplayed)
 end
 
 function L.V1024CF_AdditionalManageAssignmentActions(actiontype, istobedisplayed)
-    
+    --Well I guess our attempts of UI modding will have to end at around this point, because EgoSoft seems inclined to standardize the ambiguous part of their Code
+    --One such clarification (disallow miners to get mining assignments under other miners) already knocked our mod out for a long time.
 end
 
 initializeBySirNukes()
