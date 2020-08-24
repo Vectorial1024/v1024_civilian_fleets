@@ -4,6 +4,7 @@
     <cue name="Kickstarter" checkinterval="10s" checktime="1s">
       <conditions>
         <!-- Consider the following cases: -->
+        <!-- Note: game claims that "event_cue_signalled is not allowed here". -->
         <check_any>
           <!-- Case 1: Fresh load from gamestart -->
           <event_cue_signalled cue="md.Setup.GameStart"/>
