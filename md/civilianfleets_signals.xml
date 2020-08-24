@@ -6,7 +6,7 @@ You gotta pick the variables back up after usage!
 -->
 <mdscript name="CivilianFleets_Signals" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
     <cues>
-        <cue name="SignalConfigurationControl" instantiate="true" version="3">
+        <cue name="SignalConfigurationControl" instantiate="true" version="4">
             <conditions>
                 <!-- Whatever happens, when the player enters the game state, set up the variables. -->
                 <event_cue_signalled cue="md.Setup.Start" />
@@ -39,7 +39,7 @@ You gotta pick the variables back up after usage!
             param2 = fromShip
             param3 = toShip
         -->
-        <cue name="Signal_SyncOrders" instantiate="true" version="3">
+        <cue name="Signal_SyncOrders" instantiate="true" version="4">
             <conditions>
                 <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" />
                 <!-- Characteristic symbol must match. -->
