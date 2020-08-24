@@ -12,7 +12,7 @@ Do:
 <diff>
     <!-- It seems that if we update a diff file, you gotta (so to speak) reapply the mod to the savegame. -->
     <replace sel="/aiscript[@name='order.assign.commander']/attention/actions/do_if[1]/do_if[@value='$assignment']/do_if[2]">
-        <show_help position="1" duration="2s" custom="'Disabling EgoSoft\'s safety checks.'" chance="100"/>
+        <show_help position="1" duration="2s" custom="'Disabling EgoSoft\'s safety checks.'" chance="0"/>
         <!-- These will throw errors because the expressions contained are not strings, however they are extremely effective in seeing what is the actual value. -->
         <show_help position="1" duration="2s" custom="$commander.isplayerowned" chance="0"/>
         <show_help position="1" duration="2s" custom="$commander.isclass.ship" chance="0"/>
