@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mdscript name="V1024_CivilianFleets_Hourly" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
+  <cues>
+    <cue name="Kickstarter" checkinterval="10s" checktime="1s">
+      <conditions>
+        <!-- Consider the following cases: -->
+        <!-- Note: game claims that "event_cue_signalled is not allowed here". -->
+        <check_any>
+          <!-- Case 1: Fresh load from gamestart -->
+          <event_cue_signalled cue="md.Setup.GameStart"/>
+          <!-- Case 2: Load from no-mod save -->
+          <check_all>
+            <event_cue_signalled cue="md.Setup.Start"/>
+            <check_value value="not (global.$v1024_flags_civFleets_Initialized?)"/>
+          </check_all>
+        </check_any>
+        <!--
+        <event_cue_signalled cue="md.Setup.Start" />
+        <cue_is_complete cue="md.Setup.GameStart"/>
+        <check_value value="player.galaxy.macro.ismacro.{macro.xu_ep2_universe_macro}"/>
+        -->
+        <!-- <check_value value="false" comment="Remove to enable"/> -->
+      </conditions>
+      <actions>
+        <set_value name="global.$v1024_flags_civFleets_Initialized" value="true"/>
+        <show_help custom="'Initilized.'" position="1" duration="5s" chance="0" />
+        <signal_cue_instantly cue="Loop_InitialDelay" />
+      </actions>
+    </cue>
+    <cue name="Loop_InitialDelay" instantiate="true">
+      <conditions>
+        <event_cue_signalled />
+      </conditions>
+      <delay exact="60s"/>
+      <actions>
+        <do_if value="player.age lt 1h">
+          <signal_cue_instantly cue="Loop_InitialDelay" />
+        </do_if>
+        <do_else>
+          <signal_cue_instantly cue="Loop_MainBody" />
+          <show_help custom="'Initial delay complete.'" position="1" duration="2s" chance="0" />
+        </do_else>
+      </actions>
+    </cue>
+    <cue name="Loop_MainBody" instantiate="true">
+      <conditions>
+        <event_cue_signalled />
+      </conditions>
+      <actions>
+        <show_help custom="'Main body.'" position="1" duration="5s" chance="0" />
+
+        <!-- clean up the miners' list, remove those that have already died. -->
+        <do_if value="not global.$v1024_list_miner_subordinates?">
+          <set_value name="global.$v1024_list_miner_subordinates" exact="[]" />
+        </do_if>
+        <do_all exact="global.$v1024_list_miner_subordinates.keys.count" counter="$i" reverse="true">
+          <set_value name="$currentKey" exact="global.$v1024_list_miner_subordinates.keys.{$i}" />
+          <do_if value="not @$currentKey.isoperational">
+            <!-- they are dead if it be like that, either removed by the game or persisting with a isoperational = false -->
+            <remove_value name="global.$v1024_list_miner_subordinates.{$currentKey}" />
+          </do_if>
+        </do_all>
+        <remove_value name="$currentKey" />
+
+        <signal_cue_instantly cue="Loop_Iterator" />
+      </actions>
+    </cue>
+    <cue name="Loop_Iterator" instantiate="true">
+      <conditions>
+        <event_cue_signalled />
+      </conditions>
+      <!-- Can also use 60min -->
+      <delay exact="1h"/>
+      <actions>
+        <signal_cue_instantly cue="Loop_MainBody" />
+        <show_help custom="'Cooldown complete.'" position="1" duration="2s" chance="0" />
+      </actions>
+    </cue>
+  </cues>
+</mdscript>

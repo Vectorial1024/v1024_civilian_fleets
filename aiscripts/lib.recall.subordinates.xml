@@ -27,7 +27,7 @@ Does not consider XS members, since they are drones, and drones should follow th
                 <!--
                 <set_value name="$isNonDrone" exact="$currentSubordinate.shiptype != shiptype.xsdrone and $currentSubordinate.shiptype != shiptype.smalldrone" />
                 -->
-                <do_if value="$isNonDrone and ($currentSubordinate.assignment == assignment.trade or $currentSubordinate.assignment == assignment.mining)">
+                <do_if value="$isNonDrone and ($currentSubordinate.assignment == assignment.trade or $currentSubordinate.assignment == assignment.mining or @global.$v1024_list_ship_is_mining.{this.ship} == true)">
                     <remove_from_group group="$subordinates" object="$currentSubordinate" />
                 </do_if>
             </do_all>
