@@ -43,7 +43,7 @@ Betty docks for the player via Auto-Pilot.
                     <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$commanderObject" param3="$thisship" />
                 </do_if>
             </do_elseif>
-            <do_elseif value="$commanderObject.isclass.station">
+            <do_elseif value="$commanderObject.isclass.station" chance="0" comment="Should already be fixed by EgoSoft themselves.">
                 <!-- Also allow station traders/miners to update their warebsakets irregularly. -->
                 <set_value name="$assignmentObj" exact="$thisship.assignment" />
                 <do_if value="($assignmentObj == assignment.trade) or ($assignmentObj == assignment.mining) or ($assignmentObj == assignment.tradeforbuildstorage)">
