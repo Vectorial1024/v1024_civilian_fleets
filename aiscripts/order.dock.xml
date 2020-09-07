@@ -34,8 +34,9 @@ Betty docks for the player via Auto-Pilot.
             <do_elseif value="$commanderObject.isclass.ship">
                 <!-- Might be civilian subordinate of a civ-fleet. -->
                 <set_value name="$assignmentObj" exact="$thisship.assignment" />
+                <set_value name="$minerStatus" exact="@global.$v1024_list_ship_is_mining.{$thisship}" />
                 <!-- v3.0 allows resupplier ships to receive trade subordinates; this is not what we are interested in. -->
-                <do_if value="($assignmentObj == assignment.trade and $commanderObject.type != shiptype.resupplier) or $assignmentObj == assignment.mining">
+                <do_if value="($assignmentObj == assignment.trade and $commanderObject.type != shiptype.resupplier) or $assignmentObj == assignment.mining or $minerStatus == true">
                     <!-- It is indeed a subordinate of a certain civilian fleet. -->
                     <!-- Sync from commander. -->
                     <debug_text text="'Civ Fleet beginning sync: pull initiated by Subordinate ' + $thisship.knownname" />
@@ -43,7 +44,7 @@ Betty docks for the player via Auto-Pilot.
                     <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$commanderObject" param3="$thisship" />
                 </do_if>
             </do_elseif>
-            <do_elseif value="$commanderObject.isclass.station">
+            <do_elseif value="$commanderObject.isclass.station" chance="0" comment="Should already be fixed by EgoSoft themselves.">
                 <!-- Also allow station traders/miners to update their warebsakets irregularly. -->
                 <set_value name="$assignmentObj" exact="$thisship.assignment" />
                 <do_if value="($assignmentObj == assignment.trade) or ($assignmentObj == assignment.mining) or ($assignmentObj == assignment.tradeforbuildstorage)">
@@ -67,7 +68,8 @@ Betty docks for the player via Auto-Pilot.
                         <do_all exact="$allSubordinates.count" counter="$i">
                             <set_value name="$currentSubordinate" exact="$allSubordinates.{$i}" />
                             <set_value name="$currentSubAssignObj" exact="$currentSubordinate.assignment" />
-                            <do_if value="$currentSubAssignObj == assignment.trade or $currentSubAssignObj == assignment.mining">
+                            <set_value name="$currentMinerStatus" exact="@global.$v1024_list_ship_is_mining.{$currentSubordinate}" />
+                            <do_if value="$currentSubAssignObj == assignment.trade or $currentSubAssignObj == assignment.mining or $currentMinerStatus == true">
                                 <!-- Delegate to standardized static config method to ensure save-game compatibility. -->
                                 <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$thisship" param3="$currentSubordinate" />
                             </do_if>
