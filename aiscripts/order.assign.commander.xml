@@ -38,6 +38,16 @@ Do:
     <add sel="/aiscript[@name='order.assign.commander']/attention/actions/do_if[1]" pos="prepend">
         <!-- Super early checking. -->
         <!-- Also ignore non-player ships for performance. -->
+        <do_if value="not $commander.isoperational" comment="Ship about to become unassigned.">
+            <!-- Ensure the table for fleet numbers exists; useful for when we attempt to find fleet numbers. -->
+            <do_if value="not global.$v1024_fleet_number_table?">
+                <set_value name="global.$v1024_fleet_number_table" exact="table[]" />
+            </do_if>
+
+            <!-- Ensure this loses the fleet number (and so will get a fleet new number), so fleet numbers cannot collide. -->
+            <set_value name="global.$v1024_fleet_number_table.{this.object}" exact="null" />
+            <show_help position="1" duration="2s" custom="'Unassigned; fleet number becomes : ' + @global.$v1024_fleet_number_table.{this.object}" chance="0"/>
+        </do_if>
         <do_if value="$commander.isplayerowned and @global.$v1024_flags_fallbackModeActive">
             <!-- Right click API not loaded. Prerequisite 1 satisfied. -->
             <!-- Check 1. -->

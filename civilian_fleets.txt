@@ -15,6 +15,17 @@ local Interface = require("extensions.sn_mod_support_apis.lua_interface")
 local Lib = require("extensions.sn_mod_support_apis.lua_library")
 local menu = nil
 
+-- SignalObject(target, (param1, param2, param3, delay))
+-- Function signature found at https://www.egosoft.com:8444/confluence/display/XRWIKI/Lua+function+overview
+-- can refer to https://github.com/bvbohnen/x4-projects/blob/e9709fb5dbadc0577002f12d69c872842e4217a8/extensions/sn_mod_support_apis/lua/named_pipes/Library.lua
+-- for an implementation example 
+
+function L.V1024CF_SignalGalaxy(param1, param2)
+    local player = ConvertStringTo64Bit(tostring(C.GetPlayerID()))
+    local galaxy = GetComponentData(player, "galaxyid")
+    SignalObject(galaxy, param1, param2)
+end
+
 local function initializeBySirNukes()
     DebugError("V1024 Civilian Fleets, UI component starting per the instructions of SirNukes.");
 
@@ -30,6 +41,36 @@ local function initializeBySirNukes()
             L.V1024CF_AdditionalAssignmentActions(actiontype, istobedisplayed)
         elseif actiontype == "manageassignments" then
             L.V1024CF_AdditionalManageAssignmentActions(actiontype, istobedisplayed)
+        end
+    end
+
+    -- We want to append to listen to the "remove assignment" event from script, but...
+    -- We noticed that UI functions under the "C." namespace are constant, and cannot be modified
+    -- As a result, we have to do it the original way, and append to the users isntead.
+    -- We will send a "galactic signal" to notify MD.
+    -- Inspired from: https://github.com/bvbohnen/x4-projects/blob/e9709fb5dbadc0577002f12d69c872842e4217a8/extensions/sn_mod_support_apis/lua/named_pipes/Library.lua
+
+    originalFuncOrderRemove = menu.orderRemove
+    menu.orderRemove = function(ship, removedefaultorder, removeassignment)
+        originalFuncOrderRemove(ship, removedefaultorder, removeassignment)
+        if removeassignment then
+            -- Note: passing UniverseID (basically the object hash) to the MD requires us to convert to Lua ID first.
+            -- Reference: https://www.egosoft.com:8444/confluence/display/XRWIKI/Getting+started+guide 
+            local convertedShip = ConvertStringToLuaID(tostring(ship))
+            L.V1024CF_SignalGalaxy("notifying ship commander removed", convertedShip)
+        end
+    end
+
+    originalFuncButtonRemoveAssignment = menu.buttonRemoveAssignment
+    menu.buttonRemoveAssignment = function(removeall)
+        originalFuncButtonRemoveAssignment(removeall)
+        local convertedShip = ConvertStringToLuaID(tostring(menu.componentSlot.component))
+        L.V1024CF_SignalGalaxy("notifying ship commander removed", convertedShip)
+        if removeall then
+            for _, ship in ipairs(menu.selectedplayerships) do
+                local convertedShip2 = ConvertStringToLuaID(tostring(ship))
+                L.V1024CF_SignalGalaxy("notifying ship commander removed", convertedShip2)
+            end
         end
     end
 end
