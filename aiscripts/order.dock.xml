@@ -22,6 +22,11 @@ Betty docks for the player via Auto-Pilot.
         <do_if value="$thisship.isplayerowned">
             <!-- Stations can't dock at somewhere else, so we do not need to check for stations. -->
 
+            <!-- Ensure the table for fleet numbers exists; useful for when we attempt to find fleet numbers. -->
+            <do_if value="not global.$v1024_fleet_number_table?">
+                <set_value name="global.$v1024_fleet_number_table" exact="table[]" />
+            </do_if>
+
             <!-- Set up variables. -->
             <set_value name="$commanderObject" exact="$thisship.commander" />
             <set_value name="$civFleet_CmdTagPairs" exact="global.$civFleet_CmdTagPairs" />

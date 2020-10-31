@@ -6,7 +6,7 @@ You gotta pick the variables back up after usage!
 -->
 <mdscript name="CivilianFleets_Signals" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
     <cues>
-        <cue name="SignalConfigurationControl" instantiate="true" version="4">
+        <cue name="SignalConfigurationControl" instantiate="true" version="5">
             <conditions>
                 <!-- Whatever happens, when the player enters the game state, set up the variables. -->
                 <event_cue_signalled cue="md.Setup.Start" />
@@ -69,7 +69,7 @@ You gotta pick the variables back up after usage!
             param2 = fromShip
             param3 = toShip
         -->
-        <cue name="Signal_SyncOrders" instantiate="true" version="4">
+        <cue name="Signal_SyncOrders" instantiate="true" version="5">
             <conditions>
                 <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" />
                 <!-- Characteristic symbol must match. -->
@@ -94,6 +94,11 @@ You gotta pick the variables back up after usage!
                 <set_value name="$toShip_DefaultOrder" exact="$toShip.defaultorder" />
 
                 <set_value name="$syncSuccessful" exact="false" />
+
+                <!-- Ensure the table for fleet numbers exists. -->
+                <do_if value="not global.$v1024_fleet_number_table?">
+                    <set_value name="global.$v1024_fleet_number_table" exact="table[]" />
+                </do_if>
 
                 <!--
                 Note to self:
@@ -516,33 +521,59 @@ You gotta pick the variables back up after usage!
                 </do_else>
 
                 <do_if value="global.$v1024cf_should_rename_fleets and $syncSuccessful" comment="Also update wing name when civ fleet is identified.">
-                    <!-- Confirm the Dictionary's existence -->
-                    <do_if value="not (global.$civFleets_FleetIdMapping)">
+                    <!-- Table of fleet number global.$v1024_fleet_number_table already ensured exists at order.dock.xml -->
+
+                    <!-- Confirm the (old) Dictionary's existence -->
+                    <do_if value="not (global.$civFleets_FleetIdMapping?)">
                         <set_value name="global.$civFleets_FleetIdMapping" exact="[]" />
                     </do_if>
-                    <!-- Confirm the counter's existence -->
-                    <do_if value="not (global.$civFleet_CurrentMaxWingID?)">
-                        <set_value name="global.$civFleet_CurrentMaxWingID" exact="0" />
-                    </do_if>
-                    <!-- Confirm that the wing commander is a known civilian fleet leader -->
-                    <set_value name="$selectedID" exact="-1" />
+                    <!-- Compatibility: move all previous fleet leader numbers to the "full-table-info" structure. -->
                     <do_all exact="global.$civFleets_FleetIdMapping.count" counter="$i">
                         <set_value name="$currentMapping" exact="global.$civFleets_FleetIdMapping.{$i}" />
-                        <do_if value="$fromShip == $currentMapping.{1}">
-                            <set_value name="$selectedID" exact="$currentMapping.{2}" />
-                            <break />
+                        <set_value name="$fleetLeader" exact="$currentMapping.{1}" />
+                        <set_value name="$ongoingFleetNumber" exact="$currentMapping.{2}" />
+                        <do_if value="$fleetLeader != null" comment="Dead, forgotten fleet leaders may appear here as null">
+                            <set_value name="global.$v1024_fleet_number_table.{$fleetLeader}" exact="$ongoingFleetNumber" />
                         </do_if>
                     </do_all>
-                    <do_if value="$selectedID == -1">
-                        <!-- Brand-new civilian fleet! Getting a new ID here. -->
-                        <set_value name="global.$civFleet_WingID" exact="global.$civFleet_WingID + 1" />
-                        <set_value name="$selectedID" exact="global.$civFleet_WingID" />
-                        <append_to_list name="global.$civFleets_FleetIdMapping" exact="[$fromShip, $selectedID]" />
+                    <remove_value name="$fleetLeader" />
+                    <remove_value name="$ongoingFleetNumber" />
+                    <!-- The old Dictionary is no longer needed. -->
+                    <remove_value name="global.$civFleets_FleetIdMapping" />
+
+                    <!-- Recursively find root. -->
+                    <set_value name="$rootCommander" exact="$fromShip" />
+                    <do_while value="$rootCommander.commander != null">
+                        <set_value name="$rootCommander" exact="$rootCommander.commander" />
+                    </do_while>
+
+                    <!-- We have found root. -->
+                    <show_help position="1" duration="2s" custom="'Root is : ' + $rootCommander.name" chance="0"/>
+                    <show_help position="1" duration="6s" custom="'Global table is : ' + global.$v1024_fleet_number_table" chance="0"/>
+                    <show_help position="1" duration="2s" custom="'Relevant fleet number is : ' + @global.$v1024_fleet_number_table.{$rootCommander}" chance="0"/>
+                    <set_value name="$selectedFleetNumber" exact="null" comment="Should default to next available fleet number, starting from 1" />
+                    <!-- Filter: require root = ship -->
+                    <do_if value="$rootCommander.isclass.ship">
+                        <!-- Valid civilian fleet tree; see if a fleet number already exists. -->
+                        <do_if value="@global.$v1024_fleet_number_table.{$rootCommander} != null">
+                            <!-- Exists; load it. -->
+                            <set_value name="$selectedFleetNumber" exact="global.$v1024_fleet_number_table.{$rootCommander}"/>
+                        </do_if>
+                        <do_else>
+                            <!-- Does not exist. Fallback to next available fleet number. -->
+                            <set_value name="global.$civFleet_WingID" exact="@global.$civFleet_WingID + 1" comment="null can be coerced into a 0. I put an @ just in case." />
+                            <set_value name="$selectedFleetNumber" exact="global.$civFleet_WingID" />
+                        </do_else>
+
+                        <!-- Apply the fleet numbers -->
+                        <set_value name="global.$v1024_fleet_number_table.{$rootCommander}" exact="$selectedFleetNumber" />
+                        <set_value name="global.$v1024_fleet_number_table.{$fromShip}" exact="$selectedFleetNumber" />
+                        <set_value name="global.$v1024_fleet_number_table.{$toShip}" exact="$selectedFleetNumber" />
                     </do_if>
 
                     <!-- Set the correct name -->
                     <substitute_text source="{221024, 1}" text="$cleanName">
-                        <replace string="'$ID$'" with="$selectedID" />
+                        <replace string="'$ID$'" with="$selectedFleetNumber" />
                     </substitute_text>
 
                     <!-- Determine civilian fleet appending tag -->
