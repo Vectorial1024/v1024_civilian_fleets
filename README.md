@@ -55,3 +55,9 @@ This mod also supports the following civilian default behaviors from other mods:
 - Mules and Warehouses Extended
   - Their GitHub repository: https://github.com/Misunderstood-Wookiee/Mules-and-Warehouses-Extended
   - Further instructions available at their GitHub readme
+- Sanity: Sector Miner
+  - Their GitHub repository: https://github.com/DeuxAlpha/sanity_sector-automine
+  - Their Steam Workshop page: https://steamcommunity.com/sharedfiles/filedetails/?id=2098605344
+  - Their EgoSoft Forums page: https://forum.egosoft.com/viewtopic.php?t=427342
+- Factory Transporter
+  - Their Steam Workshop page: https://steamcommunity.com/sharedfiles/filedetails/?id=2321672179
