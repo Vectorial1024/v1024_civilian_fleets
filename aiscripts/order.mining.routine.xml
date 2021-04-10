@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <diff>
-    <!-- See if we can find out the actual range of the miners. -->
+    <!-- See if we can find out the actual range of the miners. 
     <add sel="/aiscript[@name='order.mining.routine']/attention/actions" pos="prepend">
-        <!-- Enable to see that ships with AutoMine and with range > 5 will get their range trimmed to <= 5. -->
+        Enable to see that ships with AutoMine and with range > 5 will get their range trimmed to <= 5.
         <do_if value="this.isplayerowned" chance="0">
             <show_help custom="'Miner %s, now starting %s, has a range vector of (minBuy, maxBuy, minSell, maxSell) %s, %s, %s, %s.'.[this.knownname, $thisorder, $minbuy, $maxbuy, $minsell, $maxsell]" position="1" duration="5s" chance="0" />
         </do_if>
     </add>
+    -->
 </diff>
