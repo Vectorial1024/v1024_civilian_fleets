@@ -69,6 +69,7 @@ You gotta pick the variables back up after usage!
             param1 = That Characteristic Symbol
             param2 = fromShip
             param3 = toShip
+        Note: we no longer use this starting from base game v4.0+ due to the introduction of Mimic/Assist. We will transition to Mimic/Assist.
         -->
         <cue name="Signal_SyncOrders" instantiate="true" version="5">
             <conditions>
@@ -84,6 +85,8 @@ You gotta pick the variables back up after usage!
             </conditions>
             <delay min="100ms" max="5000ms" comment="Delay randomly to spread out the performance spike." />
             <actions>
+                <show_help custom="'[CivFleet] Please use global.$v1024_symbols_requestOrderSync_mimicryExtension instead.'" position="1" duration="4s" comment="Please use the oter endpoint instead" />
+
                 <set_value name="$fromShip" exact="event.param2" />
                 <set_value name="$toShip" exact="event.param3" />
 
