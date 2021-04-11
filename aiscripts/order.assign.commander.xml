@@ -43,7 +43,7 @@ But, there is still a need for us to check civilian fleet names so we keep some 
     <add sel="/aiscript[@name='order.assign.commander']/attention/actions/do_if[1]" pos="prepend">
         <!-- Super early checking. -->
         <!-- Also ignore non-player ships for performance. -->
-        <do_if value="not $commander.isoperational" comment="Ship about to become unassigned.">
+        <do_if value="not $commander.isoperational" comment="Ship about to become unassigned. Note: it could be a ship gets sold and changes faction, so we cannot limit to only the player faction.">
             <!-- Ensure the table for fleet numbers exists; useful for when we attempt to find fleet numbers. -->
             <do_if value="not global.$v1024_fleet_number_table?">
                 <set_value name="global.$v1024_fleet_number_table" exact="table[]" />
