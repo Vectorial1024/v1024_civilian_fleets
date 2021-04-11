@@ -9,6 +9,11 @@ Do:
 2. Check if both the commander-to-be and the subordinate-to-be have the same primary purpose
 3. If [2] returns true, set the assignment to a value recognized by our other scripts (assignment.trade or assignment.mining)
 -->
+<!-- 
+Update:
+With Game v4.0+ available, the precondition [1] is impossible because we now rely on the [Mimic >] button to establish civilian fleets.
+But, there is still a need for us to check civilian fleet names so we keep some of this code.
+-->
 <diff>
     <!-- It seems that if we update a diff file, you gotta (so to speak) reapply the mod to the savegame. -->
     <replace sel="/aiscript[@name='order.assign.commander']/attention/actions/do_if[1]/do_if[@value='$assignment']/do_if[2]">
@@ -48,7 +53,7 @@ Do:
             <set_value name="global.$v1024_fleet_number_table.{this.object}" exact="null" />
             <show_help position="1" duration="2s" custom="'Unassigned; fleet number becomes : ' + @global.$v1024_fleet_number_table.{this.object}" chance="0"/>
         </do_if>
-        <do_if value="$commander.isplayerowned and @global.$v1024_flags_fallbackModeActive">
+        <do_if value="$commander.isplayerowned and @global.$v1024_flags_fallbackModeActive" chance="0" comment="Not needed anymore, see XML comment above.">
             <!-- Right click API not loaded. Prerequisite 1 satisfied. -->
             <!-- Check 1. -->
             <do_if value="$commander.isclass.ship">
