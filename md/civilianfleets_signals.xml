@@ -14,6 +14,7 @@ You gotta pick the variables back up after usage!
             <actions>
                 <set_value name="global.$v1024_symbols_shipDocked" exact="'ship docked'" />
                 <set_value name="global.$v1024_symbols_requestOrderSync" exact="'requesting order sync'" />
+                <set_value name="global.$v1024_symbols_requestOrderSync_mimicryExtension" exact="'requesting order sync mimic'" />
                 <set_value name="global.$v1024_symbols_requestUpdateWingName" exact="'requesting update wing name'" />
                 <set_value name="global.$v1024_symbols_notifyShipRemovedCommander" exact="'notifying ship commander removed'" />
 
