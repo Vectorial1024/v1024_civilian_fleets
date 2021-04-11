@@ -4,6 +4,10 @@ Whenever an L or XL ship attempts to recall its subordinates, exclude civilian f
 This should prevent S or M members from being unreasonably recalled by L or XL fleet leaders.
 Does not consider XS members, since they are drones, and drones should follow their commanders' orders at all times.
 -->
+<!--
+Note: as I revisit the code for vanilla (v4.0) Recall Subordinates, I noticed that it already filters out subordinates whose default order (exists) is not Escort.
+This means civilian fleet members are already excluded. This patch file is likely prehistoric artifact for excluding civilian fleet members (then still using Defend assignment) from getting recalled
+-->
 <diff>
     <!--
     <add sel="/aiscripts[@name='lib.recall.subordinates']/attention/actions/set_command_action[@commandaction='commandaction.waitingdrones']" pos="before">
