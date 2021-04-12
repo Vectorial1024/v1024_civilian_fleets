@@ -88,7 +88,7 @@ You gotta pick the variables back up after usage!
             param3 = toShip
         Note: we no longer use this starting from base game v4.0+ due to the introduction of Mimic/Assist. We will transition to Mimic/Assist.
         -->
-        <cue name="Signal_SyncOrders" instantiate="true" version="5">
+        <cue name="Signal_SyncOrders" instantiate="true" version="6">
             <conditions>
                 <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" />
                 <!-- Characteristic symbol must match. -->
@@ -106,6 +106,12 @@ You gotta pick the variables back up after usage!
 
                 <set_value name="$fromShip" exact="event.param2" />
                 <set_value name="$toShip" exact="event.param3" />
+
+                <!-- Prepare to redirect to new code; new code would pick up civ-fleet members from Mimic assignment -->
+                <create_order object="$toShip" id="'AssignCommander'">
+                    <param name="commander" value="$fromShip" />
+                    <param name="assignment" value="assignment.assist" />
+                </create_order>
 
                 <!--show_help custom="'Syncing orders from ' + $fromShip.knownname + ' to ' + $toShip.knownname" position="1" duration="4s" /-->
 
