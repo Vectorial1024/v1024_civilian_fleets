@@ -12,7 +12,6 @@ You gotta pick the variables back up after usage!
                 <event_cue_signalled cue="md.Setup.Start" />
             </conditions>
             <actions>
-                <set_value name="global.$v1024_symbols_shipDocked" exact="'ship docked'" />
                 <set_value name="global.$v1024_symbols_requestOrderSync" exact="'requesting order sync'" />
                 <set_value name="global.$v1024_symbols_requestOrderSync_mimicryExtension" exact="'requesting order sync mimic'" />
                 <set_value name="global.$v1024_symbols_requestUpdateWingName" exact="'requesting update wing name'" />
@@ -32,6 +31,24 @@ You gotta pick the variables back up after usage!
                 <!-- indicate that we have loaded our mod successfully. -->
                 <set_value name="global.$v1024cf_mod_loaded" exact="true" />
             </actions>
+            <patch sinceversion="6">
+                <!-- We need to catch up on the patching! The lack of truly continuous updates is bringing more complaints than I would have wanted -->
+                <!-- Ideally after each update there shall be no complaints because the product would be perfect. -->
+
+                <!-- Characteristic symbols -->
+                <set_value name="global.$v1024_symbols_requestOrderSync" exact="'requesting order sync'" />
+                <set_value name="global.$v1024_symbols_requestOrderSync_mimicryExtension" exact="'requesting order sync mimic'" />
+                <set_value name="global.$v1024_symbols_requestUpdateWingName" exact="'requesting update wing name'" />
+                <set_value name="global.$v1024_symbols_notifyShipRemovedCommander" exact="'notifying ship commander removed'" />
+
+                <!-- SirNukes config global variables -->
+                <do_if value="not (global.$v1024cf_should_rename_fleets?)">
+                    <set_value name="global.$v1024cf_should_rename_fleets" exact="true" />
+                </do_if>
+                <do_if value="not (global.$v1024cf_append_anchor_space?)">
+                    <set_value name="global.$v1024cf_append_anchor_space" exact="true" />
+                </do_if>
+            </patch>
         </cue>
 
         <!--
