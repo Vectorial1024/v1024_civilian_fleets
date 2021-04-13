@@ -715,13 +715,14 @@ You gotta pick the variables back up after usage!
                     <set_value name="global.$v1024_fleet_number_table" exact="table[]" />
                 </do_if>
 
-                <!-- We try to peek into the default order stuff. -->
+                <!-- We try to peek into the default order stuff. 
                 <show_help custom="'Try to read orders list of ' + $fromShip.knownname" position="1" duration="4s" />
                 <do_all exact="$fromShip.orders.count" counter="$i">
                     <set_value name="$currentOrderInQueue" exact="$fromShip.orders.{$i}" />
                     <show_help custom="'Order ' + $i + ' id ' + $currentOrderInQueue.id + ' name ' + $currentOrderInQueue.name + ', isinloop = ' + $currentOrderInQueue.isinloop" position="1" duration="4s" />
                 </do_all>
                 <show_help custom="'Order list has ended.'" position="1" duration="4s" />
+                -->
 
                 <!--
                 Note to self:
