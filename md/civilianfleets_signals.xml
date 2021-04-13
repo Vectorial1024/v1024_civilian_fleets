@@ -672,6 +672,596 @@ You gotta pick the variables back up after usage!
             </actions>
         </cue>
 
+        <!--
+        Given two ships, copies the civilian default order of one ship to the other ship.
+        The type of order to sync depends on the assignment.
+        Falls back to vanilla Mimic/Assist default behavior if syncing order is unrecognized.
+            param1 = That Characteristic Symbol
+            param2 = fromShip
+            param3 = toShip
+        Note: this iis valid for base game v4.0+ for using the Mimic/Assist.
+        -->
+        <cue name="Signal_SyncOrders_MimicryExtension" instantiate="true" version="1">
+            <conditions>
+                <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_requestOrderSync_mimicryExtension" />
+                <!-- Characteristic symbol must match. -->
+                <check_value value="event.param == global.$v1024_symbols_requestOrderSync_mimicryExtension" />
+                <!-- Both targets must be non-null. -->
+                <check_value value="event.param2 != null and event.param3 != null" />
+                <!-- Both must be ships. -->
+                <check_value value="event.param2.isclass.ship and event.param3.isclass.ship" />
+                <!-- Source ship must have a valid default command. -->
+                <check_value value="event.param2.defaultorder" />
+                <!-- Destination ship must have assist assignment. -->
+                <check_value value="event.param3.assignment == assignment.assist" />
+            </conditions>
+            <delay min="100ms" max="5000ms" comment="Delay randomly to spread out the performance spike." />
+            <actions>
+                <set_value name="$fromShip" exact="event.param2" />
+                <set_value name="$toShip" exact="event.param3" />
+
+                <show_help custom="'Syncing (mimic) orders from ' + $fromShip.knownname + ' to ' + $toShip.knownname" position="1" duration="4s" />
+                <show_help custom="'Source ship\'s default order is ' + $fromShip.defaultorder?.id + ' ' + $fromShip.defaultorder?.name" position="1" duration="4s" />
+
+                <!-- Caching to allow faster script execution. -->
+                <set_value name="$assignmentSkillLevel" exact="[$fromShip.pilot.skill.management, $toShip.pilot.skill.piloting].max / 3" comment="The 'skill level' designated by vanilla game, if it were to assign a ship to a station." />
+                <set_value name="$fromShip_DefaultOrder" exact="$fromShip.defaultorder" />
+                <set_value name="$toShip_DefaultOrder" exact="$toShip.defaultorder" />
+
+                <set_value name="$syncSuccessful" exact="false" />
+
+                <!-- Ensure the table for fleet numbers exists. -->
+                <do_if value="not global.$v1024_fleet_number_table?">
+                    <set_value name="global.$v1024_fleet_number_table" exact="table[]" />
+                </do_if>
+
+                <!-- We try to peek into the default order stuff. -->
+                <show_help custom="'Try to read orders list of ' + $fromShip.knownname" position="1" duration="4s" />
+                <do_all exact="$fromShip.orders.count" counter="$i">
+                    <set_value name="$currentOrderInQueue" exact="$fromShip.orders.{$i}" />
+                    <show_help custom="'Order ' + $i + ' id ' + $currentOrderInQueue.id + ' name ' + $currentOrderInQueue.name + ', isinloop = ' + $currentOrderInQueue.isinloop" position="1" duration="4s" />
+                </do_all>
+                <show_help custom="'Order list has ended.'" position="1" duration="4s" />
+
+                <!--
+                Note to self:
+                Suppose the Commander is operating at Skill Level 2. (Denoted as SL-2)
+                There exists cases where the joining ship can operate at (e.g.) SL-5.
+                    In such cases, set the joining ship to operate at SL-2, same as Commander. It's natural.
+                There also exists cases where the joining ship can only operate at (e.g.) SL-1 (or even lower).
+                    This can occur when the Commander has exceptionally crappy Management skill, and the Subordinate having crappy Piloting skill too.
+                    (This does not guarantee that the Commander also has crappy Piloting skill! Overall skill can still be good!)
+                    The UI will explode if we attempt to set it to SL-2, so in such cases, set it at SL-1 (i.e., max capable).
+                -->
+
+                <!--
+                State diagram and default orders:
+                The <create order default="true" /> node signals the game to change the default order of the ship.
+                There were some time where I was worried that the node would affect the existing behavior of ships.
+                But as it turns out, that fear was unnecessary.
+                    We know that ships will execute orders if there are any on the order list
+                    This means that they will be in "execute order" state most of the time.
+                    But when there aren't any more orders to be executed, the ship will fall back to the "execute default order" state
+                    And the trick is, the XML node only changes the details of the "default order" state, not the state itself
+                    That is, there are still only two states. The system can still function.
+                Still, as part of the documentation efforts, I will keep the <edit_order_param /> nodes somewhere else in the file
+                to let others learn what can be done.
+
+                The following two XML nodes signal the game to modify the "order" object denoted by $toShip_DefaultOrder .
+                Specifically, the parameters with names "maxbuy" and "maxsell" are modified to become the new value in the VALUE parameter
+                Runtime error will result when you attempt to modify a parameter that does not exist. The script will crash and be skipped.
+                Runtime error *may* result when you attempt to modify the order itself. Refer to /libraries/common.xsd in your X4 source files for more details.
+
+                <edit_order_param order="$toShip_DefaultOrder" param="'maxbuy'" value="$maxBuy" />
+                <edit_order_param order="$toShip_DefaultOrder" param="'maxsell'" value="$maxSell" />
+                -->
+
+                <!--
+                In the Mimic/Assist context, traders and miners are treated just as the same.
+                But, to ensure there are no accidents, it is still good to check whether we are trying to give mining orders to a trader.
+                Even still, there can only be one possible $fromShip_DefaultOrder.id ; need not worry too much, just let it fall back when the pair fails the validity check.
+                -->
+
+                <!-- Check mining first. -->
+                <!-- Following the Lua logic, we will check whether [1] commander can mine and [2] subordinate can also mine. -->
+                <!-- It just so happens EgoSoft's Mimic/Assist also has a similar idea, but they went an extra mile to also check whether both sides can mine the same stuff. -->
+                <!-- But for me, being only a modder, I need not make such robust code; the player is responsible for making sure things are correct. -->
+                <do_if value="($fromShip.primarypurpose == purpose.mine) and ($toShip.primarypurpose == purpose.mine)">
+                    <!-- The pair can do mining. Proceed to check the exact mining order to be sync-mimicked -->
+                    <!-- Even though there are several different versions of mining scripts, they all have the same list of parameters. -->
+                    <set_value name="$inputOrder" exact="$fromShip_DefaultOrder" />
+                    <include_actions ref="CheckOrderIsMining" comment="Returns $isMiningOrder, consumes $inputOrder; determines whether the given order is one of the several vanilla mining orders." />
+
+                    <do_if value="$isMiningOrder">
+                        <!-- Vanilla * AutoMine behavior -->
+
+                        <!-- We first need to check for Expert AutoMine: they are using yet another way of calculating the skill level -->
+                        <!-- Also indicate that we are using Expert AutoMine -->
+                        <do_if value="$fromShip_DefaultOrder.id == 'MiningRoutine_Expert'">
+                            <set_value name="$assignmentSkillLevel" exact="[$fromShip.pilot.skill.management, $toShip.pilot.skill.piloting].max" />
+                            <set_value name="$isUsingExpertAutoMine" exact="false" comment="Actual value not important." />
+                        </do_if>
+
+                        <!-- First obtain the MAX parameters, cap them to valid values. -->
+                        <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
+                        <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxsell, $assignmentSkillLevel].min" />
+
+                        <!-- Then obtain and cap the MIN parameters -->
+                        <set_value name="$minBuy" exact="[$fromShip_DefaultOrder.$minbuy, $maxBuy].min" />
+                        <set_value name="$minSell" exact="[$fromShip_DefaultOrder.$minsell, $maxSell].min" />
+
+                        <!-- As to the 'effective skill' parameter... -->
+                        <!-- ge: greater than or equal to -->
+                        <set_value name="$combinedSkill" />
+                        <do_if value="$fromShip.combinedskill ge $toShip.combinedskill">
+                            <!-- If commander is better than subordinate, subordinate can do it themselves. -->
+                            <set_value name="$combinedSkill" exact="$toShip.combinedskill"/>
+                        </do_if>
+                        <do_else>
+                            <!-- Take average otherwise. -->
+                            <set_value name="$combinedSkill" exact="($fromShip.combinedskill + $toShip.combinedskill) / 2"/>
+                        </do_else>
+
+                        <!-- Fixing the ware basket for Sector AutoMine: weak typing hides the difference between arrays and objects. -->
+                        <set_value name="$wareBasket" exact="$fromShip_DefaultOrder.$warebasket" />
+                        <do_if value="not @$wareBasket.count">
+                            <!-- .count cannot be accessed, meaning that this is an object. -->
+                            <!-- "Cast" it back to an array with 1 objects. -->
+                            <set_value name="$wareBasket" exact="[$wareBasket]"/>
+                        </do_if>
+
+                        <do_if value="$isUsingExpertAutoMine? and ($minBuy gt 5 or $maxBuy gt 5 or $minSell gt 5 or $maxSell gt 5)">
+                            <!-- Expert AutoMine range detected. We must use Expert AutoMine. -->
+                            <create_order object="$toShip" id="'MiningRoutine_Expert'" default="true">
+                                <param name="warebasket" value="$wareBasket" />
+                                <param name="range" value="$fromShip_DefaultOrder.$range" />
+                                <param name="minbuy" value="$minBuy" />
+                                <param name="minsell" value="$minSell" />
+                                <param name="maxbuy" value="$maxBuy" />
+                                <param name="maxsell" value="$maxSell" />
+                            </create_order>
+                        </do_if>
+                        <do_else>
+                            <!-- We stick to Pure AutoMine in all other cases. -->
+                            <create_order object="$toShip" id="'MiningRoutine'" default="true">
+                                <!-- In v2.5, only maxbuy and maxsell can be modified by the user. -->
+                                <!-- Hence, configuring minbuy and minsell becomes meaningless. -->
+                                <!-- Correction: Expert AutoMine manipulates minbuy and minsell so they are still meaningful to some extent. -->
+                                <param name="warebasket" value="$wareBasket" />
+                                <param name="range" value="$fromShip_DefaultOrder.$range" />
+                                <param name="minbuy" value="$minBuy" />
+                                <param name="minsell" value="$minSell" />
+                                <param name="maxbuy" value="$maxBuy" />
+                                <param name="maxsell" value="$maxSell" />
+                                <param name="effectiveskill" value="$combinedSkill" />
+                            </create_order>
+                        </do_else>
+                        <set_order_syncpoint_reached order="$toShip.order"/>
+                        <set_value name="$syncSuccessful" exact="true" />
+
+                        <!-- Out of scope variable removal -->
+                        <remove_value name="$minBuy" />
+                        <remove_value name="$minSell" />
+                        <remove_value name="$maxBuy" />
+                        <remove_value name="$maxSell" />
+                        <remove_value name="$combinedSkill" />
+                        <do_if value="$isUsingExpertAutoMine?">
+                            <remove_value name="$isUsingExpertAutoMine" />
+                        </do_if>
+                    </do_if>
+                    <do_elseif value="$fromShip_DefaultOrder.id == 'RandomMine'" chance="0">
+                        <!-- RandomMine fleet -->
+                        <!-- RandomMine has their own "assignment skill level"; updating the variable to reflect that. -->
+                        <set_value name="$assignmentSkillLevel" exact="$toShip.pilot.skill.piloting * 2" />
+                        <set_value name="$maxMine" exact="[$fromShip_DefaultOrder.$maxMine, $assignmentSkillLevel].min" />
+                        <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxSell, $assignmentSkillLevel].min" />
+                        <set_value name="$maxServe" exact="[$fromShip_DefaultOrder.$maxServe, $assignmentSkillLevel].min" />
+
+                        <create_order object="$toShip" id="'RandomMine'" default="true" chance="0">
+                            <!-- Section 1: basic parameters -->
+                            <param name="supplier" value="$fromShip_DefaultOrder.$supplier" />
+                            <param name="freeMiner" value="$fromShip_DefaultOrder.$freeMiner" />
+                            <param name="home" value="$fromShip_DefaultOrder.$home" />
+                            <param name="homeBound" value="$fromShip_DefaultOrder.$homeBound" />
+                            <param name="maxMine" value="$maxBuy" />
+                            <param name="maxSell" value="$maxSell" />
+                            <param name="maxServe" value="$maxServe" />
+                            <!-- Section 2: ware baskets -->
+                            <param name="wareBasket" value="$fromShip_DefaultOrder.$wareBasket" />
+                            <param name="allWares" value="$fromShip_DefaultOrder.$allWares" />
+                            <!-- Section 3: stock levels and profit levels -->
+                            <param name="stockRatioToMine" value="$fromShip_DefaultOrder.$stockRatioToMine" />
+                            <!-- Section 4: faction ban-lists -->
+                            <param name="allowAllFactions" value="$fromShip_DefaultOrder.$allowAllFactions" />
+                            <param name="allowPlayer" value="$fromShip_DefaultOrder.$allowPlayer" />
+                            <param name="allowArgon" value="$fromShip_DefaultOrder.$allowArgon" />
+                            <param name="allowAntigone" value="$fromShip_DefaultOrder.$allowAntigone" />
+                            <param name="allowTeladi" value="$fromShip_DefaultOrder.$allowTeladi" />
+                            <param name="allowMinistry" value="$fromShip_DefaultOrder.$allowMinistry" />
+                            <param name="allowParanid" value="$fromShip_DefaultOrder.$allowParanid" />
+                            <param name="allowHolyOrder" value="$fromShip_DefaultOrder.$allowHolyOrder" />
+                            <param name="allowAlliance" value="$fromShip_DefaultOrder.$allowAlliance" />
+                            <param name="allowHatikvah" value="$fromShip_DefaultOrder.$allowHatikvah" />
+                            <param name="allowScaleplate" value="$fromShip_DefaultOrder.$allowScaleplate" />
+                        </create_order>
+                        <set_order_syncpoint_reached order="$toShip.order"/>
+
+                        <!-- Out-of-scope variable removal -->
+                        <remove_value name="$maxMine" />
+                        <remove_value name="$maxSell" />
+                        <remove_value name="$maxServe" />
+                    </do_elseif>
+                    <!-- Extra mining behaviors please append here! We will not look back and check again! -->
+                    <do_else>
+                        <!-- Could not assign mining script. -->
+                        <!-- Do not display anything here because it might also fail the general script part below. -->
+                    </do_else>
+                </do_if>
+
+                <!-- General order sync/mimic -->
+                <!-- This can be general orders such as miners doing trading or traders doing trading -->
+                <!-- Switch for every known default order -->
+                <do_if value="$fromShip_DefaultOrder.id == 'TradeRoutine'">
+                    <!-- Vanilla AutoTrade behavior -->
+                    <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
+                    <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxsell, $assignmentSkillLevel].min" />
+
+                    <create_order object="$toShip" id="'TradeRoutine'" default="true">
+                        <!-- In v2.5, only maxbuy and maxsell can be modified by the user. -->
+                        <!-- Hence, configuring minbuy and minsell becomes meaningless. -->
+                        <param name="warebasket" value="$fromShip_DefaultOrder.$warebasket" />
+                        <param name="range" value="$fromShip_DefaultOrder.$range" />
+                        <param name="maxbuy" value="$maxBuy" />
+                        <param name="maxsell" value="$maxSell" />
+                    </create_order>
+                    <set_order_syncpoint_reached order="$toShip.order"/>
+                    <set_value name="$syncSuccessful" exact="true" />
+
+                    <!-- Out of scope variable removal -->
+                    <remove_value name="$maxBuy" />
+                    <remove_value name="$maxSell" />
+                </do_if>
+                <do_elseif value="$fromShip_DefaultOrder.id == 'Middleman'">
+                    <!-- Vanilla Distribute Wares behavior -->
+                    <create_order object="$toShip" id="'Middleman'" default="true">
+                        <!-- In v2.5, only warebasket can be modified by the player. -->
+                        <param name="warebasket" value="$fromShip_DefaultOrder.$warebasket" />
+                        <param name="anchorspace" value="$fromShip_DefaultOrder.$anchorspace" />
+                    </create_order>
+                    <set_order_syncpoint_reached order="$toShip.order"/>
+                    <set_value name="$syncSuccessful" exact="true" /> 
+                </do_elseif>
+                <do_elseif value="$fromShip_DefaultOrder.id == 'TaterTrade'">
+                    <!-- Mod TaterTrade: TaterTrade behavior -->
+                    <!-- Note: this is DeadAirRT's fork of TaterTrade. -->
+                    <!-- TaterTrade has their own "assignment skill level"; updating the variable to reflect that. -->
+                    <set_value name="$assignmentSkillLevel" exact="[$fromShip.pilot.skill.management, $toShip.pilot.skill.piloting].max * 2" />
+                    <set_value name="$minBuy" exact="[$fromShip_DefaultOrder.$minbuy, $assignmentSkillLevel].min" />
+                    <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
+                    <set_value name="$minSell" exact="[$fromShip_DefaultOrder.$minsell, $assignmentSkillLevel].min" />
+                    <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxsell, $assignmentSkillLevel].min" />
+
+                    <!-- Wow, there's a lot of parameters here... -->
+                    <create_order object="$toShip" id="'TaterTrade'" default="true">
+                        <!-- Section break 0: General config -->
+                        <param name="home" value="$fromShip_DefaultOrder.$home" />
+                        <param name="returnhome" value="$fromShip_DefaultOrder.$returnhome" />
+                        <param name="minbuy" value="$minBuy" />
+                        <param name="maxbuy" value="$maxBuy" />
+                        <param name="minsell" value="$minSell" />
+                        <param name="maxsell" value="$maxSell" />
+                        <param name="distancecheck" value="$fromShip_DefaultOrder.$distancecheck" />
+                        <param name="distancecheckpercent" value="$fromShip_DefaultOrder.$distancecheckpercent" />
+                        <param name="discount" value="$fromShip_DefaultOrder.$discount" />
+                        <param name="discount2" value="$fromShip_DefaultOrder.$discount2" />
+                        <param name="bypass" value="$fromShip_DefaultOrder.$bypass" />
+                        <param name="fasttrade" value="$fromShip_DefaultOrder.$fasttrade" />
+                        <param name="stationmode" value="$fromShip_DefaultOrder.$stationmode" />
+                        <param name="blackmarket" value="$fromShip_DefaultOrder.$blackmarket" />
+                        <!-- Section break 1: Trade ware config -->
+                        <param name="warebasket" value="$fromShip_DefaultOrder.$warebasket" />
+                        <param name="usepresets" value="$fromShip_DefaultOrder.$usepresets" />
+                        <param name="allwares" value="$fromShip_DefaultOrder.$allwares" />
+                        <param name="legalwares" value="$fromShip_DefaultOrder.$legalwares" />
+                        <param name="illegalwares" value="$fromShip_DefaultOrder.$illegalwares" />
+                        <param name="shipbuildingwares" value="$fromShip_DefaultOrder.$shipbuildingwares" />
+                        <param name="stationbuildingwares" value="$fromShip_DefaultOrder.$stationbuildingwares" />
+                        <param name="hightechwares" value="$fromShip_DefaultOrder.$hightechwares" />
+                        <param name="refinedwares" value="$fromShip_DefaultOrder.$refinedwares" />
+                        <param name="biowares" value="$fromShip_DefaultOrder.$biowares" />
+                        <param name="largelegalwares" value="$fromShip_DefaultOrder.$largelegalwares" />
+                        <param name="mediumlegalwares" value="$fromShip_DefaultOrder.$mediumlegalwares" />
+                        <param name="smalllegalwares" value="$fromShip_DefaultOrder.$smalllegalwares" />
+                        <!-- Section break 2: Sector Black/White Lists -->
+                        <param name="excludedsectors" value="$fromShip_DefaultOrder.$excludedsectors" />
+                        <param name="includedsectors" value="$fromShip_DefaultOrder.$includedsectors" />
+                        <!-- Section break 3: Trading partner blacklists -->
+                        <param name="enablebans" value="$fromShip_DefaultOrder.$enablebans" />
+                        <param name="playerban" value="$fromShip_DefaultOrder.$playerban" />
+                        <param name="argonban" value="$fromShip_DefaultOrder.$argonban" />
+                        <param name="antigoneban" value="$fromShip_DefaultOrder.$antigoneban" />
+                        <param name="teladiban" value="$fromShip_DefaultOrder.$teladiban" />
+                        <param name="ministryban" value="$fromShip_DefaultOrder.$ministryban" />
+                        <param name="paranidban" value="$fromShip_DefaultOrder.$paranidban" />
+                        <param name="holyorderban" value="$fromShip_DefaultOrder.$holyorderban" />
+                        <param name="allianceban" value="$fromShip_DefaultOrder.$allianceban" />
+                        <param name="trinityban" value="$fromShip_DefaultOrder.$trinityban" />
+                        <param name="splitban" value="$fromShip_DefaultOrder.$splitban" />
+                        <param name="freesplitban" value="$fromShip_DefaultOrder.$freesplitban" />
+                        <param name="courtban" value="$fromShip_DefaultOrder.$courtban" />
+                        <param name="buccaneersban" value="$fromShip_DefaultOrder.$buccaneersban" />
+                        <param name="fallensplitban" value="$fromShip_DefaultOrder.$fallensplitban" />
+                        <param name="hatikvahban" value="$fromShip_DefaultOrder.$hatikvahban" />
+                        <param name="scaleplateban" value="$fromShip_DefaultOrder.$scaleplateban" />
+                        <!-- Section break 4: Miscellaneous-->
+                        <param name="scanspeed" value="$fromShip_DefaultOrder.$scanspeed" />
+                    </create_order>
+                    <set_order_syncpoint_reached order="$toShip.order"/>
+                    <set_value name="$syncSuccessful" exact="true" />
+
+                    <!-- Out of scope variable removal -->
+                    <remove_value name="$minBuy" />
+                    <remove_value name="$minSell" />
+                    <remove_value name="$maxBuy" />
+                    <remove_value name="$maxSell" />
+                </do_elseif>
+                <do_elseif value="$fromShip_DefaultOrder.id == 'DistriMule'">
+                    <!-- Misunderstood-Wookies' Mules and Warehouses Extended: Distribution Mule behavior -->
+                    <create_order object="$toShip" id="'DistriMule'" default="true">
+                        <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />
+                        <param name="minStorage" value="$fromShip_DefaultOrder.$minStorage" />
+                        <param name="staticStorage" value="$fromShip_DefaultOrder.$staticStorage" />
+                        <param name="maxStorage" value="$fromShip_DefaultOrder.$maxStorage" />
+                        <param name="specialWareBasket" value="$fromShip_DefaultOrder.$specialWareBasket" />
+                        <param name="destList" value="$fromShip_DefaultOrder.$destList" />
+                    </create_order>
+                    <set_order_syncpoint_reached order="$toShip.order"/>
+                    <set_value name="$syncSuccessful" exact="true" />
+                </do_elseif>
+                <do_elseif value="$fromShip_DefaultOrder.id == 'StationMule'">
+                    <!-- Misunderstood-Wookies' Mules and Warehouses Extended: Station Mule behavior -->
+                    <create_order object="$toShip" id="'StationMule'" default="true">
+                        <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />
+                        <param name="targetStation" value="$fromShip_DefaultOrder.$targetStation" />
+                        <!-- Making this false because otherwise the fleet gets disbanded if the commander is assigned to source. -->
+                        <param name="assignSrc" value="false" />
+                        <param name="incEgry" value="$fromShip_DefaultOrder.$incEgry" />
+                        <param name="incFood" value="$fromShip_DefaultOrder.$incFood" />
+                        <param name="supplyFirst" value="$fromShip_DefaultOrder.$supplyFirst" />
+                        <param name="drugFree" value="$fromShip_DefaultOrder.$drugFree" />
+                        <param name="drugsOnly" value="$fromShip_DefaultOrder.$drugsOnly" />
+                        <param name="twoWay" value="$fromShip_DefaultOrder.$twoWay" />
+                        <param name="twoWaySupplyFirst" value="$fromShip_DefaultOrder.$twoWaySupplyFirst" />
+                        <param name="forbidTradeAll" value="$fromShip_DefaultOrder.$forbidTradeAll" />
+                        <param name="allowLowVol" value="$fromShip_DefaultOrder.$allowLowVol" />
+                        <param name="allowCreateTrade" value="$fromShip_DefaultOrder.$allowCreateTrade" />
+                    </create_order>
+                    <set_order_syncpoint_reached order="$toShip.order"/>
+                    <set_value name="$syncSuccessful" exact="true" />
+                </do_elseif>
+                <do_elseif value="$fromShip_DefaultOrder.id == 'SupplyMule'">
+                    <!-- Misunderstood-Wookies' Mules and Warehouses Extended: Supply Mule behavior -->
+                    <create_order object="$toShip" id="'SupplyMule'" default="true">
+                        <param name="home" value="$fromShip_DefaultOrder.$home" />
+                        <!-- Making this false because otherwise the fleet gets disbanded if the commander is assigned to source. -->
+                        <param name="maxDist" value="[$toShip.pilot.skill.piloting * 2, $fromShip_DefaultOrder.$maxDist].min" />
+                        <param name="assignHome" value="false" /> 
+                        <param name="dedicatedServe" value="$fromShip_DefaultOrder.$dedicatedServe" />
+                        <param name="allowPlayerSuppliers" value="$fromShip_DefaultOrder.$allowPlayerSuppliers" />
+                        <param name="allowAiSuppliers" value="$fromShip_DefaultOrder.$allowAiSuppliers" />
+                        <param name="allowBuildstorage" value="$fromShip_DefaultOrder.$allowBuildstorage" />
+                        <param name="allowResources" value="$fromShip_DefaultOrder.$allowResources" />
+                        <param name="allowIntermediates" value="$fromShip_DefaultOrder.$allowIntermediates" />
+                        <param name="allowTradewares" value="$fromShip_DefaultOrder.$allowTradewares" />
+                        <param name="lockWares" value="$fromShip_DefaultOrder.$lockWares" />
+                        <param name="specialWareBasket" value="$fromShip_DefaultOrder.$specialWareBasket" />
+                        <param name="maxTrades" value="$fromShip_DefaultOrder.$maxTrades" />
+                        <param name="playerBuyMod" value="$fromShip_DefaultOrder.$playerBuyMod" />
+                    </create_order>
+                    <set_order_syncpoint_reached order="$toShip.order"/>
+                    <set_value name="$syncSuccessful" exact="true" />
+                </do_elseif>
+                <do_elseif value="$fromShip_DefaultOrder.id == 'TravelMule'">
+                    <!-- Misunderstood-Wookies' Mules and Warehouses Extended: Traveling Mule behavior -->
+                    <create_order object="$toShip" id="'TravelMule'" default="true">
+                        <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />
+                        <param name="maxDist" value="$fromShip_DefaultOrder.$maxDist" />
+                        <param name="profitMargin" value="$fromShip_DefaultOrder.$profitMargin" />
+                        <param name="lockWares" value="$fromShip_DefaultOrder.$lockWares" />
+                        <param name="specialWareBasket" value="$fromShip_DefaultOrder.$specialWareBasket" />
+                        <param name="minCargoUsed" value="$fromShip_DefaultOrder.$minCargoUsed" />
+                        <param name="tradeWithBig" value="$fromShip_DefaultOrder.$tradeWithBig" />
+                        <param name="tradeWithAll" value="$fromShip_DefaultOrder.$tradeWithAll" />
+                        <param name="destList" value="$fromShip_DefaultOrder.$destList" />
+                    </create_order>
+                    <set_order_syncpoint_reached order="$toShip.order"/>
+                    <set_value name="$syncSuccessful" exact="true" />
+                </do_elseif>
+                <do_elseif value="$fromShip_DefaultOrder.id == 'RandomTrade'" chance="0">
+                    <!-- RandomTrade fleet -->
+                    <!-- RandomTrade also has their own "assignment skill level"; updating the variable to reflect that. -->
+                    <set_value name="$assignmentSkillLevel" exact="[$fromShip.pilot.skill.management, $toShip.pilot.skill.piloting].max * 2" />
+                    <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxBuy, $assignmentSkillLevel].min" />
+                    <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxSell, $assignmentSkillLevel].min" />
+
+                    <create_order object="$toShip" id="'RandomTrade'" default="true">
+                        <!-- Section 1: basic parameters -->
+                        <param name="home" value="$fromShip_DefaultOrder.$home" />
+                        <param name="homeBound" value="$fromShip_DefaultOrder.$homeBound" />
+                        <param name="maxBuy" value="$maxBuy" />
+                        <param name="maxSell" value="$maxSell" />
+                        <param name="bypass" value="$fromShip_DefaultOrder.$bypass" />
+                        <param name="stationMode" value="$fromShip_DefaultOrder.$stationMode" />
+                        <param name="forceOwn" value="$fromShip_DefaultOrder.$forceOwn" />
+                        <!-- Section 2: ware baskets -->
+                        <param name="wareBasket" value="$fromShip_DefaultOrder.$wareBasket" />
+                        <param name="usePresets" value="$fromShip_DefaultOrder.$usePresets" />
+                        <param name="allWares" value="$fromShip_DefaultOrder.$allWares" />
+                        <param name="legalWares" value="$fromShip_DefaultOrder.$legalWares" />
+                        <param name="illegalWares" value="$fromShip_DefaultOrder.$illegalWares" />
+                        <param name="shipBuildingWares" value="$fromShip_DefaultOrder.$shipBuildingWares" />
+                        <param name="stationBuildingWares" value="$fromShip_DefaultOrder.$stationBuildingWares" />
+                        <param name="hightechWares" value="$fromShip_DefaultOrder.$hightechWares" />
+                        <param name="refinedWares" value="$fromShip_DefaultOrder.$refinedWares" />
+                        <param name="bioWares" value="$fromShip_DefaultOrder.$bioWares" />
+                        <!-- Section 3: stock levels and profit levels -->
+                        <param name="profitScale" value="$fromShip_DefaultOrder.$profitScale" />
+                        <param name="stockRatioToBuy" value="$fromShip_DefaultOrder.$stockRatioToBuy" />
+                        <param name="stockRatioToSell" value="$fromShip_DefaultOrder.$stockRatioToSell" />
+                        <!-- Section 4: faction ban-lists -->
+                        <param name="allowAllFactions" value="$fromShip_DefaultOrder.$allowAllFactions" />
+                        <param name="allowPlayer" value="$fromShip_DefaultOrder.$allowPlayer" />
+                        <param name="allowArgon" value="$fromShip_DefaultOrder.$allowArgon" />
+                        <param name="allowAntigone" value="$fromShip_DefaultOrder.$allowAntigone" />
+                        <param name="allowTeladi" value="$fromShip_DefaultOrder.$allowTeladi" />
+                        <param name="allowMinistry" value="$fromShip_DefaultOrder.$allowMinistry" />
+                        <param name="allowParanid" value="$fromShip_DefaultOrder.$allowParanid" />
+                        <param name="allowHolyOrder" value="$fromShip_DefaultOrder.$allowHolyOrder" />
+                        <param name="allowAlliance" value="$fromShip_DefaultOrder.$allowAlliance" />
+                        <param name="allowHatikvah" value="$fromShip_DefaultOrder.$allowHatikvah" />
+                        <param name="allowScaleplate" value="$fromShip_DefaultOrder.$allowScaleplate" />
+                    </create_order>
+                    <set_order_syncpoint_reached order="$toShip.order"/>
+
+                    <!-- Out of scope variable removal -->
+                    <remove_value name="$maxBuy" />
+                    <remove_value name="$maxSell" />
+                </do_elseif>
+                <!--
+                Note to mod makers: if you want to add more orders to check, you should append to the last do_elseif right here!
+                DO NOT APPEND TO THE $syncSuccessful CHECK!
+                $syncSuccessful will assume the orders are successfully copied and will handle post-copy actions.
+                It will not look back again to check whether you did extra syncing!
+                -->
+                <do_else>
+                    <debug_text text="'Assignment unrecognized by CivFleet. Cancelling sync from ' + $fromShip.knownname + ' (' + $fromShip + ') to ' + $toShip.knownname + ' (' + $toShip + ') via assignment ' + $toShip.assignment + ', falling back to Mimic.'" />
+                </do_else>
+
+                <!-- Check sync succes -->
+                <do_if value="$syncSuccessful">
+                    <!-- Is successful; give out wing names, etc -->
+                    <show_help custom="'Syncing (mimic) successful.'" position="1" duration="2s" />
+                    <do_if value="global.$v1024cf_should_rename_fleets" comment="Also update wing name when civ fleet is identified.">
+                        <!-- Table of fleet number global.$v1024_fleet_number_table already ensured exists at order.dock.xml -->
+
+                        <!-- Confirm the (old) Dictionary's existence -->
+                        <do_if value="not (global.$civFleets_FleetIdMapping?)">
+                            <set_value name="global.$civFleets_FleetIdMapping" exact="[]" />
+                        </do_if>
+                        <!-- Compatibility: move all previous fleet leader numbers to the "full-table-info" structure. -->
+                        <do_all exact="global.$civFleets_FleetIdMapping.count" counter="$i">
+                            <set_value name="$currentMapping" exact="global.$civFleets_FleetIdMapping.{$i}" />
+                            <set_value name="$fleetLeader" exact="$currentMapping.{1}" />
+                            <set_value name="$ongoingFleetNumber" exact="$currentMapping.{2}" />
+                            <do_if value="$fleetLeader != null" comment="Dead, forgotten fleet leaders may appear here as null">
+                                <set_value name="global.$v1024_fleet_number_table.{$fleetLeader}" exact="$ongoingFleetNumber" />
+                            </do_if>
+                        </do_all>
+                        <remove_value name="$fleetLeader" />
+                        <remove_value name="$ongoingFleetNumber" />
+                        <!-- The old Dictionary is no longer needed. -->
+                        <remove_value name="global.$civFleets_FleetIdMapping" />
+
+                        <!-- Recursively find root. -->
+                        <set_value name="$rootCommander" exact="$fromShip" />
+                        <do_while value="$rootCommander.commander != null">
+                            <set_value name="$rootCommander" exact="$rootCommander.commander" />
+                        </do_while>
+
+                        <!-- We have found root. -->
+                        <show_help position="1" duration="2s" custom="'Root is : ' + $rootCommander.name" chance="0"/>
+                        <show_help position="1" duration="6s" custom="'Global table is : ' + global.$v1024_fleet_number_table" chance="0"/>
+                        <show_help position="1" duration="2s" custom="'Relevant fleet number is : ' + @global.$v1024_fleet_number_table.{$rootCommander}" chance="0"/>
+                        <set_value name="$selectedFleetNumber" exact="null" comment="Should default to next available fleet number, starting from 1" />
+                        <!-- Filter: require root = ship -->
+                        <do_if value="$rootCommander.isclass.ship">
+                            <!-- Valid civilian fleet tree; see if a fleet number already exists. -->
+                            <do_if value="@global.$v1024_fleet_number_table.{$rootCommander} != null">
+                                <!-- Exists; load it. -->
+                                <set_value name="$selectedFleetNumber" exact="global.$v1024_fleet_number_table.{$rootCommander}"/>
+                            </do_if>
+                            <do_else>
+                                <!-- Does not exist. Fallback to next available fleet number. -->
+                                <set_value name="global.$civFleet_WingID" exact="@global.$civFleet_WingID + 1" comment="null can be coerced into a 0. I put an @ just in case." />
+                                <set_value name="$selectedFleetNumber" exact="global.$civFleet_WingID" />
+                            </do_else>
+
+                            <!-- Apply the fleet numbers -->
+                            <set_value name="global.$v1024_fleet_number_table.{$rootCommander}" exact="$selectedFleetNumber" />
+                            <set_value name="global.$v1024_fleet_number_table.{$fromShip}" exact="$selectedFleetNumber" />
+                            <set_value name="global.$v1024_fleet_number_table.{$toShip}" exact="$selectedFleetNumber" />
+                        </do_if>
+
+                        <!-- Set the correct name -->
+                        <substitute_text source="{221024, 1}" text="$cleanName">
+                            <replace string="'$ID$'" with="$selectedFleetNumber" />
+                        </substitute_text>
+
+                        <!-- Determine civilian fleet appending tag -->
+                        <set_value name="$civFleet_CmdTagPairs" exact="global.$civFleet_CmdTagPairs" />
+                        <set_value name="$appendingWingName" exact="''" />
+                        <do_all exact="$civFleet_CmdTagPairs.count" counter="$i">
+                            <do_if value="($fromShip.defaultorder.id == $civFleet_CmdTagPairs.{$i}.{1})">
+                                <set_value name="$appendingWingName" exact="' %1'.[$civFleet_CmdTagPairs.{$i}.{2}]" />
+                                <break/>
+                            </do_if>
+                        </do_all>
+
+                        <!-- Code to append anchor space info -->
+                        <set_value name="$appendingAnchorInfo" exact="''" />
+                        <do_if value="global.$v1024cf_append_anchor_space">
+                            <!-- First, attempt to find the anchor; if successfully found anchor, then append it to the fleet name. -->
+                            <set_value name="$theAnchor" exact="null" />
+                            <!-- Switch by command. -->
+                            <do_if value="$fromShip_DefaultOrder" comment="Check that the order exists">
+                                <!-- Mining commands -->
+                                <do_if value="$isMiningOrder? and $isMiningOrder">
+                                    <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$range" />
+                                </do_if>
+                                <!-- Trading commands -->
+                                <do_elseif value="$fromShip_DefaultOrder.id == 'TradeRoutine'">
+                                    <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$range" />
+                                </do_elseif>
+                                <do_elseif value="$fromShip_DefaultOrder.id == 'Middleman'">
+                                    <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$anchorspace" />
+                                </do_elseif>
+                                <do_elseif value="$fromShip_DefaultOrder.id == 'TaterTrade'">
+                                    <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$home" />
+                                </do_elseif>
+                                <do_elseif value="$fromShip_DefaultOrder.id == 'DistriMule'">
+                                    <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$sourceStation" />
+                                </do_elseif>
+                                <do_elseif value="$fromShip_DefaultOrder.id == 'StationMule'">
+                                    <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$sourceStation" />
+                                </do_elseif>
+                                <do_elseif value="$fromShip_DefaultOrder.id == 'SupplyMule'">
+                                    <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$home" />
+                                </do_elseif>
+                                <do_elseif value="$fromShip_DefaultOrder.id == 'TravelMule'">
+                                    <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$sourceStation" />
+                                </do_elseif>
+                                <do_else>
+                                    <!-- Do nothing; we place this code here to allow people to patch into this easily. -->
+                                    <!-- Please see https://forum.egosoft.com/viewtopic.php?t=354310 , and find pos="before" in the webpage. It will be helpful. -->
+                                </do_else>
+                            </do_if>
+                            <!-- Apply name -->
+                            <do_if value="$theAnchor">
+                                <set_value name="$appendingAnchorInfo" exact="' @ %1'.[$theAnchor.name]" />
+                            </do_if>
+                        </do_if>
+
+                        <!-- Actually setting the new fleet name -->
+                        <set_object_fleet_name object="$fromShip" name="'%1%2%3'.[$cleanName, $appendingWingName, $appendingAnchorInfo]" />
+                    </do_if>
+                </do_if>
+                <do_else>
+                    <!-- Not successful; fall back to the vanilla Mimic/Assist script, could have been military mimic or other mimic -->
+                    <create_order object="$toShip" id="'Assist'" default="true"/>
+                </do_else>
+            </actions>
+        </cue>
+
         <!-- Given an order (more precisely, a defaultorder), determines if such order is a mining order. -->
         <!-- input: $inputOrder, output: $isMiningOrder -->
         <library name="CheckOrderIsMining">
