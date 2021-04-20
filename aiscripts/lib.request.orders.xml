@@ -10,32 +10,20 @@ Do:
 4. If [2] returns true, also updates the wing name appropriately
 -->
 <diff>
-    <add sel="/aiscript[@name='lib.request.orders']/attention/actions/do_else/do_else" pos="prepend" comment="">
-        <!-- Because now $assignment == 'defence', we must intercept earlier to correct $assignment. -->
-        <show_help position="1" duration="2s" custom="'Assignment (request orders) be (before) ' + $assignment" chance="0"/>
-        <do_if value="@global.$v1024_list_ship_is_mining.{this.ship} == true">
-            <set_value name="$assignment" exact="assignment.mining" />
+    <replace sel="/aiscript[@name='lib.request.orders']/attention/actions/do_else/do_else/do_elseif[@value='$assignment == assignment.assist']/create_order" comment="Target the Mimic code block">
+        <!-- The XML replace replaces the entire node so it gets a bit problematic if others try to replace the same stuff too. -->
+        <do_if value="$object.isplayerowned" comment="Ignore non-player ships to boost performance">
+            <set_value name="$flag_v1024_civfleetformed" exact="true" comment="Actual value not important." />
         </do_if>
-        <!-- vardump for debug -->
-        <show_help position="1" duration="2s" custom="'Assignment (request orders) be (after) ' + $assignment" chance="0"/>
-        <show_help position="1" duration="2s" custom="'Global list be ' + @global.$v1024_list_ship_is_mining.{this.ship}" chance="0"/>
-        <show_help position="1" duration="2s" custom="'or: ' + ($assignment == assignment.trade) + ' ' + ($assignment == assignment.mining) + ' ' + (@global.$v1024_list_ship_is_mining.{this.ship})" chance="0"/>
-        <show_help position="1" duration="2s" custom="'or-ed: ' + ($assignment == assignment.trade or $assignment == assignment.mining or (@global.$v1024_list_ship_is_mining.{this.ship} == true))" chance="0"/>
-    </add>
-
-    <add sel="/aiscript[@name='lib.request.orders']/attention/actions/do_else/do_else/do_else" pos="before">
-        <!-- At this point, definitely assigning to another ship, no need to double-check. -->
-
-        <!-- Case: Assigning ships to civilian fleets; Right Click API-related mess is already handled in order.assign.commander. -->
-        <!-- Need not check for resupplier-trader combo here because that has already been checked by vanilla script above. -->
-        <do_elseif value="$assignment == assignment.trade or $assignment == assignment.mining or @global.$v1024_list_ship_is_mining.{this.ship} == true">
-            <do_if value="$object.isplayerowned" comment="Ignore non-player ships to boost performance">
-                <show_help position="1" duration="6s" custom="'Signalling the previous-made handler.'" chance="0"/>
-                <set_value name="$flag_v1024_civfleetformed" exact="true" comment="Actual value not important." />
-                <!-- Delegate to standardized static config method to ensure save-game compatibility. -->
-                <!-- This will also update the fleet name. -->
-                <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$commander" param3="$object" />
-            </do_if>
-        </do_elseif>
-    </add>
+        <do_if value="$object.isplayerowned" comment="About to mimic; ignore non-player ships to boost performance">
+            <show_help position="1" duration="3s" custom="'Signalling the custom-made Mimicry Extension (for Game v4.0+) listener.'" chance="0"/>
+            <!-- Delegate to standardized static config method to ensure save-game compatibility. -->
+            <!-- This will also update the fleet name. -->
+            <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync_mimicryExtension" param2="$commander" param3="$object" />
+        </do_if>
+        <do_else>
+            <!-- Not interested, directly fall back to vanilla Mimic/Assist -->
+            <create_order object="$object" id="'Assist'" default="true"/>
+        </do_else>
+    </replace>
 </diff>
