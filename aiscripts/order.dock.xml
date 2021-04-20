@@ -77,20 +77,15 @@ Betty docks for the player via Auto-Pilot.
                     <!-- Determine civilian fleet commander -->
                     <do_if value="$thisship.defaultorder.id == $civFleet_CmdTagPairs.{$i}.{1}">
                         <!-- Fleet commander detected. -->
-                        <debug_text text="'Civ Fleet beginning sync: broadcast from Commander ' + $thisship.knownname" />
                         <!-- Summon all subordinates, and sync orders. -->
                         <set_value name="$allSubordinates" exact="$thisship.subordinates" />
-                        <do_all exact="$allSubordinates.count" counter="$i">
-                            <set_value name="$currentSubordinate" exact="$allSubordinates.{$i}" />
-                            <set_value name="$currentSubAssignObj" exact="$currentSubordinate.assignment" />
-                            <set_value name="$currentMinerStatus" exact="@global.$v1024_list_ship_is_mining.{$currentSubordinate}" />
-                            <do_if value="$currentSubAssignObj == assignment.trade or $currentSubAssignObj == assignment.mining or $currentMinerStatus == true">
+                        <!-- Noticed that AIScript can utilize this useful do-for-each loop block; rewritten code to use that -->
+                        <do_for_each name="$currentSubordinate" in="$allSubordinates">
+                            <do_if value="$currentSubordinate.assignment == assignment.assist">
                                 <!-- Delegate to standardized static config method to ensure save-game compatibility. -->
-                                <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$thisship" param3="$currentSubordinate" />
+                                <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync_mimicryExtension" param2="$thisship" param3="$currentSubordinate" />
                             </do_if>
-                        </do_all>
-
-                        <debug_text text="'Synchronization complete for Commander ' + $thisship.knownname" />
+                        </do_for_each>
                     </do_if>
                 </do_all>
             </do_if>
