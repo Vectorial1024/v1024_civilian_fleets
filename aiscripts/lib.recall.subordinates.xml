@@ -4,36 +4,10 @@ Whenever an L or XL ship attempts to recall its subordinates, exclude civilian f
 This should prevent S or M members from being unreasonably recalled by L or XL fleet leaders.
 Does not consider XS members, since they are drones, and drones should follow their commanders' orders at all times.
 -->
+<!--
+Note: as I revisit the code for vanilla (v4.0) Recall Subordinates, I noticed that it already filters out subordinates whose default order (exists) is not Escort.
+This means civilian fleet members are already excluded. This patch file is likely prehistoric artifact for excluding civilian fleet members (then still using Defend assignment) from getting recalled
+Please use git blame / GitHub history to view previous versions of this file.
+-->
 <diff>
-    <!--
-    <add sel="/aiscripts[@name='lib.recall.subordinates']/attention/actions/set_command_action[@commandaction='commandaction.waitingdrones']" pos="before">
-        <do_if value="this.ship.isplayerowned">
-            <show_help custom="this.ship.knownname + ' recalling subordinates.'" position="1" duration="2s" />
-        </do_if>
-    </add>
-    -->
-    
-    <add sel="/aiscript[@name='lib.recall.subordinates']/attention/actions/label[@name='issue_orders']" pos="before">
-        <!-- Check if this is a player-owned civ-fleet leader. -->
-        <set_value name="$thisship" exact="this.ship" />
-        <do_if value="$thisship.isplayerowned">
-            <!-- Sanity check: subordinate is not a drone (i.e. class is not XS) -->
-            <!-- Verify: subordinate is a member of the civ-fleet -->
-            <set_value name="$currentSubordinate" exact="null" />
-            <set_value name="$isNonDrone" exact="false" />
-            <do_all exact="$subordinates.count" counter="$i" reverse="true">
-                <set_value name="$currentSubordinate" exact="$subordinates.{$i}" />
-                <set_value name="$isNonDrone" exact="$currentSubordinate.class != class.ship_xs" />
-                <!--
-                <set_value name="$isNonDrone" exact="$currentSubordinate.shiptype != shiptype.xsdrone and $currentSubordinate.shiptype != shiptype.smalldrone" />
-                -->
-                <do_if value="$isNonDrone and ($currentSubordinate.assignment == assignment.trade or $currentSubordinate.assignment == assignment.mining or @global.$v1024_list_ship_is_mining.{this.ship} == true)">
-                    <remove_from_group group="$subordinates" object="$currentSubordinate" />
-                </do_if>
-            </do_all>
-            <remove_value name="$currentSubordinate" />
-            <remove_value name="$isNonDrone" />
-        </do_if>
-        <remove_value name="$thisship" />
-    </add>
 </diff>

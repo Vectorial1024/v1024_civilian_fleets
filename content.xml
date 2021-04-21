@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<content name="V1024 - Civilian Fleets" id="ws_2092839403" author="Vectorial1024" version="410" date="2020-10-31" save="0" description="Create civilian fleets to help manage traders and miners." sync="false" lastupdate="1604133754">
+<content name="V1024 - Civilian Fleets: Mimicry Extension" id="ws_2092839403" author="Vectorial1024" version="501" date="2021-04-21" save="0" description="Create civilian fleets to help manage traders and miners." sync="false" lastupdate="1618976105">
   <!-- Great day! We no longer depend on Right Click API. We have graduated. We have gone beyond. -->
   <!-- Dependent on SirNukes API; any version should do. -->
   <dependency id="ws_2042901274" name="SirNukes Mod Support APIs"/>
   <!-- "Extra" language entries as implicitly required by X4. This is quite different from what I've seen in XR. -->
-  <text language="7" name="V1024 - Civilian Fleets" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
-  <text language="33" name="V1024 - Civilian Fleets" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
-  <text language="34" name="V1024 - Civilian Fleets" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
-  <text language="39" name="V1024 - Civilian Fleets" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
-  <text language="44" name="V1024 - Civilian Fleets" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
-  <text language="49" name="V1024 - Civilian Fleets" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
-  <text language="55" name="V1024 - Civilian Fleets" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
-  <text language="81" name="V1024 - Civilian Fleets" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
-  <text language="82" name="V1024 - Civilian Fleets" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
-  <text language="86" name="V1024 - Civilian Fleets" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
-  <text language="88" name="V1024 - Civilian Fleets" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
+  <text language="7" name="V1024 - Civilian Fleets: Mimicry Extension" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
+  <text language="33" name="V1024 - Civilian Fleets: Mimicry Extension" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
+  <text language="34" name="V1024 - Civilian Fleets: Mimicry Extension" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
+  <text language="39" name="V1024 - Civilian Fleets: Mimicry Extension" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
+  <text language="44" name="V1024 - Civilian Fleets: Mimicry Extension" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
+  <text language="49" name="V1024 - Civilian Fleets: Mimicry Extension" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
+  <text language="55" name="V1024 - Civilian Fleets: Mimicry Extension" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
+  <text language="81" name="V1024 - Civilian Fleets: Mimicry Extension" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
+  <text language="82" name="V1024 - Civilian Fleets: Mimicry Extension" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
+  <text language="86" name="V1024 - Civilian Fleets: Mimicry Extension" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
+  <text language="88" name="V1024 - Civilian Fleets: Mimicry Extension" description="Create civilian fleets to help manage traders and miners." author="Vectorial1024"/>
 </content>

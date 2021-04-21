@@ -41,12 +41,22 @@ Betty docks for the player via Auto-Pilot.
                 <set_value name="$assignmentObj" exact="$thisship.assignment" />
                 <set_value name="$minerStatus" exact="@global.$v1024_list_ship_is_mining.{$thisship}" />
                 <!-- v3.0 allows resupplier ships to receive trade subordinates; this is not what we are interested in. -->
-                <do_if value="($assignmentObj == assignment.trade and $commanderObject.type != shiptype.resupplier) or $assignmentObj == assignment.mining or $minerStatus == true">
-                    <!-- It is indeed a subordinate of a certain civilian fleet. -->
+                <!-- We should have adopted dictionaries in the first place, now we are stuck with bad code that are too old to change. -->
+                <!-- Too much work required to change, and others' mods will break during the change. Not good at all. -->
+                <do_if value="$thisship.assignment == assignment.assist" comment="We can only check for Assist assignment here.">
+                    <!-- Is Assist. -->
+                    <!-- 
+                        Let's argue a bit.
+                        For civ-fleet affected by this mod, they will receive proper default behaviors in the new sync code.
+                        For non-civ-fleet members, they will fall back to vanilla behavior and gets assigned the Mimic Commander default behavior.
+                        We have previously discovered that changing the default order does not affect the order queue at all;
+                        ships will still try to finish their current orders before falling back to default behavior to generate new orders.
+                        So, signalling the sync code here preserves correctness.
+                        Performance problems and doubts will be put under the rug for simplicity.
+                    -->
                     <!-- Sync from commander. -->
-                    <debug_text text="'Civ Fleet beginning sync: pull initiated by Subordinate ' + $thisship.knownname" />
                     <!-- Delegate to standardized static config method to ensure save-game compatibility. -->
-                    <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$commanderObject" param3="$thisship" />
+                    <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync_mimicryExtension" param2="$commanderObject" param3="$thisship" />
                 </do_if>
             </do_elseif>
             <do_elseif value="$commanderObject.isclass.station" chance="0" comment="Should already be fixed by EgoSoft themselves.">
@@ -67,20 +77,15 @@ Betty docks for the player via Auto-Pilot.
                     <!-- Determine civilian fleet commander -->
                     <do_if value="$thisship.defaultorder.id == $civFleet_CmdTagPairs.{$i}.{1}">
                         <!-- Fleet commander detected. -->
-                        <debug_text text="'Civ Fleet beginning sync: broadcast from Commander ' + $thisship.knownname" />
                         <!-- Summon all subordinates, and sync orders. -->
                         <set_value name="$allSubordinates" exact="$thisship.subordinates" />
-                        <do_all exact="$allSubordinates.count" counter="$i">
-                            <set_value name="$currentSubordinate" exact="$allSubordinates.{$i}" />
-                            <set_value name="$currentSubAssignObj" exact="$currentSubordinate.assignment" />
-                            <set_value name="$currentMinerStatus" exact="@global.$v1024_list_ship_is_mining.{$currentSubordinate}" />
-                            <do_if value="$currentSubAssignObj == assignment.trade or $currentSubAssignObj == assignment.mining or $currentMinerStatus == true">
+                        <!-- Noticed that AIScript can utilize this useful do-for-each loop block; rewritten code to use that -->
+                        <do_for_each name="$currentSubordinate" in="$allSubordinates">
+                            <do_if value="$currentSubordinate.assignment == assignment.assist">
                                 <!-- Delegate to standardized static config method to ensure save-game compatibility. -->
-                                <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$thisship" param3="$currentSubordinate" />
+                                <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync_mimicryExtension" param2="$thisship" param3="$currentSubordinate" />
                             </do_if>
-                        </do_all>
-
-                        <debug_text text="'Synchronization complete for Commander ' + $thisship.knownname" />
+                        </do_for_each>
                     </do_if>
                 </do_all>
             </do_if>

@@ -9,36 +9,17 @@ Do:
 2. Check if both the commander-to-be and the subordinate-to-be have the same primary purpose
 3. If [2] returns true, set the assignment to a value recognized by our other scripts (assignment.trade or assignment.mining)
 -->
+<!-- 
+Update:
+With Game v4.0+ available, the precondition [1] is impossible because we now rely on the [Mimic >] button to establish civilian fleets.
+But, there is still a need for us to check civilian fleet names so we keep some of this code.
+-->
 <diff>
     <!-- It seems that if we update a diff file, you gotta (so to speak) reapply the mod to the savegame. -->
-    <replace sel="/aiscript[@name='order.assign.commander']/attention/actions/do_if[1]/do_if[@value='$assignment']/do_if[2]">
-        <show_help position="1" duration="2s" custom="'Disabling EgoSoft\'s safety checks.'" chance="0"/>
-        <!-- These will throw errors because the expressions contained are not strings, however they are extremely effective in seeing what is the actual value. -->
-        <show_help position="1" duration="2s" custom="$commander.isplayerowned" chance="0"/>
-        <show_help position="1" duration="2s" custom="$commander.isclass.ship" chance="0"/>
-        <show_help position="1" duration="2s" custom="$assignment" chance="0"/>
-        <show_help position="1" duration="2s" custom="$assignment == assignment.mining" chance="0"/>
-        <do_if value="$commander.isplayerowned" comment="Required so that if e.g. a miner now AutoTrades minerals, they will not try to copy AutoMine orders from their new commander.">
-            <!-- Additional code to set the global mapping. -->
-            <!-- It be a table, not a list. Use $table.keys.list, $table.keys.count and $table.keys.{$numeric} along with a reverse do_all should do the trick. -->
-            <show_help position="1" duration="2s" custom="'Global list exists? [before] ' + global.$v1024_list_ship_is_mining?" chance="0"/>
-            <do_if value="not global.$v1024_list_ship_is_mining?">
-                <set_value name="global.$v1024_list_ship_is_mining" exact="table[]" />
-            </do_if>
-            <show_help position="1" duration="2s" custom="'Global list exists? [after] ' + global.$v1024_list_ship_is_mining?" chance="0"/>
-            <show_help position="1" duration="2s" custom="'Global list : ' + global.$v1024_list_ship_is_mining" chance="0"/>
-            <set_value name="global.$v1024_list_ship_is_mining.{this.ship}" exact="false" />
-            <do_if value="$commander.isclass.ship and ($assignment == assignment.mining or $assignment == 'mining')" comment="Civilian Fleet assignment detection">
-                <set_value name="global.$v1024_list_ship_is_mining.{this.ship}" exact="true" />
-            </do_if>
-            <show_help position="1" duration="2s" custom="'Global list becomes ' + @global.$v1024_list_ship_is_mining.{this.ship}" chance="0"/>
-        </do_if>
-    </replace>
-
     <add sel="/aiscript[@name='order.assign.commander']/attention/actions/do_if[1]" pos="prepend">
         <!-- Super early checking. -->
         <!-- Also ignore non-player ships for performance. -->
-        <do_if value="not $commander.isoperational" comment="Ship about to become unassigned.">
+        <do_if value="not $commander.isoperational" comment="Ship about to become unassigned. Note: it could be a ship gets sold and changes faction, so we cannot limit to only the player faction.">
             <!-- Ensure the table for fleet numbers exists; useful for when we attempt to find fleet numbers. -->
             <do_if value="not global.$v1024_fleet_number_table?">
                 <set_value name="global.$v1024_fleet_number_table" exact="table[]" />
@@ -48,7 +29,7 @@ Do:
             <set_value name="global.$v1024_fleet_number_table.{this.object}" exact="null" />
             <show_help position="1" duration="2s" custom="'Unassigned; fleet number becomes : ' + @global.$v1024_fleet_number_table.{this.object}" chance="0"/>
         </do_if>
-        <do_if value="$commander.isplayerowned and @global.$v1024_flags_fallbackModeActive">
+        <do_if value="$commander.isplayerowned and @global.$v1024_flags_fallbackModeActive" chance="0" comment="Not needed anymore, see XML comment above.">
             <!-- Right click API not loaded. Prerequisite 1 satisfied. -->
             <!-- Check 1. -->
             <do_if value="$commander.isclass.ship">

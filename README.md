@@ -1,4 +1,4 @@
-# Civilian Fleets
+# Civilian Fleets: Mimicry Extension
 Create civilian fleets to help manage your traders and miners.
 
 ![Assigning ships to form civilian fleets in v2.6](https://i.imgur.com/Avpw0Rk.png)
@@ -30,20 +30,18 @@ Without the help from the community, this mod will not be available in other lan
 You should check the Nexus page for more details, but, if you want to form/join a civilian fleet:
 
 1. Set and confirm the default behavior of the fleet leader; the default behavior of the fleet leader will be applied to other members of the civilian fleet
-2. Select your other ships (traders, miners, etc.)
-3. Right click on the leader
-4. Assign them to a fleet group with the "Trader" or "Miner" role (refer to the attached pic above)
-5. Setup complete
-6. Forget about the fleet
-7. ???
-8. Profit.
+2. Select and assign your other ships as "Mimic" role (refer to the attached pic above)
+3. Setup complete
+4. Forget about the fleet
+5. ???
+6. Profit.
 
 ## Requirements
 - ~~Right Click API~~
   - No longer required! All things now rely on SirNukes Mod Supprot APIs, which is described below:
 - SirNukes Mod Support APIs
   - Required: allows you to configure some parts of this mod
-  - Required: also allows adding the right-click menus
+  - ~~Required: also allows adding the right-click menus~~ No longer used for this purpose since everything is now based on the Mimic assignment
   - Their Steam Workshop page: https://steamcommunity.com/sharedfiles/filedetails/?id=2042901274
 
 ## Cross-Mod Compatibility
