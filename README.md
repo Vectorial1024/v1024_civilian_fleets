@@ -1,4 +1,4 @@
-# Civilian Fleets
+# Civilian Fleets: Mimicry Extension
 Create civilian fleets to help manage your traders and miners.
 
 ![Assigning ships to form civilian fleets in v2.6](https://i.imgur.com/Avpw0Rk.png)
