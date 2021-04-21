@@ -584,7 +584,7 @@ You gotta pick the variables back up after usage!
                 <!-- Check sync succes -->
                 <do_if value="$syncSuccessful">
                     <!-- Is successful; give out wing names, etc -->
-                    <show_help custom="'Syncing (mimic) successful.'" position="1" duration="2s" />
+                    <show_help custom="'Syncing (mimic) successful.'" position="1" duration="2s" chance="0" />
                     <do_if value="global.$v1024cf_should_rename_fleets" comment="Also update wing name when civ fleet is identified.">
                         <!-- Table of fleet number global.$v1024_fleet_number_table already ensured exists at order.dock.xml -->
 
