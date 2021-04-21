@@ -143,8 +143,8 @@ You gotta pick the variables back up after usage!
                 <set_value name="$fromShip" exact="event.param2" />
                 <set_value name="$toShip" exact="event.param3" />
 
-                <show_help custom="'Syncing (mimic) orders from ' + $fromShip.knownname + ' to ' + $toShip.knownname" position="1" duration="4s" />
-                <show_help custom="'Source ship\'s default order is ' + $fromShip.defaultorder?.id + ' ' + $fromShip.defaultorder?.name" position="1" duration="4s" />
+                <show_help custom="'Syncing (mimic) orders from ' + $fromShip.knownname + ' to ' + $toShip.knownname" position="1" duration="4s" chance="0" />
+                <show_help custom="'Source ship\'s default order is ' + $fromShip.defaultorder?.id + ' ' + $fromShip.defaultorder?.name" position="1" duration="4s" chance="0" />
 
                 <!-- Caching to allow faster script execution. -->
                 <set_value name="$assignmentSkillLevel" exact="[$fromShip.pilot.skill.management, $toShip.pilot.skill.piloting].max / 3" comment="The 'skill level' designated by vanilla game, if it were to assign a ship to a station." />
