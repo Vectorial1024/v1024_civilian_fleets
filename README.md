@@ -59,3 +59,6 @@ This mod also supports the following civilian default behaviors from other mods:
   - Their EgoSoft Forums page: https://forum.egosoft.com/viewtopic.php?t=427342
 - Factory Transporter
   - Their Steam Workshop page: https://steamcommunity.com/sharedfiles/filedetails/?id=2321672179
+
+## Other Stuff
+This serves as an important reminder to never skip steps, respect legacy methods, and never make breaking updates without auto-fixes.
