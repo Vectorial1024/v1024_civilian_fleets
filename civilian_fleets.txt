@@ -38,11 +38,10 @@ local function initializeBySirNukes()
     menu.insertLuaAction = function(actiontype, istobedisplayed)
         originalFunc(actiontype, istobedisplayed)
         if actiontype == "assign" then
-            -- No longer needed! We will just listen to base game v4.0's Mimic assignment and continue from there.
-            -- Keeping relevant code around for future reference, from me or from others.
-            -- L.V1024CF_AdditionalAssignmentActions(actiontype, istobedisplayed)
-        elseif actiontype == "manageassignments" then
-            L.V1024CF_AdditionalManageAssignmentActions(actiontype, istobedisplayed)
+            -- Whoops. It is a really bad idea to remove something so iconic. Restoring this.
+            L.V1024CF_AdditionalAssignmentActions(actiontype, istobedisplayed)
+        -- elseif actiontype == "manageassignments" then
+            -- L.V1024CF_AdditionalManageAssignmentActions(actiontype, istobedisplayed)
         end
     end
 
