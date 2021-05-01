@@ -12,7 +12,7 @@ Do:
 <diff>
     <add sel="/aiscript[@name='lib.request.orders']/attention/actions/do_else/do_else/do_elseif[@value='$assignment == assignment.assist']" pos="before">
         <!-- Target the space just before assist, to handle legacy CivFleet assignments -->
-        <do_elseif value="$assignment == assignment.trade or $assignment == assignment.mining or @global.$v1024_list_ship_is_mining.{this.ship} == true">
+        <do_elseif value="($assignment == assignment.trade and $commander.type != shiptype.resupplier) or $assignment == assignment.mining or @global.$v1024_list_ship_is_mining.{this.ship} == true">
             <do_if value="$object.isplayerowned" comment="Ignore non-player ships to boost performance">
                 <show_help position="1" duration="6s" custom="'Signalling the previous-made handler.'" chance="0"/>
                 <!-- Delegate to standardized static config method to ensure save-game compatibility. -->
