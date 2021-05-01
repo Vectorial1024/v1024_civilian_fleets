@@ -16,6 +16,31 @@ But, there is still a need for us to check civilian fleet names so we keep some 
 -->
 <diff>
     <!-- It seems that if we update a diff file, you gotta (so to speak) reapply the mod to the savegame. -->
+    <replace sel="/aiscript[@name='order.assign.commander']/attention/actions/do_if[1]/do_if[@value='$assignment']/do_if[2]">
+        <show_help position="1" duration="2s" custom="'Handling v4.0+ legacy Civ-Fleet assignments.'" chance="0"/>
+        <!-- We will just allow Trader/Miner assignment BUT redirect them to Mimic instead. -->
+        <!-- We utilize a global table to temporarily store the Civ-Fleet assignments -->
+        <do_if value="$commander.isplayerowned" comment="">
+            <!-- It be a table, not a list. Use $table.keys.list, $table.keys.count and $table.keys.{$numeric} along with a reverse do_all should do the trick. -->
+            <show_help position="1" duration="2s" custom="'Global list exists? [before] ' + global.$v1024_list_civ_fleet_assignment?" chance="0"/>
+            <do_if value="not global.$v1024_list_civ_fleet_assignment?">
+                <set_value name="global.$v1024_list_civ_fleet_assignment" exact="table[]" />
+            </do_if>
+            <show_help position="1" duration="2s" custom="'Global list exists? [after] ' + global.$v1024_list_civ_fleet_assignment?" chance="0"/>
+            <show_help position="1" duration="2s" custom="'Global list : ' + global.$v1024_list_civ_fleet_assignment" chance="0"/>
+            <do_if value="$commander.isclass.ship and (($assignment == assignment.mining or $assignment == 'mining') or ( and ))" comment="Civilian Fleet assignment detection">
+                <do_if value="$assignment == assignment.mining or $assignment == 'mining'" comment="">
+                    <!-- Miner assignment -->
+                    <set_value name="global.$v1024_list_civ_fleet_assignment.{this.ship}" exact="true" />
+                </do_if>
+                <do_elseif value="(($assignmentObj == assignment.trade or $assignment == 'trade') and $commanderObject.type != shiptype.resupplier)" comment="Ignore resupply ship assignments (v3.0+)">
+                    <!-- Trader assignment -->
+                    <set_value name="global.$v1024_list_civ_fleet_assignment.{this.ship}" exact="true" />
+                </do_elseif>
+            </do_if>
+            <show_help position="1" duration="2s" custom="'Global list becomes ' + @global.$v1024_list_civ_fleet_assignment.{this.ship}" chance="0"/>
+        </do_if>
+    </replace>
     <add sel="/aiscript[@name='order.assign.commander']/attention/actions/do_if[1]" pos="prepend">
         <!-- Super early checking. -->
         <!-- Also ignore non-player ships for performance. -->
