@@ -110,7 +110,7 @@ You gotta pick the variables back up after usage!
                 <!-- Prepare to redirect to new code; new code would pick up civ-fleet members from Mimic assignment -->
                 <!-- Supposedly we have already redirected all the old CivFleet assignment to use the new Mimic assignment -->
                 <!-- Just in case, when it somehow still calls this, we just redirect to the new code -->
-                <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync_mimicryExtension" param2="$commander" param3="$object" />
+                <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync_mimicryExtension" param2="$fromShip" param3="$toShip" />
             </actions>
         </cue>
 
