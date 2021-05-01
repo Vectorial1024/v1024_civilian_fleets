@@ -27,13 +27,13 @@ But, there is still a need for us to check civilian fleet names so we keep some 
                     <!-- Miner assignment -->
                     <set_value name="$requiresCivFleetRedirection" exact="true" />
                     <!-- will display Miner becomes Assistant/Mimic -->
-                    <show_help position="1" duration="3s" custom="'Civilian Fleets: ' + {20208,40201} + ' --> ' + {20208,41101} + ' / ' + {20208,41201}"/>
+                    <show_help position="1" duration="3s" custom="'[CivFleet] ' + {20208,40201} + ' --> ' + {20208,41101} + ' / ' + {20208,41201}"/>
                 </do_if>
                 <do_elseif value="(($assignment == assignment.trade or $assignment == 'trade') and $commanderObject.type != shiptype.resupplier)" comment="Ignore resupply ship assignments (v3.0+)">
                     <!-- Trader assignment -->
                     <set_value name="$requiresCivFleetRedirection" exact="true" />
                     <!-- will display Trader becomes Assistant/Mimic -->
-                    <show_help position="1" duration="3s" custom="'Civilian Fleets: ' + {20208,40101} + ' --> ' + {20208,41101} + ' / ' + {20208,41201}"/>
+                    <show_help position="1" duration="3s" custom="'[CivFleet] ' + {20208,40101} + ' --> ' + {20208,41101} + ' / ' + {20208,41201}"/>
                 </do_elseif>
             </do_if>
             <do_if value="$requiresCivFleetRedirection and $setgroupassignment and ($subordinategroup gt 0)" comment="Need to further check whether this is a UI-induced assignment action">
