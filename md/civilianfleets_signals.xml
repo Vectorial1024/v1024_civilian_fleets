@@ -102,16 +102,15 @@ You gotta pick the variables back up after usage!
             </conditions>
             <delay min="100ms" max="5000ms" comment="Delay randomly to spread out the performance spike." />
             <actions>
-                <show_help custom="'[CivFleet] Please use global.$v1024_symbols_requestOrderSync_mimicryExtension instead.'" position="1" duration="4s" comment="Please use the oter endpoint instead" />
+                <show_help custom="'[CivFleet] Please use global.$v1024_symbols_requestOrderSync_mimicryExtension instead.'" position="1" duration="4s" comment="Please use the oter endpoint instead" chance="0" />
 
                 <set_value name="$fromShip" exact="event.param2" />
                 <set_value name="$toShip" exact="event.param3" />
 
                 <!-- Prepare to redirect to new code; new code would pick up civ-fleet members from Mimic assignment -->
-                <create_order object="$toShip" id="'AssignCommander'">
-                    <param name="commander" value="$fromShip" />
-                    <param name="assignment" value="assignment.assist" />
-                </create_order>
+                <!-- Supposedly we have already redirected all the old CivFleet assignment to use the new Mimic assignment -->
+                <!-- Just in case, when it somehow still calls this, we just redirect to the new code -->
+                <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync_mimicryExtension" param2="$commander" param3="$object" />
             </actions>
         </cue>
 
@@ -136,7 +135,9 @@ You gotta pick the variables back up after usage!
                 <!-- Source ship must have a valid default command. -->
                 <check_value value="event.param2.defaultorder" />
                 <!-- Destination ship must have assist assignment. -->
+                <!--
                 <check_value value="event.param3.assignment == assignment.assist" />
+                -->
             </conditions>
             <delay min="100ms" max="5000ms" comment="Delay randomly to spread out the performance spike." />
             <actions>
