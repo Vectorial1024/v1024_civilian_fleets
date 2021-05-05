@@ -578,6 +578,15 @@ You gotta pick the variables back up after usage!
                 $syncSuccessful will assume the orders are successfully copied and will handle post-copy actions.
                 It will not look back again to check whether you did extra syncing!
                 -->
+                <!--
+                    To patch to this space directly, use this:
+                    <add sel="mdscript/cues/cue[@name='Signal_SyncOrders_MimicryExtension']/actions/do_else[1]" pos="before">
+                        Your code here, e.g.
+                        <do_elseif value="$fromShip_DefaultOrder.id == 'YourOrderID'">
+
+                        </do_elseif>
+                    </add>
+                -->
                 <do_else>
                     <debug_text text="'Assignment unrecognized by CivFleet. Cancelling sync from ' + $fromShip.knownname + ' (' + $fromShip + ') to ' + $toShip.knownname + ' (' + $toShip + ') via assignment ' + $toShip.assignment + ', falling back to Mimic.'" />
                 </do_else>
