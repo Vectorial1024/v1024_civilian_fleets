@@ -77,6 +77,11 @@ You gotta pick the variables back up after usage!
 
                 <set_value name="$freshUnassignedShip" exact="event.param2" />
                 <set_value name="global.$v1024_fleet_number_table.{$freshUnassignedShip}" exact="null" comment="Ensure their fleet number is reset, so future assignments can work correctly." />
+
+                <!-- Mining ship needs to be removed from the old mining fleet table! -->
+                <do_if value="global.$v1024_list_ship_is_mining?">
+                    <set_value name="global.$v1024_list_ship_is_mining.{$freshUnassignedShip}" exact="false" />
+                </do_if>
             </actions>
         </cue>
 
