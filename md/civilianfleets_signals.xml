@@ -56,7 +56,7 @@ You gotta pick the variables back up after usage!
             param1 = That Characteristic Symbol
             param2 = thatShip
         -->
-        <cue name="Signal_NotifyShipRemovedCommander" instantiate="true" version="1">
+        <cue name="Signal_NotifyShipRemovedCommander" instantiate="true" version="2">
             <conditions>
                 <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_notifyShipRemovedCommander" />
                 <!-- Characteristic symbol must match. -->
