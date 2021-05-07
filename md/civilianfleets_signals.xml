@@ -9,7 +9,11 @@ You gotta pick the variables back up after usage!
         <cue name="SignalConfigurationControl" instantiate="true" version="6">
             <conditions>
                 <!-- Whatever happens, when the player enters the game state, set up the variables. -->
-                <event_cue_signalled cue="md.Setup.Start" />
+                <check_any>
+                    <!-- Apparently Setup.Start and Setup.GameStart are different. GameStart is when the game really starts fresh while Start seem to be general starting. -->
+                    <event_cue_signalled cue="md.Setup.GameStart" />
+                    <event_cue_signalled cue="md.Setup.Start" />
+                </check_any>
             </conditions>
             <actions>
                 <set_value name="global.$v1024_symbols_requestOrderSync" exact="'requesting order sync'" />
