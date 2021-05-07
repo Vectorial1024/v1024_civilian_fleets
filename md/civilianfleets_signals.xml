@@ -62,7 +62,7 @@ You gotta pick the variables back up after usage!
         -->
         <cue name="Signal_NotifyShipRemovedCommander" instantiate="true" version="2">
             <conditions>
-                <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_notifyShipRemovedCommander" />
+                <event_object_signalled object="player.galaxy" param="@global.$v1024_symbols_notifyShipRemovedCommander" />
                 <!-- Characteristic symbol must match. -->
                 <check_value value="event.param == global.$v1024_symbols_notifyShipRemovedCommander" />
                 <!-- That target must be non-null. -->
@@ -99,7 +99,7 @@ You gotta pick the variables back up after usage!
         -->
         <cue name="Signal_SyncOrders" instantiate="true" version="6">
             <conditions>
-                <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" />
+                <event_object_signalled object="player.galaxy" param="@global.$v1024_symbols_requestOrderSync" />
                 <!-- Characteristic symbol must match. -->
                 <check_value value="event.param == global.$v1024_symbols_requestOrderSync" />
                 <!-- Both targets must be non-null. -->
@@ -134,7 +134,7 @@ You gotta pick the variables back up after usage!
         -->
         <cue name="Signal_SyncOrders_MimicryExtension" instantiate="true" version="1">
             <conditions>
-                <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_requestOrderSync_mimicryExtension" />
+                <event_object_signalled object="player.galaxy" param="@global.$v1024_symbols_requestOrderSync_mimicryExtension" />
                 <!-- Characteristic symbol must match. -->
                 <check_value value="event.param == global.$v1024_symbols_requestOrderSync_mimicryExtension" />
                 <!-- Both targets must be non-null. -->
