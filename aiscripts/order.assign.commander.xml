@@ -16,6 +16,33 @@ But, there is still a need for us to check civilian fleet names so we keep some 
 -->
 <diff>
     <!-- It seems that if we update a diff file, you gotta (so to speak) reapply the mod to the savegame. -->
+    <add sel="/aiscript[@name='order.assign.commander']/attention/actions/do_if[1]/do_if[@value='$assignment']" pos="prepend">
+        <show_help position="1" duration="2s" custom="'Handling v4.0+ legacy Civ-Fleet assignments.'" chance="0"/>
+        <!-- We will just allow Trader/Miner assignment BUT redirect them to Mimic instead. -->
+        <!-- We dont even need a global table. We can already decide whether a redirection is needed right inside this patch section. -->
+        <do_if value="$commander.isplayerowned" comment="">
+            <set_value name="$requiresCivFleetRedirection" exact="false" />
+            <do_if value="$commander.isclass.ship" comment="Filter out non-player ships">
+                <do_if value="$assignment == assignment.mining or $assignment == 'mining'" comment="">
+                    <!-- Miner assignment -->
+                    <set_value name="$requiresCivFleetRedirection" exact="true" />
+                    <!-- will display Miner becomes Assistant/Mimic -->
+                    <show_help position="1" duration="4s" custom="'[CivFleet] ' + {20208,40201} + ' --> ' + {20208,41101} + ' / ' + {20208,41201}"/>
+                </do_if>
+                <do_elseif value="(($assignment == assignment.trade or $assignment == 'trade') and $commanderObject.type != shiptype.resupplier)" comment="Ignore resupply ship assignments (v3.0+)">
+                    <!-- Trader assignment -->
+                    <set_value name="$requiresCivFleetRedirection" exact="true" />
+                    <!-- will display Trader becomes Assistant/Mimic -->
+                    <show_help position="1" duration="4s" custom="'[CivFleet] ' + {20208,40101} + ' --> ' + {20208,41101} + ' / ' + {20208,41201}"/>
+                </do_elseif>
+            </do_if>
+            <do_if value="$requiresCivFleetRedirection and $setgroupassignment and ($subordinategroup gt 0)" comment="Need to further check whether this is a UI-induced assignment action">
+                <!-- Is UI-induced assignment; modify the parameters! -->
+                <set_value name="$assignment" exact="assignment.assist"/>
+            </do_if>
+            <show_help position="1" duration="2s" custom="'Global list becomes ' + @global.$v1024_list_civ_fleet_assignment.{this.ship}" chance="0"/>
+        </do_if>
+    </add>
     <add sel="/aiscript[@name='order.assign.commander']/attention/actions/do_if[1]" pos="prepend">
         <!-- Super early checking. -->
         <!-- Also ignore non-player ships for performance. -->

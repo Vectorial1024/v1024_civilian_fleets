@@ -56,9 +56,9 @@ You gotta pick the variables back up after usage!
             param1 = That Characteristic Symbol
             param2 = thatShip
         -->
-        <cue name="Signal_NotifyShipRemovedCommander" instantiate="true" version="1">
+        <cue name="Signal_NotifyShipRemovedCommander" instantiate="true" version="2">
             <conditions>
-                <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_notifyShipRemovedCommander" />
+                <event_object_signalled object="player.galaxy" param="@global.$v1024_symbols_notifyShipRemovedCommander" />
                 <!-- Characteristic symbol must match. -->
                 <check_value value="event.param == global.$v1024_symbols_notifyShipRemovedCommander" />
                 <!-- That target must be non-null. -->
@@ -77,6 +77,11 @@ You gotta pick the variables back up after usage!
 
                 <set_value name="$freshUnassignedShip" exact="event.param2" />
                 <set_value name="global.$v1024_fleet_number_table.{$freshUnassignedShip}" exact="null" comment="Ensure their fleet number is reset, so future assignments can work correctly." />
+
+                <!-- Mining ship needs to be removed from the old mining fleet table! -->
+                <do_if value="global.$v1024_list_ship_is_mining?">
+                    <set_value name="global.$v1024_list_ship_is_mining.{$freshUnassignedShip}" exact="false" />
+                </do_if>
             </actions>
         </cue>
 
@@ -90,7 +95,7 @@ You gotta pick the variables back up after usage!
         -->
         <cue name="Signal_SyncOrders" instantiate="true" version="6">
             <conditions>
-                <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" />
+                <event_object_signalled object="player.galaxy" param="@global.$v1024_symbols_requestOrderSync" />
                 <!-- Characteristic symbol must match. -->
                 <check_value value="event.param == global.$v1024_symbols_requestOrderSync" />
                 <!-- Both targets must be non-null. -->
@@ -102,16 +107,15 @@ You gotta pick the variables back up after usage!
             </conditions>
             <delay min="100ms" max="5000ms" comment="Delay randomly to spread out the performance spike." />
             <actions>
-                <show_help custom="'[CivFleet] Please use global.$v1024_symbols_requestOrderSync_mimicryExtension instead.'" position="1" duration="4s" comment="Please use the oter endpoint instead" />
+                <show_help custom="'[CivFleet] Please use global.$v1024_symbols_requestOrderSync_mimicryExtension instead.'" position="1" duration="4s" comment="Please use the oter endpoint instead" chance="0" />
 
                 <set_value name="$fromShip" exact="event.param2" />
                 <set_value name="$toShip" exact="event.param3" />
 
                 <!-- Prepare to redirect to new code; new code would pick up civ-fleet members from Mimic assignment -->
-                <create_order object="$toShip" id="'AssignCommander'">
-                    <param name="commander" value="$fromShip" />
-                    <param name="assignment" value="assignment.assist" />
-                </create_order>
+                <!-- Supposedly we have already redirected all the old CivFleet assignment to use the new Mimic assignment -->
+                <!-- Just in case, when it somehow still calls this, we just redirect to the new code -->
+                <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync_mimicryExtension" param2="$fromShip" param3="$toShip" />
             </actions>
         </cue>
 
@@ -126,7 +130,7 @@ You gotta pick the variables back up after usage!
         -->
         <cue name="Signal_SyncOrders_MimicryExtension" instantiate="true" version="1">
             <conditions>
-                <event_object_signalled object="player.galaxy" param="global.$v1024_symbols_requestOrderSync_mimicryExtension" />
+                <event_object_signalled object="player.galaxy" param="@global.$v1024_symbols_requestOrderSync_mimicryExtension" />
                 <!-- Characteristic symbol must match. -->
                 <check_value value="event.param == global.$v1024_symbols_requestOrderSync_mimicryExtension" />
                 <!-- Both targets must be non-null. -->
@@ -136,7 +140,9 @@ You gotta pick the variables back up after usage!
                 <!-- Source ship must have a valid default command. -->
                 <check_value value="event.param2.defaultorder" />
                 <!-- Destination ship must have assist assignment. -->
+                <!--
                 <check_value value="event.param3.assignment == assignment.assist" />
+                -->
             </conditions>
             <delay min="100ms" max="5000ms" comment="Delay randomly to spread out the performance spike." />
             <actions>
@@ -576,6 +582,15 @@ You gotta pick the variables back up after usage!
                 DO NOT APPEND TO THE $syncSuccessful CHECK!
                 $syncSuccessful will assume the orders are successfully copied and will handle post-copy actions.
                 It will not look back again to check whether you did extra syncing!
+                -->
+                <!--
+                    To patch to this space directly, use this:
+                    <add sel="mdscript/cues/cue[@name='Signal_SyncOrders_MimicryExtension']/actions/do_else[1]" pos="before">
+                        Your code here, e.g.
+                        <do_elseif value="$fromShip_DefaultOrder.id == 'YourOrderID'">
+
+                        </do_elseif>
+                    </add>
                 -->
                 <do_else>
                     <debug_text text="'Assignment unrecognized by CivFleet. Cancelling sync from ' + $fromShip.knownname + ' (' + $fromShip + ') to ' + $toShip.knownname + ' (' + $toShip + ') via assignment ' + $toShip.assignment + ', falling back to Mimic.'" />
