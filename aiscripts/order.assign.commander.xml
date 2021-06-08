@@ -29,7 +29,7 @@ But, there is still a need for us to check civilian fleet names so we keep some 
                     <!-- will display Miner becomes Assistant/Mimic -->
                     <show_help position="1" duration="4s" custom="'[CivFleet] ' + {20208,40201} + ' --> ' + {20208,41101} + ' / ' + {20208,41201}"/>
                 </do_if>
-                <do_elseif value="(($assignment == assignment.trade or $assignment == 'trade') and $commanderObject.type != shiptype.resupplier)" comment="Ignore resupply ship assignments (v3.0+)">
+                <do_elseif value="(($assignment == assignment.trade or $assignment == 'trade') and $commander.type != shiptype.resupplier)" comment="Ignore resupply ship assignments (v3.0+)">
                     <!-- Trader assignment -->
                     <set_value name="$requiresCivFleetRedirection" exact="true" />
                     <!-- will display Trader becomes Assistant/Mimic -->
