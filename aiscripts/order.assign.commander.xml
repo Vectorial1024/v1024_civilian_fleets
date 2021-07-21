@@ -35,6 +35,10 @@ But, there is still a need for us to check civilian fleet names so we keep some 
                     <!-- will display Trader becomes Assistant/Mimic -->
                     <show_help position="1" duration="4s" custom="'[CivFleet] ' + {20208,40101} + ' --> ' + {20208,41101} + ' / ' + {20208,41201}"/>
                 </do_elseif>
+                <do_if value="$commander.defaultorder.id == 'RandomMine' or $commander.defaultorder.id == 'RandomTrade' or $commander.defaultorder.id == 'RandomSupply'">
+                    <!-- If the commander is using one of the known RandomFamily commands, skip it. Let the RandomFamily take over in determining what should be done. -->
+                    <set_value name="$requiresCivFleetRedirection" exact="false" />
+                </do_if>
             </do_if>
             <do_if value="$requiresCivFleetRedirection and $setgroupassignment and ($subordinategroup gt 0)" comment="Need to further check whether this is a UI-induced assignment action">
                 <!-- Is UI-induced assignment; modify the parameters! -->
