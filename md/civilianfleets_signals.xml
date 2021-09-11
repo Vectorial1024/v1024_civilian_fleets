@@ -493,8 +493,8 @@ You gotta pick the variables back up after usage!
                     <!-- Misunderstood-Wookies' Mules and Warehouses Extended: Supply Mule behavior -->
                     <create_order object="$toShip" id="'SupplyMule'" default="true">
                         <param name="home" value="$fromShip_DefaultOrder.$home" />
-                        <!-- Making this false because otherwise the fleet gets disbanded if the commander is assigned to source. -->
                         <param name="maxDist" value="[$toShip.pilot.skill.piloting * 2, $fromShip_DefaultOrder.$maxDist].min" />
+                        <!-- Making this false because otherwise the fleet gets disbanded if the commander is assigned to source. -->
                         <param name="assignHome" value="false" /> 
                         <param name="dedicatedServe" value="$fromShip_DefaultOrder.$dedicatedServe" />
                         <param name="allowPlayerSuppliers" value="$fromShip_DefaultOrder.$allowPlayerSuppliers" />
