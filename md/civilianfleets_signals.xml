@@ -506,6 +506,7 @@ You gotta pick the variables back up after usage!
                         <param name="lockWares" value="$fromShip_DefaultOrder.$lockWares" />
                         <param name="specialWareBasket" value="$fromShip_DefaultOrder.$specialWareBasket" />
                         <param name="maxTrades" value="$fromShip_DefaultOrder.$maxTrades" />
+                        <param name="minCargoUsed" value="$fromShip_DefaultOrder.$minCargoUsed" />
                         <param name="playerBuyMod" value="$fromShip_DefaultOrder.$playerBuyMod" />
                     </create_order>
                     <set_order_syncpoint_reached order="$toShip.order"/>
