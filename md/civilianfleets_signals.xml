@@ -637,8 +637,25 @@ You gotta pick the variables back up after usage!
                         <do_if value="$rootCommander.isclass.ship">
                             <!-- Valid civilian fleet tree; see if a fleet number already exists. -->
                             <do_if value="@global.$v1024_fleet_number_table.{$rootCommander} != null">
-                                <!-- Exists; load it. -->
-                                <set_value name="$selectedFleetNumber" exact="global.$v1024_fleet_number_table.{$rootCommander}"/>
+                                <!-- Exists; HOWEVER, check whether this is a fresh fleet formation. -->
+                                <!-- A fresh fleet should get a new fleet number instead of reusing some old fleet number. -->
+                                <!-- Hopefully X4 does NOT concurrent this section of code, otherwise this logic will just epically fail -->
+                                <set_value name="$temp_fleetIsFresh" exact="true" />
+                                <do_for_each name="$currentSubordinate" in="$rootCommander.subordinates">
+                                    <do_if value="@global.$v1024_fleet_number_table.{$currentSubordinate} != null">
+                                        <set_value name="$temp_fleetIsFresh" exact="false" />
+                                        <!-- We should break here, but we are not sure if break works in do-for-each -->
+                                    </do_if>
+                                </do_for_each>
+                                <do_if value="$temp_fleetIsFresh" comment="Fleet is fresh if there does not exist anyone in the fleet having valid fleet number">
+                                    <!-- New fleet; next fleet number! -->
+                                    <set_value name="global.$civFleet_WingID" exact="@global.$civFleet_WingID + 1" comment="null can be coerced into a 0. I put an @ just in case." />
+                                    <set_value name="$selectedFleetNumber" exact="global.$civFleet_WingID" />
+                                </do_if>
+                                <do_else>
+                                    <!-- Old fleet; load it. -->
+                                    <set_value name="$selectedFleetNumber" exact="global.$v1024_fleet_number_table.{$rootCommander}"/>
+                                </do_else>
                             </do_if>
                             <do_else>
                                 <!-- Does not exist. Fallback to next available fleet number. -->
