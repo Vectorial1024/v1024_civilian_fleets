@@ -68,7 +68,7 @@ But, there is still a need for us to check civilian fleet names so we keep some 
                 <set_value name="global.$v1024_fleet_number_table" exact="table[]" />
             </do_if>
             <set_value name="global.$v1024_fleet_number_table.{this.object}" exact="null" />
-            <show_help position="1" duration="2s" custom="'New code; fleet number becomes : ' + @global.$v1024_fleet_number_table.{this.object}" chance="100"/>
+            <show_help position="1" duration="2s" custom="'New code; fleet number becomes : ' + @global.$v1024_fleet_number_table.{this.object}" chance="0"/>
         </do_else>
         <do_if value="$commander.isplayerowned and @global.$v1024_flags_fallbackModeActive" chance="0" comment="Not needed anymore, see XML comment above.">
             <!-- Right click API not loaded. Prerequisite 1 satisfied. -->
