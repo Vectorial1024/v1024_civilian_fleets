@@ -459,14 +459,17 @@ You gotta pick the variables back up after usage!
                     <!-- Misunderstood-Wookies' Mules and Warehouses Extended: Distribution Mule behavior -->
                     <create_order object="$toShip" id="'DistriMule'" default="true">
                         <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />
-                        <!-- Making this false because otherwise the fleet gets disbanded if the commander is assigned to source. -->
-                        <param name="assignSrc" value="false" />
                         <param name="minStorage" value="$fromShip_DefaultOrder.$minStorage" />
                         <param name="staticStorage" value="$fromShip_DefaultOrder.$staticStorage" />
                         <param name="maxStorage" value="$fromShip_DefaultOrder.$maxStorage" />
                         <param name="specialWareBasket" value="$fromShip_DefaultOrder.$specialWareBasket" />
                         <param name="destList" value="$fromShip_DefaultOrder.$destList" />
                     </create_order>
+                    <do_if value="$fromShip_DefaultOrder.$assignSrc?">
+                        <!-- Make it be an edit so that we can ensure compatibility when some players haven't updated their Mules yet -->
+                        <!-- Making this false because otherwise the fleet gets disbanded if the commander is assigned to source. -->
+                        <edit_order_param order="$toShip.defaultorder" param="'assignSrc'" value="false" />
+                    </do_if>
                     <set_order_syncpoint_reached order="$toShip.order"/>
                     <set_value name="$syncSuccessful" exact="true" />
                 </do_elseif>
@@ -527,6 +530,11 @@ You gotta pick the variables back up after usage!
                         <param name="tradeWithAll" value="$fromShip_DefaultOrder.$tradeWithAll" />
                         <param name="destList" value="$fromShip_DefaultOrder.$destList" />
                     </create_order>
+                    <do_if value="$fromShip_DefaultOrder.$assignSrc?">
+                        <!-- Make it be an edit so that we can ensure compatibility when some players haven't updated their Mules yet -->
+                        <!-- Making this false because otherwise the fleet gets disbanded if the commander is assigned to source. -->
+                        <edit_order_param order="$toShip.defaultorder" param="'assignSrc'" value="false" />
+                    </do_if>
                     <set_order_syncpoint_reached order="$toShip.order"/>
                     <set_value name="$syncSuccessful" exact="true" />
                 </do_elseif>
