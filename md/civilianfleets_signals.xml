@@ -459,6 +459,8 @@ You gotta pick the variables back up after usage!
                     <!-- Misunderstood-Wookies' Mules and Warehouses Extended: Distribution Mule behavior -->
                     <create_order object="$toShip" id="'DistriMule'" default="true">
                         <param name="sourceStation" value="$fromShip_DefaultOrder.$sourceStation" />
+                        <!-- Making this false because otherwise the fleet gets disbanded if the commander is assigned to source. -->
+                        <param name="assignSrc" value="false" />
                         <param name="minStorage" value="$fromShip_DefaultOrder.$minStorage" />
                         <param name="staticStorage" value="$fromShip_DefaultOrder.$staticStorage" />
                         <param name="maxStorage" value="$fromShip_DefaultOrder.$maxStorage" />
