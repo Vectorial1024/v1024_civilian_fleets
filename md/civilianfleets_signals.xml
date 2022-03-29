@@ -589,6 +589,22 @@ You gotta pick the variables back up after usage!
                     <remove_value name="$maxBuy" />
                     <remove_value name="$maxSell" />
                 </do_elseif>
+                <do_elseif value="$fromShip_DefaultOrder.id == 'SalvageRoutine'">
+                    <!-- Vanilla AutoSalvage behavior; new since X4 v5.00 -->
+                    <!-- I do not care whether they are compactors or tugs; they will get to work under the same command -->
+                    <!-- In fact, an argument can be made where having compactors and tugs in the same fleet gives you a good idea of whether the group is working efficient enough -->
+                    <set_value name="$range" exact="[$fromShip_DefaultOrder.$range, $assignmentSkillLevel].min" />
+
+                    <create_order object="$toShip" id="'SalvageRoutine'" default="true">
+                        <param name="anchorspace" value="$fromShip_DefaultOrder.$anchorspace" />
+                        <param name="range" value="$range" />
+                    </create_order>
+                    <set_order_syncpoint_reached order="$toShip.order"/>
+                    <set_value name="$syncSuccessful" exact="true" />
+
+                    <!-- Out of scope variable removal -->
+                    <remove_value name="$range" />
+                </do_elseif>
                 <!--
                 Note to mod makers: if you want to add more orders to check, you should append to the last do_elseif right here!
                 DO NOT APPEND TO THE $syncSuccessful CHECK!
