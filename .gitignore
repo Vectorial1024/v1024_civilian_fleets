@@ -1,3 +1,6 @@
 # Cat-Dat Edition files/Workshop files
 *.cat
 *.dat
+
+# vscode files
+.vs/
