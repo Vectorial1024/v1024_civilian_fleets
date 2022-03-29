@@ -351,7 +351,7 @@ You gotta pick the variables back up after usage!
                 <!-- General order sync/mimic -->
                 <!-- This can be general orders such as miners doing trading or traders doing trading -->
                 <!-- Switch for every known default order -->
-                <do_if value="$fromShip_DefaultOrder.id == 'TradeRoutine'">
+                <do_if value="$fromShip_DefaultOrder.id == 'TradeRoutine' or $fromShip_DefaultOrder.id == 'TradeRoutine_Basic' or $fromShip_DefaultOrder.id == 'TradeRoutine_Advanced'">
                     <!-- Vanilla AutoTrade behavior -->
                     <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
                     <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxsell, $assignmentSkillLevel].min" />
