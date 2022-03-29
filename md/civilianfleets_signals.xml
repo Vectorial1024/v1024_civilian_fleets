@@ -605,7 +605,9 @@ You gotta pick the variables back up after usage!
                     </add>
                 -->
                 <do_else>
-                    <debug_text text="'Assignment unrecognized by CivFleet. Cancelling sync from ' + $fromShip.knownname + ' (' + $fromShip + ') to ' + $toShip.knownname + ' (' + $toShip + ') via assignment ' + $toShip.assignment + ', falling back to Mimic.'" />
+                    <do_if value="not $syncSuccessful" comment="$syncSuccessful is true when we processed the mining assignment">
+                        <debug_text text="'Assignment unrecognized by CivFleet. Cancelling sync from ' + $fromShip.knownname + ' (' + $fromShip + ') to ' + $toShip.knownname + ' (' + $toShip + ') via assignment ' + $toShip.assignment + ', falling back to Mimic.'" />
+                    </do_if>
                 </do_else>
 
                 <!-- Check sync succes -->
