@@ -8,4 +8,7 @@
         </do_if>
     </add>
     -->
+
+    <!-- i give up. I will just re-enable the internal type and make it sector, so that it works again. -->
+    <replace sel="/aiscript[@name='order.mining.routine']/order/params/param[@name='range']/@type">sector</replace>
 </diff>
