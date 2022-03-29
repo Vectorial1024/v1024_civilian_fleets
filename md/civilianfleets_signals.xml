@@ -746,6 +746,10 @@ You gotta pick the variables back up after usage!
                                 <do_elseif value="$fromShip_DefaultOrder.id == 'TravelMule'">
                                     <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$sourceStation" />
                                 </do_elseif>
+                                <!-- Salvaging commands -->
+                                <do_elseif value="$fromShip_DefaultOrder.id == 'SalvageRoutine'">
+                                    <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$anchorspace" />
+                                </do_elseif>
                                 <do_else>
                                     <!-- Do nothing; we place this code here to allow people to patch into this easily. -->
                                     <!-- Please see https://forum.egosoft.com/viewtopic.php?t=354310 , and find pos="before" in the webpage. It will be helpful. -->
