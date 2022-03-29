@@ -353,6 +353,7 @@ You gotta pick the variables back up after usage!
                 <!-- Switch for every known default order -->
                 <do_if value="$fromShip_DefaultOrder.id == 'TradeRoutine' or $fromShip_DefaultOrder.id == 'TradeRoutine_Basic' or $fromShip_DefaultOrder.id == 'TradeRoutine_Advanced'">
                     <!-- Vanilla AutoTrade behavior -->
+                    <!-- Since X4 v5.00, also extends to Local AutoTrade and Advanced AutoTrade -->
                     <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
                     <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxsell, $assignmentSkillLevel].min" />
 
@@ -372,7 +373,7 @@ You gotta pick the variables back up after usage!
                     <remove_value name="$maxSell" />
                 </do_if>
                 <do_elseif value="$fromShip_DefaultOrder.id == 'Middleman'">
-                    <!-- Vanilla Distribute Wares behavior -->
+                    <!-- Vanilla Fill Storage (previously Distribute Wares before v5.00) behavior -->
                     <create_order object="$toShip" id="'Middleman'" default="true">
                         <!-- In v2.5, only warebasket can be modified by the player. -->
                         <param name="warebasket" value="$fromShip_DefaultOrder.$warebasket" />
