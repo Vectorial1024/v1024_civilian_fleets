@@ -725,7 +725,7 @@ You gotta pick the variables back up after usage!
                                     <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$range" />
                                 </do_if>
                                 <!-- Trading commands -->
-                                <do_elseif value="$fromShip_DefaultOrder.id == 'TradeRoutine'">
+                                <do_elseif value="$fromShip_DefaultOrder.id == 'TradeRoutine' or $fromShip_DefaultOrder.id == 'TradeRoutine_Basic' or $fromShip_DefaultOrder.id == 'TradeRoutine_Advanced'">
                                     <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$range" />
                                 </do_elseif>
                                 <do_elseif value="$fromShip_DefaultOrder.id == 'Middleman'">
