@@ -128,7 +128,7 @@ You gotta pick the variables back up after usage!
             param3 = toShip
         Note: this iis valid for base game v4.0+ for using the Mimic/Assist.
         -->
-        <cue name="Signal_SyncOrders_MimicryExtension" instantiate="true" version="1">
+        <cue name="Signal_SyncOrders_MimicryExtension" instantiate="true" version="2">
             <conditions>
                 <event_object_signalled object="player.galaxy" param="@global.$v1024_symbols_requestOrderSync_mimicryExtension" />
                 <!-- Characteristic symbol must match. -->
@@ -779,7 +779,7 @@ You gotta pick the variables back up after usage!
 
         <!-- Given an order (more precisely, a defaultorder), determines if such order is a mining order. -->
         <!-- input: $inputOrder, output: $isMiningOrder -->
-        <library name="CheckOrderIsMining">
+        <library name="CheckOrderIsMining" version="2">
             <actions>
                 <set_value name="$isMiningOrder" exact="false" />
                 <set_value name="$orderID" exact="$inputOrder.id" />
