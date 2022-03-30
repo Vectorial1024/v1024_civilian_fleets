@@ -14,6 +14,7 @@
         <t id="1204">Supply Mule</t>
         <t id="2000">Bilde/Eintritt in Schürferflotte</t>
         <t id="2001">Schürfer</t>
+        <t id="3001">Salvager Fleet</t>
         <t id="100000">(SirNukes Modding API menu category)Civilian Fleets</t>
         <t id="100001">Auto-Benennung von Zivilflotten</t>
         <t id="100002">Wenn aktiviert, wird Civilian Fleet den Flottennamen, entsprechend ihrer Aufgabe, automatisch umbenennen. \(Gilt nur für neu erstellte Flotten.\).\n\nStandardmäßig aktiviert.</t>

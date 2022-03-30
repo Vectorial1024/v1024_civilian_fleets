@@ -14,6 +14,7 @@
         <t id="1204">Supply Mule 艦隊</t>
         <t id="2000">結成/参加 採掘艦隊</t>
         <t id="2001">採掘艦隊</t>
+        <t id="3001">Salvager Fleet</t>
         <t id="100000">(SirNukes Modding API menu category)Civilian Fleets</t>
         <t id="100001">民間艦隊の艦隊名自動変更</t>
         <t id="100002">民間艦隊の艦隊名を自動的に変更します。 \(次回以降の名前変更時にのみ影響します\)\n\nデフォルトは有効です。設定の変更後、直ちに反映されます。</t>

@@ -14,6 +14,7 @@
         <t id="1204">Supply Mule Flotte</t>
         <t id="2000">Former/rejoindre flotte minière</t>
         <t id="2001">Flotte minière</t>
+        <t id="3001">Salvager Fleet</t>
         <t id="100000">(SirNukes Modding API menu category)Flotte civile</t>
         <t id="100001">Basculer l'auto-renomination de la flotte civile</t>
         <t id="100002">Détermine si les flottes civiles doivent automatiquement mettre à jour le nom de leur flotte \(n'affectera que les futures tentatives de renommage\).\n\nActivé par défaut, avec effet immédiat.</t>
