@@ -602,6 +602,11 @@ You gotta pick the variables back up after usage!
                     <set_order_syncpoint_reached order="$toShip.order"/>
                     <set_value name="$syncSuccessful" exact="true" />
 
+                    <!-- Extra safety -->
+                    <!-- To be honest, I do not know why it passed the miner's check, but anyways, I will just unmark the miner's flag -->
+                    <set_value name="$isMiningOrder" exact="false" />
+                    <show_help position="1" duration="1s" custom="'Sanity : ' + @$isMiningOrder" chance="0"/>
+
                     <!-- Out of scope variable removal -->
                     <remove_value name="$range" />
                 </do_elseif>
