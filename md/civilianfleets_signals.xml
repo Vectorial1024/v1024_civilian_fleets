@@ -730,7 +730,7 @@ You gotta pick the variables back up after usage!
                                     <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$range" />
                                 </do_if>
                                 <!-- Trading commands -->
-                                <do_elseif value="$fromShip_DefaultOrder.id == 'TradeRoutine' or $fromShip_DefaultOrder.id == 'TradeRoutine_Basic' or $fromShip_DefaultOrder.id == 'TradeRoutine_Advanced'">
+                                <do_elseif value="($fromShip_DefaultOrder.id == 'TradeRoutine') or ($fromShip_DefaultOrder.id == 'TradeRoutine_Basic') or ($fromShip_DefaultOrder.id == 'TradeRoutine_Advanced')">
                                     <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$range" />
                                 </do_elseif>
                                 <do_elseif value="$fromShip_DefaultOrder.id == 'Middleman'">
@@ -784,7 +784,7 @@ You gotta pick the variables back up after usage!
                 <set_value name="$isMiningOrder" exact="false" />
                 <set_value name="$orderID" exact="$inputOrder.id" />
                 <do_if value="$orderID != null">
-                    <do_if value="$orderID == 'MiningRoutine' or $orderID == 'MiningRoutine_Basic' or $orderID == 'MiningRoutine_Advanced' or $orderID == 'MiningRoutine_Expert'">
+                    <do_if value="($orderID == 'MiningRoutine') or ($orderID == 'MiningRoutine_Basic') or ($orderID == 'MiningRoutine_Advanced') or ($orderID == 'MiningRoutine_Expert')">
                         <set_value name="$isMiningOrder" exact="true" />
                     </do_if>
                 </do_if>
