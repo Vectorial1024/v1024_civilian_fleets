@@ -726,7 +726,7 @@ You gotta pick the variables back up after usage!
                             <!-- Switch by command. -->
                             <do_if value="$fromShip_DefaultOrder" comment="Check that the order exists">
                                 <!-- Mining commands -->
-                                <do_if value="$isMiningOrder? and $isMiningOrder">
+                                <do_if value="@$isMiningOrder" comment="only true when is miner; non-miners will get null + (@) -> false, and salvagers get a hard false">
                                     <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$range" />
                                 </do_if>
                                 <!-- Trading commands -->
