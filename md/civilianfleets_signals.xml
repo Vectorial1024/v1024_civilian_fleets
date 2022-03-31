@@ -128,7 +128,7 @@ You gotta pick the variables back up after usage!
             param3 = toShip
         Note: this iis valid for base game v4.0+ for using the Mimic/Assist.
         -->
-        <cue name="Signal_SyncOrders_MimicryExtension" instantiate="true" version="1">
+        <cue name="Signal_SyncOrders_MimicryExtension" instantiate="true" version="2">
             <conditions>
                 <event_object_signalled object="player.galaxy" param="@global.$v1024_symbols_requestOrderSync_mimicryExtension" />
                 <!-- Characteristic symbol must match. -->
@@ -351,8 +351,9 @@ You gotta pick the variables back up after usage!
                 <!-- General order sync/mimic -->
                 <!-- This can be general orders such as miners doing trading or traders doing trading -->
                 <!-- Switch for every known default order -->
-                <do_if value="$fromShip_DefaultOrder.id == 'TradeRoutine'">
+                <do_if value="$fromShip_DefaultOrder.id == 'TradeRoutine' or $fromShip_DefaultOrder.id == 'TradeRoutine_Basic' or $fromShip_DefaultOrder.id == 'TradeRoutine_Advanced'">
                     <!-- Vanilla AutoTrade behavior -->
+                    <!-- Since X4 v5.00, also extends to Local AutoTrade and Advanced AutoTrade -->
                     <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
                     <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxsell, $assignmentSkillLevel].min" />
 
@@ -372,7 +373,7 @@ You gotta pick the variables back up after usage!
                     <remove_value name="$maxSell" />
                 </do_if>
                 <do_elseif value="$fromShip_DefaultOrder.id == 'Middleman'">
-                    <!-- Vanilla Distribute Wares behavior -->
+                    <!-- Vanilla Fill Storage (previously Distribute Wares before v5.00) behavior -->
                     <create_order object="$toShip" id="'Middleman'" default="true">
                         <!-- In v2.5, only warebasket can be modified by the player. -->
                         <param name="warebasket" value="$fromShip_DefaultOrder.$warebasket" />
@@ -588,6 +589,27 @@ You gotta pick the variables back up after usage!
                     <remove_value name="$maxBuy" />
                     <remove_value name="$maxSell" />
                 </do_elseif>
+                <do_elseif value="$fromShip_DefaultOrder.id == 'SalvageRoutine'">
+                    <!-- Vanilla AutoSalvage behavior; new since X4 v5.00 -->
+                    <!-- I do not care whether they are compactors or tugs; they will get to work under the same command -->
+                    <!-- In fact, an argument can be made where having compactors and tugs in the same fleet gives you a good idea of whether the group is working efficient enough -->
+                    <set_value name="$range" exact="[$fromShip_DefaultOrder.$range, $assignmentSkillLevel].min" />
+
+                    <create_order object="$toShip" id="'SalvageRoutine'" default="true">
+                        <param name="anchorspace" value="$fromShip_DefaultOrder.$anchorspace" />
+                        <param name="range" value="$range" />
+                    </create_order>
+                    <set_order_syncpoint_reached order="$toShip.order"/>
+                    <set_value name="$syncSuccessful" exact="true" />
+
+                    <!-- Extra safety -->
+                    <!-- To be honest, I do not know why it passed the miner's check, but anyways, I will just unmark the miner's flag -->
+                    <set_value name="$isMiningOrder" exact="false" />
+                    <show_help position="1" duration="1s" custom="'Sanity : ' + @$isMiningOrder" chance="0"/>
+
+                    <!-- Out of scope variable removal -->
+                    <remove_value name="$range" />
+                </do_elseif>
                 <!--
                 Note to mod makers: if you want to add more orders to check, you should append to the last do_elseif right here!
                 DO NOT APPEND TO THE $syncSuccessful CHECK!
@@ -604,7 +626,9 @@ You gotta pick the variables back up after usage!
                     </add>
                 -->
                 <do_else>
-                    <debug_text text="'Assignment unrecognized by CivFleet. Cancelling sync from ' + $fromShip.knownname + ' (' + $fromShip + ') to ' + $toShip.knownname + ' (' + $toShip + ') via assignment ' + $toShip.assignment + ', falling back to Mimic.'" />
+                    <do_if value="not $syncSuccessful" comment="$syncSuccessful is true when we processed the mining assignment">
+                        <debug_text text="'Assignment unrecognized by CivFleet. Cancelling sync from ' + $fromShip.knownname + ' (' + $fromShip + ') to ' + $toShip.knownname + ' (' + $toShip + ') via assignment ' + $toShip.assignment + ', falling back to Mimic.'" />
+                    </do_if>
                 </do_else>
 
                 <!-- Check sync succes -->
@@ -702,11 +726,11 @@ You gotta pick the variables back up after usage!
                             <!-- Switch by command. -->
                             <do_if value="$fromShip_DefaultOrder" comment="Check that the order exists">
                                 <!-- Mining commands -->
-                                <do_if value="$isMiningOrder? and $isMiningOrder">
+                                <do_if value="@$isMiningOrder" comment="only true when is miner; non-miners will get null + (@) -> false, and salvagers get a hard false">
                                     <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$range" />
                                 </do_if>
                                 <!-- Trading commands -->
-                                <do_elseif value="$fromShip_DefaultOrder.id == 'TradeRoutine'">
+                                <do_elseif value="($fromShip_DefaultOrder.id == 'TradeRoutine') or ($fromShip_DefaultOrder.id == 'TradeRoutine_Basic') or ($fromShip_DefaultOrder.id == 'TradeRoutine_Advanced')">
                                     <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$range" />
                                 </do_elseif>
                                 <do_elseif value="$fromShip_DefaultOrder.id == 'Middleman'">
@@ -726,6 +750,10 @@ You gotta pick the variables back up after usage!
                                 </do_elseif>
                                 <do_elseif value="$fromShip_DefaultOrder.id == 'TravelMule'">
                                     <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$sourceStation" />
+                                </do_elseif>
+                                <!-- Salvaging commands -->
+                                <do_elseif value="$fromShip_DefaultOrder.id == 'SalvageRoutine'">
+                                    <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$anchorspace" />
                                 </do_elseif>
                                 <do_else>
                                     <!-- Do nothing; we place this code here to allow people to patch into this easily. -->
@@ -751,12 +779,12 @@ You gotta pick the variables back up after usage!
 
         <!-- Given an order (more precisely, a defaultorder), determines if such order is a mining order. -->
         <!-- input: $inputOrder, output: $isMiningOrder -->
-        <library name="CheckOrderIsMining">
+        <library name="CheckOrderIsMining" version="2">
             <actions>
                 <set_value name="$isMiningOrder" exact="false" />
                 <set_value name="$orderID" exact="$inputOrder.id" />
                 <do_if value="$orderID != null">
-                    <do_if value="$orderID == 'MiningRoutine' or $orderID == 'MiningRoutine_Basic' or $orderID == 'MiningRoutine_Advanced' or $orderID == 'MiningRoutine_Expert'">
+                    <do_if value="($orderID == 'MiningRoutine') or ($orderID == 'MiningRoutine_Basic') or ($orderID == 'MiningRoutine_Advanced') or ($orderID == 'MiningRoutine_Expert')">
                         <set_value name="$isMiningOrder" exact="true" />
                     </do_if>
                 </do_if>

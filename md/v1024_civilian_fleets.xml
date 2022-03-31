@@ -17,6 +17,8 @@
         <!-- Vanilla value-pairs -->
         <!-- Trading Fleet -->
         <append_to_list name="global.$civFleet_CmdTagPairs" exact="['TradeRoutine', {221024, 1001}]" />
+        <append_to_list name="global.$civFleet_CmdTagPairs" exact="['TradeRoutine_Basic', {221024, 1001}]" />
+        <append_to_list name="global.$civFleet_CmdTagPairs" exact="['TradeRoutine_Advanced', {221024, 1001}]" />
         <!-- Mining Fleet(s) -->
         <append_to_list name="global.$civFleet_CmdTagPairs" exact="['MiningRoutine', {221024, 2001}]" />
         <append_to_list name="global.$civFleet_CmdTagPairs" exact="['MiningRoutine_Basic', {221024, 2001}]" />
@@ -24,6 +26,8 @@
         <append_to_list name="global.$civFleet_CmdTagPairs" exact="['MiningRoutine_Expert', {221024, 2001}]" />
         <!-- Distribution Fleet -->
         <append_to_list name="global.$civFleet_CmdTagPairs" exact="['Middleman', {221024, 1002}]" />
+        <!-- Salvager Fleet -->
+        <append_to_list name="global.$civFleet_CmdTagPairs" exact="['SalvageRoutine', {221024, 3001}]" />
 
         <!-- Mod value-pairs -->
         <!-- TaterTrade Fleet -->
