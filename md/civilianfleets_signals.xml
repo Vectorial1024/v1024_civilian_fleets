@@ -93,7 +93,7 @@ You gotta pick the variables back up after usage!
             param3 = toShip
         Note: we no longer use this starting from base game v4.0+ due to the introduction of Mimic/Assist. We will transition to Mimic/Assist.
         -->
-        <cue name="Signal_SyncOrders" instantiate="true" version="6">
+        <cue name="Signal_SyncOrders" instantiate="true" version="7">
             <conditions>
                 <event_object_signalled object="player.galaxy" param="@global.$v1024_symbols_requestOrderSync" />
                 <!-- Characteristic symbol must match. -->
@@ -104,6 +104,8 @@ You gotta pick the variables back up after usage!
                 <check_value value="event.param2.isclass.ship and event.param3.isclass.ship" />
                 <!-- Source ship must have a valid default command. -->
                 <check_value value="event.param2.defaultorder" />
+                <!-- Source ship's default order must NOT be one of the three Random* behaviors -->
+                <check_value value="['RandomMine', 'RandomTrade', 'RandomSupply'].indexof.{event.param2.defaultorder.id} == 0" comment="This prevents accidental blockage of Random* mods since they are also using this mechanism." />
             </conditions>
             <delay min="100ms" max="5000ms" comment="Delay randomly to spread out the performance spike." />
             <actions>
