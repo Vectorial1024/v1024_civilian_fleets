@@ -458,6 +458,45 @@ You gotta pick the variables back up after usage!
                     <remove_value name="$maxBuy" />
                     <remove_value name="$maxSell" />
                 </do_elseif>
+                <do_elseif value="$fromShip_DefaultOrder.id == 'DeadTater'">
+                    <!-- Mod TaterTrade: DeadTater behavior -->
+                    <!-- Note: this is DeadAirRT's fork of TaterTrade. -->
+                    <!-- DeadTater has their own "assignment skill level"; updating the variable to reflect that. -->
+                    <set_value name="$assignmentSkillLevel" exact="[$fromShip.pilot.skill.management, $toShip.pilot.skill.piloting, 1].max" />
+                    <set_value name="$minBuy" exact="[$fromShip_DefaultOrder.$minbuy, $assignmentSkillLevel].min" />
+                    <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
+                    <set_value name="$minSell" exact="[$fromShip_DefaultOrder.$minsell, $assignmentSkillLevel].min" />
+                    <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxsell, $assignmentSkillLevel].min" />
+
+                    <create_order object="$toShip" id="'TaterTrade'" default="true">
+                        <!-- Section break 0: General config -->
+                        <param name="range" value="$fromShip_DefaultOrder.$range" />
+                        <param name="minbuy" value="$minBuy" />
+                        <param name="maxbuy" value="$maxBuy" />
+                        <param name="minsell" value="$minSell" />
+                        <param name="maxsell" value="$maxSell" />
+                        <param name="distancecheck" value="$fromShip_DefaultOrder.$distancecheck" />
+                        <param name="distancecheckpercent" value="$fromShip_DefaultOrder.$distancecheckpercent" />
+                        <param name="preferownfaction" value="$fromShip_DefaultOrder.$preferownfaction" />
+                        <param name="ignoretraderules" value="$fromShip_DefaultOrder.$ignoretraderules" />
+                        <!-- Section break 1 -->
+                        <param name="autowares" value="$fromShip_DefaultOrder.$autowares" />
+                        <param name="illegalwares" value="$fromShip_DefaultOrder.$illegalwares" />
+                        <param name="minfill" value="$fromShip_DefaultOrder.$minfill" />
+                        <param name="minfillpercent" value="$fromShip_DefaultOrder.$minfillpercent" />
+                        <!-- Section break 2 -->
+                        <param name="enablelogbook" value="$fromShip_DefaultOrder.$enablelogbook" />
+                        <param name="warebasket" value="$fromShip_DefaultOrder.$warebasket" />
+                    </create_order>
+                    <set_order_syncpoint_reached order="$toShip.order"/>
+                    <set_value name="$syncSuccessful" exact="true" />
+
+                    <!-- Out of scope variable removal -->
+                    <remove_value name="$minBuy" />
+                    <remove_value name="$minSell" />
+                    <remove_value name="$maxBuy" />
+                    <remove_value name="$maxSell" />
+                </do_elseif>
                 <do_elseif value="$fromShip_DefaultOrder.id == 'DistriMule'">
                     <!-- Misunderstood-Wookies' Mules and Warehouses Extended: Distribution Mule behavior -->
                     <create_order object="$toShip" id="'DistriMule'" default="true">
