@@ -32,6 +32,7 @@
         <!-- Mod value-pairs -->
         <!-- TaterTrade Fleet -->
         <append_to_list name="global.$civFleet_CmdTagPairs" exact="['TaterTrade', {221024, 1101}]" />
+        <append_to_list name="global.$civFleet_CmdTagPairs" exact="['DeadTater', {221024, 1102}]" />
 
         <!-- Mules and Warehouses Fleets -->
         <append_to_list name="global.$civFleet_CmdTagPairs" exact="['DistriMule', {221024, 1201}]" />
