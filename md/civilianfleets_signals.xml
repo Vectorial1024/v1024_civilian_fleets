@@ -448,6 +448,9 @@ You gotta pick the variables back up after usage!
                         <param name="scaleplateban" value="$fromShip_DefaultOrder.$scaleplateban" />
                         <!-- Section break 4: Miscellaneous-->
                         <param name="scanspeed" value="$fromShip_DefaultOrder.$scanspeed" />
+                        <param name="enablelogbook" value="$fromShip_DefaultOrder.$enablelogbook" />
+                        <param name="pioneersban" value="$fromShip_DefaultOrder.$pioneersban" />
+                        <param name="terranban" value="$fromShip_DefaultOrder.$terranban" />
                     </create_order>
                     <set_order_syncpoint_reached order="$toShip.order"/>
                     <set_value name="$syncSuccessful" exact="true" />
@@ -468,7 +471,7 @@ You gotta pick the variables back up after usage!
                     <set_value name="$minSell" exact="[$fromShip_DefaultOrder.$minsell, $assignmentSkillLevel].min" />
                     <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxsell, $assignmentSkillLevel].min" />
 
-                    <create_order object="$toShip" id="'TaterTrade'" default="true">
+                    <create_order object="$toShip" id="'DeadTater'" default="true">
                         <!-- Section break 0: General config -->
                         <param name="range" value="$fromShip_DefaultOrder.$range" />
                         <param name="minbuy" value="$minBuy" />
