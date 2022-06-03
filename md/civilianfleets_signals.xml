@@ -446,11 +446,11 @@ You gotta pick the variables back up after usage!
                         <param name="fallensplitban" value="$fromShip_DefaultOrder.$fallensplitban" />
                         <param name="hatikvahban" value="$fromShip_DefaultOrder.$hatikvahban" />
                         <param name="scaleplateban" value="$fromShip_DefaultOrder.$scaleplateban" />
+                        <param name="pioneersban" value="$fromShip_DefaultOrder.$pioneersban" />
+                        <param name="terranban" value="$fromShip_DefaultOrder.$terranban" />
                         <!-- Section break 4: Miscellaneous-->
                         <param name="scanspeed" value="$fromShip_DefaultOrder.$scanspeed" />
                         <param name="enablelogbook" value="$fromShip_DefaultOrder.$enablelogbook" />
-                        <param name="pioneersban" value="$fromShip_DefaultOrder.$pioneersban" />
-                        <param name="terranban" value="$fromShip_DefaultOrder.$terranban" />
                     </create_order>
                     <set_order_syncpoint_reached order="$toShip.order"/>
                     <set_value name="$syncSuccessful" exact="true" />
