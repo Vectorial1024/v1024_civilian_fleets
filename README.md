@@ -140,5 +140,12 @@ For example, if you are adding a non-mining aiscript:
 </diff>
 ```
 
+### Patch finished!
+We should test that the patch works.
+
+You can launch the game and assign ships to others using the `Mimic` menu, and you should see that your new fleet subordinates are not using the `Mimic` command, but your actual custom aiscript command instead.
+
+If that is the case, then congratulations! You have successfully made your custom aiscript compatible with Civilian Fleets. Your mod users will now also enjoy the benefits of the Civilian Fleets mod, e.g. persistent fleet orders.
+
 ## Other Stuff
 This serves as an important reminder to never skip steps, respect legacy methods, and never make breaking updates without auto-fixes.
