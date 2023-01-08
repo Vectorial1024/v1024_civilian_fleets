@@ -44,8 +44,8 @@ You should check the Nexus page for more details, but, if you want to form/join 
   - ~~Required: also allows adding the right-click menus~~ No longer used for this purpose since everything is now based on the Mimic assignment
   - Their Steam Workshop page: https://steamcommunity.com/sharedfiles/filedetails/?id=2042901274
 
-## Cross-Mod Compatibility
-This mod also supports the following civilian default behaviors from other mods:
+## Built-In Cross-Mod Compatibility
+This mod also supports the following civilian default behaviors from other mods as part of the built-in features:
 
 - TaterTrade (maintained by DeadAirRT)
   - Their GitHub repository: https://github.com/DeadAirRT/TaterTrader
@@ -59,6 +59,8 @@ This mod also supports the following civilian default behaviors from other mods:
   - Their EgoSoft Forums page: https://forum.egosoft.com/viewtopic.php?t=427342
 - Factory Transporter
   - Their Steam Workshop page: https://steamcommunity.com/sharedfiles/filedetails/?id=2321672179
+
+For mod makers, other mods can be made compatible to Civilian Fleets; more information below.
 
 ## Ensuring Compatibility with Civilian Fleets
 Due to the way Civilian Fleets work, it cannot automatically detect other aiscript files that should also be used.
