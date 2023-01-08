@@ -67,7 +67,11 @@ Due to the way Civilian Fleets work, it cannot automatically detect other aiscri
 
 To make Civilian Fleets use your custom aiscript, do the following:
 
-[Prerequisiets WIP]
+### 0. Prepare some other things
+Civilian Fleets will need the following, so prepare them first:
+
+- Fleet names to be displayed in the GUI (users can choose to not get auto-generate fleet names)
+  - You can check other guides on how to create translation strings; or you can just hard-code a (English) name, it will also work
 
 ### 1. Tell us the fleet name of your custom aiscript
 Create a Mission Director file in `/md`, then do the following:
@@ -79,22 +83,61 @@ For example:
 
 ```xml
 <?xml version="1.0" encoding="utf-8" ?>
-<mdscript name="External_RegisterCivilianFleetName" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
+<mdscript name="External_CivilianFleetCompat" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
   <cues>
     <!-- Example cue using the existing Sanity Miners compatibility code -->
-    <cue name="CivilianFleets_SanityMinersCompat" instantiate="true">
+    <cue name="RegisterFleetNames" instantiate="true">
       <conditions>
         <event_cue_signalled cue="md.V1024_CivilianFleets.CivilianFleets_SettingUp" />
       </conditions>
       <!-- Delay a bit to let the original cue complete its actions -->
       <delay exact="1s" />
       <actions>
-        <!-- [$aiscriptId, $translationId] -->
+        <!-- [$aiscriptId, $fleetNameString] -->
         <append_to_list name="global.$civFleet_CmdTagPairs" exact="['Sanity_SectorAutoMine', {221024, 2001}]" />
       </actions>
     </cue>
   </cues>
 </mdscript>
+```
+
+### 2. Tell us how to copy the details of your custom aiscript
+Sometimes, some parameters of your aiscript become meaningless when ships start working uner a fleet. This means that you must tell us how fleet members should receive the aiscript parameters.
+
+Create the Mission Director patch-file `/extensions/v1024_civilian_fleets/md/civilianfleets_signals.xml`, then do the following:
+
+1. Check whether your aiscript is a mining aiscript; this will affect the patch location 
+2. Append your condition check to the correct if-then-else block that checks for aiscript IDs
+3. Add your create-command-for-subordinate inside the conditional block
+
+For example, if you are adding a is-mining aiscript:
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<diff>s
+  <add sel="/mdscript/cues/cue[@name='Signal_SyncOrders_MimicryExtension']/actions/do_if[@value='($fromShip.primarypurpose == purpose.mine) and ($toShip.primarypurpose == purpose.mine)']/do_else[1]" pos="before" comment="For is-mining aiscript">
+    <do_elseif value="$fromShip_DefaultOrder.id == 'YourOrderID'">
+      <create_order object="$toShip" id="'YourOrderID'" default="true">
+        <param name="exampleparam" value="$fromShip_DefaultOrder.$exampleparam" />
+      </create_order>
+    </do_elseif>
+  </add>
+</diff>
+```
+
+For example, if you are adding a non-mining aiscript:
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<diff>
+  <add sel="/mdscript/cues/cue[@name='Signal_SyncOrders_MimicryExtension']/actions/do_else[1]" pos="before" comment="For non-mining aiscript">
+    <do_elseif value="$fromShip_DefaultOrder.id == 'YourOrderID'">
+      <create_order object="$toShip" id="'YourOrderID'" default="true">
+        <param name="exampleparam" value="$fromShip_DefaultOrder.$exampleparam" />
+      </create_order>
+    </do_elseif>
+  </add>
+</diff>
 ```
 
 ## Other Stuff
