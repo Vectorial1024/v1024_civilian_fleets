@@ -60,5 +60,40 @@ This mod also supports the following civilian default behaviors from other mods:
 - Factory Transporter
   - Their Steam Workshop page: https://steamcommunity.com/sharedfiles/filedetails/?id=2321672179
 
+## Ensuring Compatibility with Civilian Fleets
+Due to the way Civilian Fleets work, it cannot automatically detect other aiscript files that should also be used.
+
+To make Civilian Fleets use your custom aiscript, do the following:
+
+[Prerequisiets WIP]
+
+### 1. Tell us the fleet name of your custom aiscript
+Create a Mission Director file in `/md`, then do the following:
+
+1. Listen to the "CivilianFleets_SettingUp" cue
+2. Add your "aiscript ID"-"fleet name" pair to the Civilian Fleets global variable
+
+For example:
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<mdscript name="External_RegisterCivilianFleetName" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="md.xsd">
+  <cues>
+    <!-- Example cue using the existing Sanity Miners compatibility code -->
+    <cue name="CivilianFleets_SanityMinersCompat" instantiate="true">
+      <conditions>
+        <event_cue_signalled cue="md.V1024_CivilianFleets.CivilianFleets_SettingUp" />
+      </conditions>
+      <!-- Delay a bit to let the original cue complete its actions -->
+      <delay exact="1s" />
+      <actions>
+        <!-- [$aiscriptId, $translationId] -->
+        <append_to_list name="global.$civFleet_CmdTagPairs" exact="['Sanity_SectorAutoMine', {221024, 2001}]" />
+      </actions>
+    </cue>
+  </cues>
+</mdscript>
+```
+
 ## Other Stuff
 This serves as an important reminder to never skip steps, respect legacy methods, and never make breaking updates without auto-fixes.
