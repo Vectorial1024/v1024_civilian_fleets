@@ -10,18 +10,7 @@ Do:
 4. If [2] returns true, also updates the wing name appropriately
 -->
 <diff>
-    <add sel="/aiscript[@name='lib.request.orders']/attention/actions/do_else/do_else/do_elseif[@value='$assignment == assignment.assist']" pos="before">
-        <!-- Target the space just before assist, to handle legacy CivFleet assignments -->
-        <do_elseif value="($assignment == assignment.trade and $commander.type != shiptype.resupplier) or $assignment == assignment.mining or @global.$v1024_list_ship_is_mining.{this.ship} == true">
-            <do_if value="$object.isplayerowned" comment="Ignore non-player ships to boost performance">
-                <show_help position="1" duration="6s" custom="'Signalling the previous-made handler.'" chance="0"/>
-                <!-- Delegate to standardized static config method to ensure save-game compatibility. -->
-                <!-- This will also update the fleet name. -->
-                <!-- This is the old endpoint that some of the player base might still use. -->
-                <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$commander" param3="$object" />
-            </do_if>
-        </do_elseif>
-    </add>
+    <!-- Because it is now so long, we are removing the legacy method of "assign to trade"/"assign to mine" to form civilian fleets -->
     <replace sel="/aiscript[@name='lib.request.orders']/attention/actions/do_else/do_else/do_elseif[@value='$assignment == assignment.assist']/create_order" comment="Target the Mimic code block">
         <!-- The XML replace replaces the entire node so it gets a bit problematic if others try to replace the same stuff too. -->
         <do_if value="$object.isplayerowned" comment="Ignore non-player ships to boost performance">

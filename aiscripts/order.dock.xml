@@ -89,9 +89,7 @@ Betty docks for the player via Auto-Pilot.
                                 <!-- Delegate to standardized static config method to ensure save-game compatibility. -->
                                 <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync_mimicryExtension" param2="$thisship" param3="$currentSubordinate" />
                             </do_if>
-                            <do_elseif value="($assignmentObjSubord == assignment.trade and $thisship.type != shiptype.resupplier) or ($assignmentObjSubord == assignment.mining or @global.$v1024_list_ship_is_mining.{$currentSubordinate} == true)" comment="Legacy CivFleet assignment">
-                                <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$thisship" param3="$currentSubordinate" />
-                            </do_elseif>
+                            <!-- We no longer support the legacy "assign as trader"/"assign as miner" method -->
                         </do_for_each>
                     </do_if>
                 </do_all>
