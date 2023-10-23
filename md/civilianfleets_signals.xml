@@ -353,9 +353,10 @@ You gotta pick the variables back up after usage!
                 <!-- General order sync/mimic -->
                 <!-- This can be general orders such as miners doing trading or traders doing trading -->
                 <!-- Switch for every known default order -->
-                <do_if value="$fromShip_DefaultOrder.id == 'TradeRoutine' or $fromShip_DefaultOrder.id == 'TradeRoutine_Basic' or $fromShip_DefaultOrder.id == 'TradeRoutine_Advanced'">
+                <do_if value="$fromShip_DefaultOrder.id == 'TradeRoutine' or $fromShip_DefaultOrder.id == 'TradeRoutine_Advanced'">
                     <!-- Vanilla AutoTrade behavior -->
                     <!-- Since X4 v5.00, also extends to Local AutoTrade and Advanced AutoTrade -->
+                    <!-- Note: we are handling Local AutoTrade separately to try to fix a known issue with UI crashes. -->
                     <set_value name="$maxBuy" exact="[$fromShip_DefaultOrder.$maxbuy, $assignmentSkillLevel].min" />
                     <set_value name="$maxSell" exact="[$fromShip_DefaultOrder.$maxsell, $assignmentSkillLevel].min" />
 
@@ -380,6 +381,15 @@ You gotta pick the variables back up after usage!
                         <!-- In v2.5, only warebasket can be modified by the player. -->
                         <param name="warebasket" value="$fromShip_DefaultOrder.$warebasket" />
                         <param name="anchorspace" value="$fromShip_DefaultOrder.$anchorspace" />
+                    </create_order>
+                    <set_order_syncpoint_reached order="$toShip.order"/>
+                    <set_value name="$syncSuccessful" exact="true" /> 
+                </do_elseif>
+                <do_elseif value="$fromShip_DefaultOrder.id == 'TradeRoutine_Basic'" comment="Separate the handling of Local AutoTrade to avoid UI crashes">
+                    <!-- Vanilla Local AutoTrade -->
+                    <create_order object="$toShip" id="'TradeRoutine_Basic'" default="true">
+                        <param name="warebasket" value="$fromShip_DefaultOrder.$warebasket" />
+                        <param name="range" value="$fromShip_DefaultOrder.$range" />
                     </create_order>
                     <set_order_syncpoint_reached order="$toShip.order"/>
                     <set_value name="$syncSuccessful" exact="true" /> 
