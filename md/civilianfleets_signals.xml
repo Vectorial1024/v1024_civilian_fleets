@@ -793,6 +793,9 @@ You gotta pick the variables back up after usage!
                                 <do_elseif value="$fromShip_DefaultOrder.id == 'TaterTrade'">
                                     <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$home" />
                                 </do_elseif>
+                                <do_elseif value="$fromShip_DefaultOrder.id == 'DeadTater'">
+                                    <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$range" />
+                                </do_elseif>
                                 <do_elseif value="$fromShip_DefaultOrder.id == 'DistriMule'">
                                     <set_value name="$theAnchor" exact="$fromShip_DefaultOrder.$sourceStation" />
                                 </do_elseif>
