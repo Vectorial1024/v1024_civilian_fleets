@@ -62,17 +62,12 @@ Betty docks for the player via Auto-Pilot.
                     <signal_objects object="player.galaxy" param="global.$v1024_symbols_requestOrderSync" param2="$commanderObject" param3="$thisship" />
                 </do_elseif>
             </do_elseif>
-            <do_elseif value="$commanderObject.isclass.station" chance="0" comment="Should already be fixed by EgoSoft themselves.">
-                <!-- Also allow station traders/miners to update their warebsakets irregularly. -->
-                <set_value name="$assignmentObj" exact="$thisship.assignment" />
-                <do_if value="($assignmentObj == assignment.trade) or ($assignmentObj == assignment.mining) or ($assignmentObj == assignment.tradeforbuildstorage)">
-                    <!-- Trigger vanilla script to let them help us update the orders. -->
-                    <!-- This is much more safer than straight up copying everything over. -->
-                    <run_script name="'lib.request.orders'">
-                        <param name="object" value="$thisship"/>
-                    </run_script>
-                </do_if>
-            </do_elseif>
+            <!--
+                Originally, there was a section of code here to tell station subordinates to recheck their order parameters (e.g. mining range) via lib.request.orders
+                This was a workaround to a past vanilla bug: when station managers level up, subordinates are unaware of this and will keep using the old mining range
+                Eventually, EgoSoft fixed this, and so the workaround here can be safely removed.
+                Also, it turns out the workaround produces a lot of "run_script not allowed in this context" error.
+            -->
             <!-- Check condition 1: Commander-ship -->
             <do_if value="$thisship.subordinates.count and $thisship.defaultorder != null">
                 <!-- The original mod specifically mentioned allowing middle-commanders to lead civilian fleets. -->
