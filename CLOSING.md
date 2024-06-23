@@ -73,4 +73,4 @@ I noticed myself consistently looking at each CivFleet to see if any ships were 
 
 So yeah. For various reasons listed above, there is no real good modded alternatives to CivFleet when the base game is already this good, and I have noticed the flaws in my previous playstyle.
 
-Therefore, I am archiving this mod.
+Therefore, I am sunsetting and archiving this mod.
