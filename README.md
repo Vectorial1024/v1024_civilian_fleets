@@ -13,6 +13,10 @@ Create civilian fleets to help manage your traders and miners.
 - Our EgoSoft Forums page: https://forum.egosoft.com/viewtopic.php?f=181&t=418144
 - Our Steam Workshop page: https://steamcommunity.com/sharedfiles/filedetails/?id=2092839403
 
+NOTE: this mod is now archived; see `CLOSING.md` in the repo for more details, such as:
+- why archive?
+- what to do to transition to vanilla Mimic fleets?
+
 ## Credits to the Community
 Without the help from the community, this mod will not be available in other languages.
 - French translation // Traduction en français par les membres de la communauté
